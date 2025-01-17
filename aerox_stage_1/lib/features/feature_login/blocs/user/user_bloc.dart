@@ -29,7 +29,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit( state.copyWith( user: null ) );
     });
     on<OnEmailSignInUser>((event, emit) async {
-      var result = await EmailAuthService.signInWithEmail( userData: UserData(name: 'name', email: 'email', password: 'password') );
+      var result = await EmailAuthService.signInWithEmail( userData: UserData(name: 'name', email: event.email, password: event.password) );
       if( result is User ){
         emit( state.copyWith( user: result, errorMessage: null ) );
       }else if( result is String ) {
