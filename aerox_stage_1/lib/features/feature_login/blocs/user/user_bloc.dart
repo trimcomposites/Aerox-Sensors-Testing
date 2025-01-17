@@ -17,18 +17,17 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   
-  final googleAuthService = GoogleAuthService();
   final registerUserUsecase = RegisterUserUsecase();
   final signInUserCase = SignInUserUsecase();
 
   UserBloc( BuildContext context ) : super(UserState()) {
     on<OnGoogleSignInUser>((event, emit) async{
-      User? user = await googleAuthService.signInWithGoogle();
+      User? user = await signInUserCase.signInUser( signInType: EmailSignInType.google, );
       //print( user );
       emit( state.copyWith( user: user, errorMessage: null ) );
     });
     on<OnGoogleSignOutUser>((event, emit) async {
-      await googleAuthService.signOut();
+      //await googleAuthService.signOut();
       emit( state.copyWith( user: null ) );
     });
     on<OnEmailSignInUser>((event, emit) async {
