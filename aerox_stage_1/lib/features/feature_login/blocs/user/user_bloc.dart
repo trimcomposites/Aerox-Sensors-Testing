@@ -1,4 +1,6 @@
 
+import 'package:aerox_stage_1/domain/use_cases/register_user_usecase.dart';
+import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/google_auth_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -6,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 import '../../ui/login_barrel.dart';
-import 'email_auth_service.dart';
+import '../../repository/remote/email_auth_service.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -14,6 +16,7 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   
   final googleAuthService = GoogleAuthService();
+  final registerUserUsecase = RegisterUserUsecase();
 
   UserBloc( BuildContext context ) : super(UserState()) {
     on<OnGoogleSignInUser>((event, emit) async{
@@ -26,7 +29,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit( state.copyWith( user: null ) );
     });
     on<OnEmailSignInUser>((event, emit) async {
-      var result = await EmailAuthService.signInWithEmail(email: event.email, password: event.password);
+      var result = await EmailAuthService.signInWithEmail( userData: UserData(name: 'name', email: 'email', password: 'password') );
       if( result is User ){
         emit( state.copyWith( user: result, errorMessage: null ) );
       }else if( result is String ) {
@@ -42,7 +45,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
 
     on<OnEmailRegisterUser>((event, emit) async {
-      var result = await EmailAuthService.createUserWithEmail(email: event.email, password: event.password);
+      final userData = UserData(name: 'name', email: event.email, password: event.password );
+      var result = await registerUserUsecase.registerUser(userData: userData);
       if( result is User ){
         emit( state.copyWith( user: result, errorMessage: null ) );
       }else if ( result is String ) {

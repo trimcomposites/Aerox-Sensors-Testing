@@ -14,6 +14,7 @@ class UserCheckScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   final userBloc = BlocProvider.of<UserBloc>(context);
+  print('usuario $userBloc.state.user');
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         return userBloc.state.user==null

@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,13 +11,12 @@ class EmailAuthService {
   Stream<User?> get authStateChanges => firebaseAuth.authStateChanges();
 
   static Future<dynamic> signInWithEmail({
-    required String email,
-    required String password,
+    required UserData userData
   }) async {
     try {
       UserCredential credential = await firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: userData.email,
+        password: userData.password,
       );
       User? user = credential.user;
 
@@ -31,13 +31,12 @@ class EmailAuthService {
   }
 
   static Future<dynamic> createUserWithEmail({
-    required String email,
-    required String password,
+    required UserData userData
   }) async {
     try {
       UserCredential credential = await firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: userData.email,
+        password: userData.password,
       );
       User? user = credential.user;
 
