@@ -1,5 +1,7 @@
+import 'package:aerox_stage_1/feature_splash/ui/background_gradient.dart';
+import 'package:aerox_stage_1/feature_splash/ui/resources.dart';
+import 'package:aerox_stage_1/feature_splash/ui/splash_background_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -26,10 +28,17 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue, 
-      body: Center(
-        child: Image.asset('assets/your_logo.png'), // Aquí se coloca el logo o imagen
-      ),
+      backgroundColor: backgroundColor,
+      body: Stack(
+        children: [
+          SplashBackGroundImage(),
+          BackgroundGradient(),
+          Center(child: Padding(
+            padding: const EdgeInsets.symmetric( horizontal: 80.0),
+            child: Image.asset( 'assets/Logotipo-Aerox-Blanco.png' ),
+          ))
+        ],
+      )
     );
   }
 }
