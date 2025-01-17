@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../repository/remote/user/user_bloc.dart';
+import '../blocs/user/user_bloc.dart';
 import 'login_barrel.dart';
 import 'user_check_screen.dart';
 

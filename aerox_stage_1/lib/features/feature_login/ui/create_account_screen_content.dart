@@ -1,5 +1,5 @@
 
-import 'package:aerox_stage_1/features/feature_login/repository/remote/user/user_bloc.dart';
+import 'package:aerox_stage_1/features/feature_login/blocs/user/user_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'login_barrel.dart';

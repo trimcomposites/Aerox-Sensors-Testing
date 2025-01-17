@@ -5,7 +5,7 @@ export 'package:aerox_stage_1/features/feature_login/ui/user_check_screen.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/widgets/conditions_check_box.dart';
 
 export 'package:aerox_stage_1/features/feature_login/ui/login_with_email_screen.dart';
-export 'package:aerox_stage_1/features/feature_login/repository/remote/user/user_bloc.dart';
+export 'package:aerox_stage_1/features/feature_login/blocs/user/user_bloc.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/widgets/data_container.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/widgets/background_image.dart';
 export 'package:aerox_stage_1/features/feature_splash/ui/background_gradient.dart';
