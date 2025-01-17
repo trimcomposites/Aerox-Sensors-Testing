@@ -1,4 +1,4 @@
-package com.example.aerox_stage_1
+package com.labtend.aerox
 
 import io.flutter.embedding.android.FlutterActivity
 

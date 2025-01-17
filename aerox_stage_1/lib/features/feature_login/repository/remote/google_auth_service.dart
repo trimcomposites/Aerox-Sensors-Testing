@@ -1,0 +1,53 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+class GoogleAuthService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  static final GoogleAuthService _instance = GoogleAuthService._internal();
+
+    // Constructor privado
+    GoogleAuthService._internal();
+
+    // Devuelve la instancia única
+    factory GoogleAuthService() {
+      return _instance;
+    }
+
+  // Método para iniciar sesión con Google
+  Future<User?> signInWithGoogle() async {
+    try {
+      // Selecciona una cuenta de Google
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return null; // El usuario canceló el inicio de sesión
+
+      // Obtiene las credenciales de autenticación de Google
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Crea una credencial de Firebase
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Inicia sesión en Firebase con las credenciales de Google
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+      // Retorna el usuario autenticado
+      return userCredential.user;
+    } catch (e) {
+      print('Error en signInWithGoogle: $e');
+      return null;
+    }
+  }
+
+  // Método para cerrar sesión
+  Future<void> signOut() async {
+    try {
+      await _googleSignIn.signOut(); // Cierra sesión de Google
+      await _auth.signOut(); // Cierra sesión de Firebase
+    } catch (e) {
+      print('Error en signOut: $e');
+    }
+  }
+}
