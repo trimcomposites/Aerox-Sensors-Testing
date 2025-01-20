@@ -7,7 +7,7 @@ import 'email_sign_in_type.dart';
 class SignOutUserUsecase extends UseCaseWithParams<void, EmailSignInType>{
 
   @override
-  ResultFuture call( EmailSignInType params ) => LoginRepository().signOutUser( signInType: params );
+  EitherErr call( EmailSignInType params ) => LoginRepository().signOutUser( signInType: params );
   
 
 }

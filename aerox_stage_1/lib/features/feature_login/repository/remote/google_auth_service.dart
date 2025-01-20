@@ -18,7 +18,7 @@ class GoogleAuthService {
     }
 
   // Método para iniciar sesión con Google
-  static ResultFuture<User> signInWithGoogle() async {
+  static Future<EitherErr<User>> signInWithGoogle() async {
     try {
       // Selecciona una cuenta de Google
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();

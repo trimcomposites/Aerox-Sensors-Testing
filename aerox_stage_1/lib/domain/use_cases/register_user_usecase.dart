@@ -5,10 +5,10 @@ import 'package:aerox_stage_1/features/feature_login/repository/remote/login_rep
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-class RegisterUserUsecase extends UseCaseWithParams<dynamic, UserData>{
+class RegisterUserUsecase extends AsyncUseCaseWithParams<dynamic, UserData>{
 
   @override
-  ResultFuture call( UserData userData  )async => await LoginRepository().registerWithEmail(userData);
+  Future<EitherErr> call( UserData userData  )async => await LoginRepository().registerWithEmail(userData);
 
 
 }

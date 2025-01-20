@@ -7,11 +7,11 @@ import 'package:aerox_stage_1/features/feature_login/repository/remote/login_rep
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class SignInUserUsecase extends UseCaseWithParams<User, SignInUserUsecaseParams>{
+class SignInUserUsecase extends AsyncUseCaseWithParams<User, SignInUserUsecaseParams>{
 
 
   @override
-  ResultFuture<User> call( SignInUserUsecaseParams params ) async {
+  Future<EitherErr<User>> call( SignInUserUsecaseParams params ) async {
     var user = LoginRepository().signInUser( signInType: params.signInType, userData: params.userData );
     print( user );
     return user;

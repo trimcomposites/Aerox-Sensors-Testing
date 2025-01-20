@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'remote_barrel.dart';
 
 class LoginRepository{
-  ResultFuture<User> signInUser( { required EmailSignInType signInType, UserData? userData }) async{
+  Future<EitherErr<User>> signInUser( { required EmailSignInType signInType, UserData? userData }) async{
     switch( signInType ){
       case EmailSignInType.email:
       //return EmailAuthService.signInWithEmail(userData: userData! );

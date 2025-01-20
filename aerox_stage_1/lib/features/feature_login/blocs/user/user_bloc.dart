@@ -32,6 +32,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.google)  )..fold(
         (l) => print( 'error' ),
         (r) => emit( state.copyWith( user: r  ) ));
+        if( state.user!= null ){
+          print('success');
+        }
     });
     on<OnGoogleSignOutUser>((event, emit) async {
       signOutUseCase(  EmailSignInType.google );
