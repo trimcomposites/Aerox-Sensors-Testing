@@ -9,7 +9,7 @@ class AppButton extends StatelessWidget {
     this.backgroundColor = Colors.transparent, 
     this.fontColor = Colors.white, 
     this.showborder = true, 
-    this.width = 300, 
+    this.width = 325, 
     this.height = 75,
   });
   final void Function() onPressed;
