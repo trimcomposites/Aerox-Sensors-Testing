@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aerox_stage_1/features/feature_login/ui/widgets/login_with_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,7 +68,16 @@ class LoginMainScreenContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              LoginWithButton( asset: 'assets/google_logo.png', ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LoginWithButton( asset: 'assets/google_logo.png', ),
+                  
+                  if( Platform.isIOS )
+                  LoginWithButton( asset: 'assets/apple_logo.png', ),
+                ],
+              ),
+
             ],
           )
       ],

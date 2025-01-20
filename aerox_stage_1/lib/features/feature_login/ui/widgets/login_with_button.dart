@@ -14,6 +14,7 @@ class LoginWithButton extends StatelessWidget {
       final UserBloc userBloc = BlocProvider.of<UserBloc>( context );
 
     return Container(
+      padding: EdgeInsets.symmetric( horizontal: 10 ),
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.white, // Background color of the button
