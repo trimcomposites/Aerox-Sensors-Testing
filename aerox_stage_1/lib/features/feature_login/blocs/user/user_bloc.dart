@@ -2,6 +2,7 @@
 import 'package:aerox_stage_1/domain/use_cases/email_sign_in_type.dart';
 import 'package:aerox_stage_1/domain/use_cases/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/sign_in_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/google_auth_service.dart';
 import 'package:bloc/bloc.dart';
@@ -27,7 +28,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit( state.copyWith( user: user, errorMessage: null ) );
     });
     on<OnGoogleSignOutUser>((event, emit) async {
-      //await googleAuthService.signOut();
+      await SignOutUserUsecase().signOutUser(signInType: EmailSignInType.google );
       emit( state.copyWith( user: null ) );
     });
     on<OnEmailSignInUser>((event, emit) async {
@@ -42,7 +43,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     });
     on<OnEmailSignOutUser>((event, emit) async {
-      await EmailAuthService.signOut();
+      await SignOutUserUsecase().signOutUser(signInType: EmailSignInType.email );
       emit( state.copyWith( user: null ) );
 
     });

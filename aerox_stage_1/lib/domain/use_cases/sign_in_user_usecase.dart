@@ -8,7 +8,7 @@ class SignInUserUsecase {
 
   signInUser( { required EmailSignInType signInType, UserData? userData }){
 
-    final user = SignInDatasource().signInUser(signInType, userData );
+    final user = SignInDatasource().signInUser( signInType: signInType, userData: userData );
     return user;
 
   }
