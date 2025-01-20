@@ -28,7 +28,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit( state.copyWith( user: user, errorMessage: null ) );
     });
     on<OnGoogleSignOutUser>((event, emit) async {
-      await SignOutUserUsecase().signOutUser(signInType: EmailSignInType.google );
+      await SignOutUserUsecase( signInType: EmailSignInType.google );
       emit( state.copyWith( user: null ) );
     });
     on<OnEmailSignInUser>((event, emit) async {
@@ -43,7 +43,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     });
     on<OnEmailSignOutUser>((event, emit) async {
-      await SignOutUserUsecase().signOutUser(signInType: EmailSignInType.email );
+      await SignOutUserUsecase( signInType: EmailSignInType.email );
       emit( state.copyWith( user: null ) );
 
     });
