@@ -30,11 +30,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<OnGoogleSignInUser>((event, emit) async{
       // ignore: avoid_single_cascade_in_expression_statements
       await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.google)  )..fold(
-        (l) => print( 'error' ),
+        (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
         (r) => emit( state.copyWith( user: r  ) ));
-        if( state.user!= null ){
-          print('success');
-        }
     });
     on<OnGoogleSignOutUser>((event, emit) async {
       signOutUseCase(  EmailSignInType.google );
@@ -42,13 +39,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
     on<OnEmailSignInUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );
-      dynamic result = await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: userData) );
-      if( result is User ){
-        emit( state.copyWith( user: result, errorMessage: null ) );
-      }else if( result is String ) {
-        emit(state.copyWith( errorMessage: result ));
-      }
-      print( state.errorMessage );
+      // ignore: avoid_single_cascade_in_expression_statements
+      await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: userData) )..fold(
+       (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+      (r) => emit( state.copyWith( user: r, errorMessage: null  ) ));
+
 
     });
     on<OnEmailSignOutUser>((event, emit) async {

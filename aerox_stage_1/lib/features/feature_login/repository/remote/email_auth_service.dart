@@ -1,4 +1,7 @@
+import 'package:aerox_stage_1/common/utils/sign_in_err.dart';
+import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
+import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +13,7 @@ class EmailAuthService {
 
   Stream<User?> get authStateChanges => firebaseAuth.authStateChanges();
 
-  static Future<dynamic> signInWithEmail({
+  static Future<EitherErr<User>> signInWithEmail({
     required UserData userData
   }) async {
     try {
@@ -20,13 +23,13 @@ class EmailAuthService {
       );
       User? user = credential.user;
 
-      if (user != null) return user;
+      if (user != null) return right( user );
 
-      return 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.';
+      return left(SignInErr( errMsg: 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.', statusCode: 2 ));
     } on FirebaseAuthException catch (e) {
-      return _handleSignInError(e);
+      return left( _handleSignInError(e) );
     } catch (error) {
-      return 'Error inesperado: $error';
+      return left(SignInErr( errMsg: error.toString(), statusCode: 2 ));
     }
   }
 
@@ -54,18 +57,18 @@ class EmailAuthService {
     await firebaseAuth.signOut();
   }
 
-  static String _handleSignInError(FirebaseAuthException e) {
+  static SignInErr _handleSignInError(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
-        return 'No se encontró un usuario con ese correo. Verifique e intente nuevamente.';
+        return SignInErr( errMsg: 'No se encontró un usuario con ese correo. Verifique e intente nuevamente.', statusCode: 2 );
       case 'wrong-password':
-        return 'La contraseña es incorrecta. Por favor, intente nuevamente.';
+      return SignInErr( errMsg: 'La contraseña es incorrecta. Por favor, intente nuevamente.', statusCode: 2 );
       case 'invalid-email':
-        return 'El formato del correo es inválido. Verifique el correo ingresado.';
+        return SignInErr( errMsg: 'El formato del correo es inválido. Verifique el correo ingresado.', statusCode: 2 );
       case 'user-disabled':
-        return 'La cuenta ha sido deshabilitada. Contacte al soporte.';
+        return SignInErr( errMsg: 'La cuenta ha sido deshabilitada. Contacte al soporte.', statusCode: 2 );
       default:
-        return 'Error desconocido: ${e.message}';
+        return SignInErr( errMsg: e.message!, statusCode: 2 );
     }
   }
 

@@ -7,7 +7,7 @@ class LoginRepository{
   Future<EitherErr<User>> signInUser( { required EmailSignInType signInType, UserData? userData }) async{
     switch( signInType ){
       case EmailSignInType.email:
-      //return EmailAuthService.signInWithEmail(userData: userData! );
+      return EmailAuthService.signInWithEmail(userData: userData! );
       case EmailSignInType.google:
         return GoogleAuthService.signInWithGoogle();
       case EmailSignInType.apple:

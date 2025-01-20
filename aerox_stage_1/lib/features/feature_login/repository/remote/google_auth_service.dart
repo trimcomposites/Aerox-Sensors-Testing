@@ -22,7 +22,7 @@ class GoogleAuthService {
     try {
       // Selecciona una cuenta de Google
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return left( SignInErr(  statusCode: 1, errMsg: 'dfdffd')  );
+      if (googleUser == null) return left( SignInErr(  statusCode: 1, errMsg: 'Error al iniciar sesión con goole')  );
 
       // Obtiene las credenciales de autenticación de Google
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -40,7 +40,7 @@ class GoogleAuthService {
       return right( userCredential.user! );  
     } catch (e) {
       print('Error en signInWithGoogle: $e');
-      return left( SignInErr(  statusCode: 1, errMsg: 'dfdffd')  );
+      return left( SignInErr(  statusCode: 1, errMsg: e.toString() )  );
     }
   }
 
