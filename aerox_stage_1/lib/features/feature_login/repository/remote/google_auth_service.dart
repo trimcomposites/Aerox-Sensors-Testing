@@ -1,4 +1,7 @@
-                          import 'package:firebase_auth/firebase_auth.dart';
+import 'package:aerox_stage_1/common/utils/sign_in_err.dart';
+import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthService {
@@ -15,11 +18,11 @@ class GoogleAuthService {
     }
 
   // Método para iniciar sesión con Google
-  static Future<User?> signInWithGoogle() async {
+  static ResultFuture<User> signInWithGoogle() async {
     try {
       // Selecciona una cuenta de Google
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null; // El usuario canceló el inicio de sesión
+      if (googleUser == null) return left( SignInErr(  statusCode: 1, errMsg: 'dfdffd')  );
 
       // Obtiene las credenciales de autenticación de Google
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -34,10 +37,10 @@ class GoogleAuthService {
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
 
       // Retorna el usuario autenticado
-      return userCredential.user;
+      return right( userCredential.user! );  
     } catch (e) {
       print('Error en signInWithGoogle: $e');
-      return null;
+      return left( SignInErr(  statusCode: 1, errMsg: 'dfdffd')  );
     }
   }
 

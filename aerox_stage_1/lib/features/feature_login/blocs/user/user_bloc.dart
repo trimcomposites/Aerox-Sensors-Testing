@@ -1,4 +1,6 @@
 
+import 'package:aerox_stage_1/common/utils/err.dart';
+import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/use_cases/email_sign_in_type.dart';
 import 'package:aerox_stage_1/domain/use_cases/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/sign_in_user_usecase.dart';
@@ -6,6 +8,7 @@ import 'package:aerox_stage_1/domain/use_cases/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/google_auth_service.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
@@ -17,23 +20,26 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
+
+  final signInUseCase = SignInUserUsecase();
+  final signOutUseCase = SignOutUserUsecase();
+  final registerUseCase = RegisterUserUsecase();
   
-  final registerUserUsecase = RegisterUserUsecase();
-  final signInUserCase = SignInUserUsecase();
 
   UserBloc( BuildContext context ) : super(UserState()) {
     on<OnGoogleSignInUser>((event, emit) async{
-      User? user = await signInUserCase.signInUser( signInType: EmailSignInType.google, );
-      //print( user );
-      emit( state.copyWith( user: user, errorMessage: null ) );
+      // ignore: avoid_single_cascade_in_expression_statements
+      await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.google)  )..fold(
+        (l) => print( 'error' ),
+        (r) => emit( state.copyWith( user: r  ) ));
     });
     on<OnGoogleSignOutUser>((event, emit) async {
-      await SignOutUserUsecase( signInType: EmailSignInType.google );
+      signOutUseCase(  EmailSignInType.google );
       emit( state.copyWith( user: null ) );
     });
     on<OnEmailSignInUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );
-      var result = await signInUserCase.signInUser(signInType: EmailSignInType.email, userData: userData );
+      dynamic result = await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: userData) );
       if( result is User ){
         emit( state.copyWith( user: result, errorMessage: null ) );
       }else if( result is String ) {
@@ -43,14 +49,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     });
     on<OnEmailSignOutUser>((event, emit) async {
-      await SignOutUserUsecase( signInType: EmailSignInType.email );
+      await signOutUseCase( EmailSignInType.email );
       emit( state.copyWith( user: null ) );
 
     });
 
     on<OnEmailRegisterUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );
-      var result = await registerUserUsecase.registerUser(userData: userData);
+      dynamic result = await registerUseCase(userData);
       if( result is User ){
         emit( state.copyWith( user: result, errorMessage: null ) );
       }else if ( result is String ) {

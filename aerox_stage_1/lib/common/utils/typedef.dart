@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/utils/err.dart';
 import 'package:dartz/dartz.dart';
  
-typedef ResultFuture = Future<Either<Future, void>>;
+typedef ResultFuture<T> = Future<Either<Err, T>>;
