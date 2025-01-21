@@ -7,6 +7,7 @@ import 'package:aerox_stage_1/domain/use_cases/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/google_auth_service.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -21,7 +22,7 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
 
-  final signInUseCase = SignInUserUsecase();
+  final signInUseCase = SignInUserUsecase( loginRepo: LoginRepository() );
   final signOutUseCase = SignOutUserUsecase();
   final registerUseCase = RegisterUserUsecase();
   

@@ -9,10 +9,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class SignInUserUsecase extends AsyncUseCaseWithParams<User, SignInUserUsecaseParams>{
 
+  const SignInUserUsecase({ required this.loginRepo  });
+
+  final LoginRepository loginRepo;
 
   @override
   Future<EitherErr<User>> call( SignInUserUsecaseParams params ) async {
-    var user = LoginRepository().signInUser( signInType: params.signInType, userData: params.userData );
+    var user = loginRepo.signInUser( signInType: params.signInType, userData: params.userData );
     print( user );
     return user;
   } 
