@@ -1,4 +1,4 @@
-import 'package:aerox_stage_1/common/utils/sign_in_err.dart';
+import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';

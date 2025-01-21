@@ -1,5 +1,5 @@
 
-import 'package:aerox_stage_1/common/utils/err.dart';
+import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/use_cases/email_sign_in_type.dart';
 import 'package:aerox_stage_1/domain/use_cases/register_user_usecase.dart';
@@ -24,9 +24,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   final LoginRepository loginRepository;
   
-
-  
-
   UserBloc( BuildContext context,  this.loginRepository ) : super(UserState()) {
 
     final signInUseCase = SignInUserUsecase( loginRepo: loginRepository );
@@ -36,29 +33,31 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<OnGoogleSignInUser>((event, emit) async{
       // ignore: avoid_single_cascade_in_expression_statements
       await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.google)  )..fold(
-        (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
-        (r) => emit( state.copyWith( user: r  ) ));
+      (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+      (r) => emit( state.copyWith( user: r  ) ));
       print( state.user! );
     });
     on<OnGoogleSignOutUser>((event, emit) async {
       // ignore: avoid_single_cascade_in_expression_statements
       await signOutUseCase(  EmailSignInType.google )..fold(
-        (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
-        (r) => emit( state.copyWith( user: null  ) ));
+      (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+      (r) => emit( state.copyWith( user: null  ) ));
     });
     on<OnEmailSignInUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );
       // ignore: avoid_single_cascade_in_expression_statements
       await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: userData) )..fold(
-       (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+      (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
       (r) => emit( state.copyWith( user: r, errorMessage: null  ) ));
 
 
     });
     on<OnEmailSignOutUser>((event, emit) async {
-      await signOutUseCase( EmailSignInType.email );
-      emit( state.copyWith( user: null ) );
-
+      // ignore: avoid_single_cascade_in_expression_statements
+      await signOutUseCase(  EmailSignInType.email )..fold(
+      (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+      (r) => emit( state.copyWith( user: null  ) ));
+      print( state.user );
     });
     on<OnEmailRegisterUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );

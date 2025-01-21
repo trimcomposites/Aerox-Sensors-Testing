@@ -61,7 +61,8 @@ class LoginMainScreenContent extends StatelessWidget {
                 text: 'Cerrar Sesión',
                 backgroundColor: Colors.transparent,
                 onPressed: (){
-                  userBloc.add( OnGoogleSignOutUser() )
+                  userBloc.add( OnGoogleSignOutUser() );
+                  userBloc.add( OnEmailSignOutUser() )
                 ;}   
               ),
               const SizedBox(height: 30),
