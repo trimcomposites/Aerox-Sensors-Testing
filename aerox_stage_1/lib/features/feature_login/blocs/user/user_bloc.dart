@@ -22,12 +22,17 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
 
-  final signInUseCase = SignInUserUsecase( loginRepo: LoginRepository() );
-  final signOutUseCase = SignOutUserUsecase( loginRepo: LoginRepository() );
-  final registerUseCase = RegisterUserUsecase();
+  final LoginRepository loginRepository;
   
 
-  UserBloc( BuildContext context ) : super(UserState()) {
+  
+
+  UserBloc( BuildContext context,  this.loginRepository ) : super(UserState()) {
+
+    final signInUseCase = SignInUserUsecase( loginRepo: loginRepository );
+    final signOutUseCase = SignOutUserUsecase( loginRepo: loginRepository );
+    final registerUseCase = RegisterUserUsecase( loginRepo: loginRepository );
+
     on<OnGoogleSignInUser>((event, emit) async{
       // ignore: avoid_single_cascade_in_expression_statements
       await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.google)  )..fold(

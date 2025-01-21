@@ -7,8 +7,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterUserUsecase extends AsyncUseCaseWithParams<dynamic, UserData>{
 
+  const RegisterUserUsecase({ required this.loginRepo  });
+
+  final LoginRepository loginRepo;
+
   @override
-  Future<EitherErr> call( UserData userData  )async => await LoginRepository().registerWithEmail(userData);
+  Future<EitherErr> call( UserData userData  )async => await loginRepo.registerWithEmail(userData);
 
 
 }

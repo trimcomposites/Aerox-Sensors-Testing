@@ -4,6 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'remote_barrel.dart';
 
 class LoginRepository{
+
+  LoginRepository({ required this.firebaseAuth });
+  final FirebaseAuth firebaseAuth;
+
   Future<EitherErr<User>> signInUser( { required EmailSignInType signInType, UserData? userData }) async{
     switch( signInType ){
       case EmailSignInType.email:
@@ -37,7 +41,7 @@ class LoginRepository{
     }
   }
 
-  registerWithEmail( UserData userData ) async{
+  Future<EitherErr<User>> registerWithEmail( UserData userData ) async{
     final user = await EmailAuthService.createUserWithEmail( userData: userData );
     return user;
   }

@@ -33,7 +33,7 @@ class EmailAuthService {
     }
   }
 
-  static Future<dynamic> createUserWithEmail({
+  static Future<EitherErr<User>> createUserWithEmail({
     required UserData userData
   }) async {
     try {
@@ -43,13 +43,13 @@ class EmailAuthService {
       );
       User? user = credential.user;
 
-      if (user != null) return user;
+      if (user != null) return right( user );
 
-      return 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.';
+      return left(SignInErr( errMsg: 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.', statusCode: 2 ));
     } on FirebaseAuthException catch (e) {
-      return _handleSignUpError(e);
+      return left(_handleSignUpError(e));
     } catch (error) {
-      return 'Error inesperado: $error';
+      return left(SignInErr( errMsg: 'Ocurrió un error desconocido. $error', statusCode: 2 ));
     }
   }
 
@@ -77,16 +77,16 @@ class EmailAuthService {
     }
   }
 
-  static String _handleSignUpError(FirebaseAuthException e) {
+  static SignInErr _handleSignUpError(FirebaseAuthException e) {
     switch (e.code) {
       case 'email-already-in-use':
-        return 'El correo ya está en uso. Intente con otro correo.';
+      return SignInErr( errMsg: 'El correo ya está en uso. Intente con otro correo.', statusCode: 2 );
       case 'weak-password':
-        return 'La contraseña es demasiado débil. Intente con una más segura.';
+      return SignInErr( errMsg: 'La contraseña es demasiado débil. Intente con una más segura.', statusCode: 2 );
       case 'invalid-email':
-        return 'El formato del correo es inválido. Verifique el correo ingresado.';
+      return SignInErr( errMsg: 'El formato del correo es inválido. Verifique el correo ingresado.', statusCode: 2 );
       default:
-        return 'Error desconocido: ${e.message}';
+      return SignInErr( errMsg: 'Error desconocido: ${e.message}', statusCode: 2 );
     }
   }
 }
