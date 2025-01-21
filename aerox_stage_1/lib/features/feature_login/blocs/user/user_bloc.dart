@@ -55,7 +55,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit( state.copyWith( user: null ) );
 
     });
-
     on<OnEmailRegisterUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );
       dynamic result = await registerUseCase(userData);

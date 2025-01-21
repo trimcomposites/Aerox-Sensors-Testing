@@ -23,13 +23,13 @@ void main() {
   });
 
   final params = SignInUserUsecaseParams.empty();
-  test(' sign in user use case  should return User',  () async{
+  test(' sign in user use case  should return User', () async{
 
     //arrage
 
-    when(() async => repository.signInUser(
-      signInType: EmailSignInType.email,
-      userData: UserData(name: 'name', email: 'email', password: 'password')
+    when(() => repository.signInUser(
+      signInType: params.signInType,
+      userData: any( named: 'userData' )
       )).thenAnswer((_) async => Right(mockUser));
 
     //act
@@ -38,14 +38,11 @@ void main() {
 
     //assert
     expect(result, equals(  Right<dynamic, User>( mockUser ) ));
-    verify(() => repository.signInUser(
-      signInType: params.signInType, 
-      userData: UserData(
-        name: params.userData!.name, 
-        email: params.userData!.email, 
-        password: params.userData!.password
-    ) )).called(1);
-    verifyNoMoreInteractions( repository );
+     verify(() => repository.signInUser(
+       signInType: params.signInType, 
+       userData: params.userData
+     )).called(1);
+     verifyNoMoreInteractions( repository );
 
   });
 
