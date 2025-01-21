@@ -45,12 +45,13 @@ class GoogleAuthService {
   }
 
   // Método para cerrar sesión
-  static Future<void> signOut() async {
+  static Future<EitherErr<void>> signOut() async {
     try {
       await _googleSignIn.signOut(); // Cierra sesión de Google
       await _auth.signOut(); // Cierra sesión de Firebase
+      return right( (){} );
     } catch (e) {
-      print('Error en signOut: $e');
+      return left( SignInErr(  statusCode: 1, errMsg: e.toString() )  );
     }
   }
 }

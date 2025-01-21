@@ -53,8 +53,13 @@ class EmailAuthService {
     }
   }
 
-  static Future<void> signOut() async {
-    await firebaseAuth.signOut();
+  static Future<EitherErr<void>> signOut() async {
+    try{
+      return right(firebaseAuth.signOut() ) ;
+    }catch( e ){
+      return left(SignInErr( errMsg: e.toString() , statusCode: 2 ));
+    }
+   
   }
 
   static SignInErr _handleSignInError(FirebaseAuthException e) {

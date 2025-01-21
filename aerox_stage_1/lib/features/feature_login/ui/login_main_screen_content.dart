@@ -57,6 +57,15 @@ class LoginMainScreenContent extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
+              AppButton(  //temp
+                text: 'Cerrar Sesión',
+                backgroundColor: Colors.transparent,
+                onPressed: (){
+                  userBloc.add( OnGoogleSignOutUser() )
+                ;}   
+              ),
+              const SizedBox(height: 30),
+
               Text(
                 "OR LOG IN WITH",
                 style: GoogleFonts.plusJakartaSans(

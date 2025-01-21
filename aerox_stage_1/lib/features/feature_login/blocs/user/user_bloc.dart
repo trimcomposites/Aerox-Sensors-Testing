@@ -23,7 +23,7 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
 
   final signInUseCase = SignInUserUsecase( loginRepo: LoginRepository() );
-  final signOutUseCase = SignOutUserUsecase();
+  final signOutUseCase = SignOutUserUsecase( loginRepo: LoginRepository() );
   final registerUseCase = RegisterUserUsecase();
   
 
@@ -33,10 +33,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.google)  )..fold(
         (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
         (r) => emit( state.copyWith( user: r  ) ));
+      print( state.user! );
     });
     on<OnGoogleSignOutUser>((event, emit) async {
-      signOutUseCase(  EmailSignInType.google );
-      emit( state.copyWith( user: null ) );
+      // ignore: avoid_single_cascade_in_expression_statements
+      await signOutUseCase(  EmailSignInType.google )..fold(
+        (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+        (r) => emit( state.copyWith( user: null  ) ));
     });
     on<OnEmailSignInUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );

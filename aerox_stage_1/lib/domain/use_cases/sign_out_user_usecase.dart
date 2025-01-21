@@ -4,10 +4,18 @@ import 'package:aerox_stage_1/features/feature_login/repository/remote/login_rep
 
 import 'email_sign_in_type.dart';
 
-class SignOutUserUsecase extends UseCaseWithParams<void, EmailSignInType>{
+class SignOutUserUsecase extends AsyncUseCaseWithParams<void, EmailSignInType>{
+
+  const SignOutUserUsecase({ required this.loginRepo  });
+
+  final LoginRepository loginRepo;
 
   @override
-  EitherErr call( EmailSignInType params ) => LoginRepository().signOutUser( signInType: params );
+    @override
+  Future<EitherErr<void>> call( EmailSignInType params ) async {
+    return loginRepo.signOutUser( signInType: params );
+
+  } 
   
 
 }

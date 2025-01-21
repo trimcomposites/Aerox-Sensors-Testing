@@ -16,8 +16,8 @@ class SignInUserUsecase extends AsyncUseCaseWithParams<User, SignInUserUsecasePa
   @override
   Future<EitherErr<User>> call( SignInUserUsecaseParams params ) async {
     var user = loginRepo.signInUser( signInType: params.signInType, userData: params.userData );
-    print( user );
     return user;
+
   } 
 
 }
@@ -27,6 +27,10 @@ class SignInUserUsecaseParams extends Equatable {
   final UserData? userData;
 
   SignInUserUsecaseParams({required this.signInType, this.userData});
+
+  SignInUserUsecaseParams.empty()
+      : signInType = EmailSignInType.email,
+        userData = UserData(name: 'name', email: 'email', password: 'password');
 
   @override
   List<Object?> get props => [ signInType, userData ];

@@ -21,12 +21,12 @@ class LoginRepository{
 
   }
 
-  signOutUser( { required EmailSignInType signInType} ) async{
+  Future<EitherErr<void>> signOutUser( { required EmailSignInType signInType} ) async{
     switch( signInType ){
       case EmailSignInType.email:
-      return await EmailAuthService.signOut();
+      return EmailAuthService.signOut();
       case EmailSignInType.google:
-        return await GoogleAuthService.signOut();
+        return GoogleAuthService.signOut();
         throw UnimplementedError();
       case EmailSignInType.apple:
         // TODO: Handle this case.
