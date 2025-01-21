@@ -9,7 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class SignInUserUsecase extends AsyncUseCaseWithParams<User, SignInUserUsecaseParams>{
 
-  const SignInUserUsecase({ required this.loginRepo  });
+  const SignInUserUsecase({ required this.loginRepo });
 
   final LoginRepository loginRepo;
 
@@ -26,7 +26,7 @@ class SignInUserUsecaseParams extends Equatable {
   final EmailSignInType signInType;
   final UserData? userData;
 
-  SignInUserUsecaseParams({required this.signInType, this.userData});
+  const SignInUserUsecaseParams({required this.signInType, this.userData});
 
   SignInUserUsecaseParams.empty()
       : signInType = EmailSignInType.email,

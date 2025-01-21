@@ -22,17 +22,17 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
 
-  final LoginRepository loginRepository;
-  
-  UserBloc( BuildContext context,  this.loginRepository ) : super(UserState()) {
 
-    final signInUseCase = SignInUserUsecase( loginRepo: loginRepository );
-    final signOutUseCase = SignOutUserUsecase( loginRepo: loginRepository );
-    final registerUseCase = RegisterUserUsecase( loginRepo: loginRepository );
+
+  final SignOutUserUsecase signOutUseCase; 
+  final RegisterUserUsecase registerUseCase;
+    final SignInUserUsecase signInUsecase;
+
+  UserBloc({ required this.signInUsecase, required this.signOutUseCase, required this.registerUseCase  }) : super(UserState()) {
 
     on<OnGoogleSignInUser>((event, emit) async{
       // ignore: avoid_single_cascade_in_expression_statements
-      await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.google)  )..fold(
+      await signInUsecase( SignInUserUsecaseParams(signInType: EmailSignInType.google)  )..fold(
       (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
       (r) => emit( state.copyWith( user: r  ) ));
       print( state.user! );
@@ -46,7 +46,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<OnEmailSignInUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );
       // ignore: avoid_single_cascade_in_expression_statements
-      await signInUseCase( SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: userData) )..fold(
+      await signInUsecase( SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: userData) )..fold(
       (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
       (r) => emit( state.copyWith( user: r, errorMessage: null  ) ));
 

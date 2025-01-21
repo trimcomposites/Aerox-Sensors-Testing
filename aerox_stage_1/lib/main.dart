@@ -1,3 +1,7 @@
+import 'package:aerox_stage_1/common/services/injection_container.dart';
+import 'package:aerox_stage_1/domain/use_cases/register_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/sign_in_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_options.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
 import 'package:aerox_stage_1/features/feature_splash/ui/splash_screen.dart';
@@ -9,14 +13,15 @@ import 'features/feature_login/ui/login_barrel.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  dependencyInjectionInitialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
-  final loginRepo = LoginRepository( firebaseAuth: FirebaseAuth.instance );
     runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: ( context ) => UserBloc( context, loginRepo )..add( OnCheckUserIsSignedIn() ) )
+        BlocProvider(
+          create: ( context )=>sl<UserBloc>()..add( OnCheckUserIsSignedIn() ) )
     ],
     child: const MyApp())
   );

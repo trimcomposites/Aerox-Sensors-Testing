@@ -43,6 +43,7 @@ dependencies:
   equatable: ^2.0.7
   sign_in_with_apple: ^6.1.4
   dartz: ^0.10.1
+  get_it: ^8.0.3
 
 dev_dependencies:
   flutter_test:
