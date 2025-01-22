@@ -18,7 +18,8 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerFactory( () => UserBloc(
       signInUsecase: sl(),
       registerUseCase: sl(),
-      signOutUseCase: sl()
+      signOutUseCase: sl(),
+      firebaseAuth: sl()
     ))
     //use cases
     ..registerLazySingleton(() => RegisterUserUsecase(loginRepo: sl()) )

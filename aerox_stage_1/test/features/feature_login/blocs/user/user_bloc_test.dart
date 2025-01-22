@@ -29,7 +29,8 @@ void main(){
     userBloc = UserBloc(
       registerUseCase: registerUserUsecase, 
       signInUsecase: signInUserUsecase, 
-      signOutUseCase: signOutUserUsecase 
+      signOutUseCase: signOutUserUsecase,
+      firebaseAuth: firebaseAuth
     );
   });
   setUpAll(() {
@@ -130,6 +131,18 @@ void main(){
           UserState( user: user)
         ],
       );
+  
+  blocTest<UserBloc, UserState>('user is not signed in emits [ user: [ null ] ]', 
+        build: () {
+          when(() => firebaseAuth.currentUser ).thenReturn( null );
+          return userBloc;
+        },
+        act: (bloc) => bloc.add( OnCheckUserIsSignedIn() ),
+        
+        expect: () => [
+          UserState( user: null )
+        ],
+    );
   });
 
 }

@@ -16,8 +16,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final SignOutUserUsecase signOutUseCase; 
   final RegisterUserUsecase registerUseCase;
     final SignInUserUsecase signInUsecase;
+  final FirebaseAuth firebaseAuth;
 
-  UserBloc({ required this.signInUsecase, required this.signOutUseCase, required this.registerUseCase  }) : super(UserState()) {
+  UserBloc({ required this.signInUsecase, required this.signOutUseCase, required this.registerUseCase , required this.firebaseAuth }) : super(UserState()) {
 
     on<OnGoogleSignInUser>((event, emit) async{
       // ignore: avoid_single_cascade_in_expression_statements
@@ -63,7 +64,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       print( state.errorMessage );
     },);
     on<OnCheckUserIsSignedIn>((event, emit) {
-      User? user = FirebaseAuth.instance.currentUser;
+      User? user = firebaseAuth.currentUser;
       emit( state.copyWith( user: user, ) );
       print( user );
     });
