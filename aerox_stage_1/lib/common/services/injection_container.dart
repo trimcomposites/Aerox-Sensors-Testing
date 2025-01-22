@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/domain/use_cases/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,11 +25,19 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerLazySingleton(() => SignOutUserUsecase(loginRepo: sl()) )
 
     //repository
-    ..registerLazySingleton(() => LoginRepository(firebaseAuth: sl()))
+    ..registerLazySingleton(
+      () => LoginRepository(
+        firebaseAuth: sl(), 
+        emailAuthService: sl(), 
+        googleAuthService: sl()
+      )
+    )
 
     //services
 
-    ..registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+    ..registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance)
+    ..registerLazySingleton(() => EmailAuthService(firebaseAuth: sl()))
+    ..registerLazySingleton(() => GoogleAuthService());
 
 }
    

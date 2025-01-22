@@ -4,8 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterRepository {
 
+  final EmailAuthService emailAuthService;
+
+  RegisterRepository({required this.emailAuthService});
+
   registerWithEmail( UserData userData ) async{
-    final user = await EmailAuthService.createUserWithEmail( userData: userData );
+    final user = await emailAuthService.createUserWithEmail( userData: userData );
     return user;
   }
 

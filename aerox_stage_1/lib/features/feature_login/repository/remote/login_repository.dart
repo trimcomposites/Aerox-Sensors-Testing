@@ -5,15 +5,17 @@ import 'remote_barrel.dart';
 
 class LoginRepository{
 
-  LoginRepository({ required this.firebaseAuth });
+  LoginRepository({ required this.firebaseAuth, required this.emailAuthService, required this.googleAuthService });
   final FirebaseAuth firebaseAuth;
+  final EmailAuthService emailAuthService;
+  final GoogleAuthService googleAuthService;
 
   Future<EitherErr<User>> signInUser( { required EmailSignInType signInType, UserData? userData }) async{
     switch( signInType ){
       case EmailSignInType.email:
-      return EmailAuthService.signInWithEmail(userData: userData! );
+      return emailAuthService.signInWithEmail(userData: userData! );
       case EmailSignInType.google:
-        return GoogleAuthService.signInWithGoogle();
+        return googleAuthService.signInWithGoogle();
       case EmailSignInType.apple:
         // TODO: Handle this case.
         throw UnimplementedError();
@@ -28,9 +30,9 @@ class LoginRepository{
   Future<EitherErr<void>> signOutUser( { required EmailSignInType signInType} ) async{
     switch( signInType ){
       case EmailSignInType.email:
-      return EmailAuthService.signOut();
+      return emailAuthService.signOut();
       case EmailSignInType.google:
-        return GoogleAuthService.signOut();
+        return googleAuthService.signOut();
         throw UnimplementedError();
       case EmailSignInType.apple:
         // TODO: Handle this case.
@@ -42,7 +44,7 @@ class LoginRepository{
   }
 
   Future<EitherErr<User>> registerWithEmail( UserData userData ) async{
-    final user = await EmailAuthService.createUserWithEmail( userData: userData );
+    final user = await emailAuthService.createUserWithEmail( userData: userData );
     return user;
   }
 

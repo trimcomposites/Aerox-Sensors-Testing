@@ -18,7 +18,7 @@ class GoogleAuthService {
     }
 
   // Método para iniciar sesión con Google
-  static Future<EitherErr<User>> signInWithGoogle() async {
+  Future<EitherErr<User>> signInWithGoogle() async {
     try {
       // Selecciona una cuenta de Google
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -45,7 +45,7 @@ class GoogleAuthService {
   }
 
   // Método para cerrar sesión
-  static Future<EitherErr<void>> signOut() async {
+  Future<EitherErr<void>> signOut() async {
     try {
       await _googleSignIn.signOut(); // Cierra sesión de Google
       await _auth.signOut(); // Cierra sesión de Firebase

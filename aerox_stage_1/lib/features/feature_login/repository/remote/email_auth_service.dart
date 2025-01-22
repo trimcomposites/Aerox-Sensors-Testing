@@ -7,13 +7,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class EmailAuthService {
-  static FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth firebaseAuth;
+
+  EmailAuthService({required this.firebaseAuth});
 
   User? get currentUser => firebaseAuth.currentUser;
 
   Stream<User?> get authStateChanges => firebaseAuth.authStateChanges();
 
-  static Future<EitherErr<User>> signInWithEmail({
+  Future<EitherErr<User>> signInWithEmail({
     required UserData userData
   }) async {
     try {
@@ -33,7 +35,7 @@ class EmailAuthService {
     }
   }
 
-  static Future<EitherErr<User>> createUserWithEmail({
+  Future<EitherErr<User>> createUserWithEmail({
     required UserData userData
   }) async {
     try {
@@ -53,7 +55,7 @@ class EmailAuthService {
     }
   }
 
-  static Future<EitherErr<void>> signOut() async {
+  Future<EitherErr<void>> signOut() async {
     try{
       return right(firebaseAuth.signOut() ) ;
     }catch( e ){
