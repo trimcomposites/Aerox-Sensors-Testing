@@ -103,6 +103,85 @@ void main() {
 
     });
   });
+  group(' create user with email method ', () {
+  test('success create user, should return [ User ]', () async {
+
+    when(() => firebaseAuth.signInWithEmailAndPassword(
+      email: userData.email,
+      password: userData.password
+    )).thenAnswer((_) async => userCredential );
+
+    when(() => userCredential.user
+    ,).thenReturn( user );
+
+    final result = await emailAuthService.signInWithEmail( userData: userData  );
+
+    //assert
+    expect(result, equals( Right<Err, User>( user ) ));
+    verify(() => firebaseAuth.signInWithEmailAndPassword(
+      email: userData.email,
+      password: userData.password
+    )).called(1);
+    verifyNoMoreInteractions( firebaseAuth );
+
+    });
+    test('when user is null => failure create user, should return [ SignInErr ]', () async {
+
+      when(() => firebaseAuth.createUserWithEmailAndPassword(
+        email: userData.email,
+        password: userData.password
+      )).thenAnswer((_) async => userCredential );
+
+      when(() => userCredential.user
+      ,).thenReturn( null );
+
+      final result = await emailAuthService.createUserWithEmail( userData: userData  );
+
+      //assert
+      expect(result, isA<Left<Err, User>>() );
+      verify(() => firebaseAuth.createUserWithEmailAndPassword(
+        email: userData.email,
+        password: userData.password
+      )).called(1);
+      verifyNoMoreInteractions( firebaseAuth );
+
+    });
+    test('when throw [ FirebaseAuthException ] => failure create user, should return [ SignInErr ]', () async{
+
+      when(() => firebaseAuth.createUserWithEmailAndPassword(
+        email: userData.email,
+        password: userData.password
+      )).thenThrow((_) async => FirebaseAuthException(code: any( named: 'code' )) );
+
+      final result = await emailAuthService.createUserWithEmail( userData: userData  );
+
+      //assert
+      expect(result, isA<Left<Err, User>>() );
+      verify(() => firebaseAuth.createUserWithEmailAndPassword(
+        email: userData.email,
+        password: userData.password
+      )).called(1);
+      verifyNoMoreInteractions( firebaseAuth );
+
+    });
+    test('when throw [ UnhandledException ] => failure create user, should return [ SignInErr ]', () async {
+      when(() => firebaseAuth.createUserWithEmailAndPassword(
+        email: userData.email,
+        password: userData.password
+      )).thenThrow((_) async => Exception() );
+
+      final result = await emailAuthService.createUserWithEmail( userData: userData  );
+
+      //assert
+      expect(result, isA<Left<Err, User>>() );
+      verify(() => firebaseAuth.createUserWithEmailAndPassword(
+        email: userData.email,
+        password: userData.password
+      )).called(1);
+      verifyNoMoreInteractions( firebaseAuth );
+
+    });
+  });
 
   group(' sign out method ', ()  {
     test('sign out success, must return [void] ', () async {
@@ -132,8 +211,6 @@ void main() {
       verifyNoMoreInteractions( firebaseAuth );
 
     });
-
-    
 
   });
 
