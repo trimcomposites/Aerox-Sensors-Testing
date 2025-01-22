@@ -60,7 +60,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
     on<OnDeleteErrorMsg>((event, emit) {
       emit( state.copyWith( errorMessage: null ) );
-          print( state.errorMessage );
+      print( state.errorMessage );
     },);
     on<OnCheckUserIsSignedIn>((event, emit) {
       User? user = FirebaseAuth.instance.currentUser;

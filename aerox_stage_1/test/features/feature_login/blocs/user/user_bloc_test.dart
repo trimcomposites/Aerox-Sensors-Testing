@@ -6,6 +6,7 @@ import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_ba
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -17,12 +18,14 @@ void main(){
   late SignInUserUsecase signInUserUsecase;
   late SignOutUserUsecase signOutUserUsecase;
   late RegisterUserUsecase registerUserUsecase;
+  late FirebaseAuth firebaseAuth;
   final user = MockFirebaseUser();
 
   setUp((){
     signInUserUsecase = MockSignInUserUseCase();
     signOutUserUsecase = MockSignOutUserUsecase();
     registerUserUsecase = MockRegisterUserUsecase();
+    firebaseAuth = MockFirebaseAuth2();
     userBloc = UserBloc(
       registerUseCase: registerUserUsecase, 
       signInUsecase: signInUserUsecase, 
@@ -114,6 +117,19 @@ void main(){
         UserState( user: null, errorMessage: '' )
       ],
     );
+  });
+  group('On check user is signed in', (){
+  blocTest<UserBloc, UserState>('user is signed in emits [ user: [ User ] ]', 
+        build: () {
+          when(() => firebaseAuth.currentUser ).thenReturn( user);
+          return userBloc;
+        },
+        act: (bloc) => bloc.add( OnCheckUserIsSignedIn() ),
+        
+        expect: () => [
+          UserState( user: user)
+        ],
+      );
   });
 
 }
