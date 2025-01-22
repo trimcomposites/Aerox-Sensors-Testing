@@ -25,7 +25,7 @@ void main() {
 
 
   final userData = UserData(name: 'name', email: 'email', password: 'password');
-  final authCredential = MockAuthCredential();
+  //final authCredential = MockAuthCredential();
   final userCredential = MockUserCredential();
   final googleSignInAccount = MockGoogleSignInAccount();
   final googleSignInAuthentication = MockGoogleSignInAuthentication();
@@ -35,6 +35,10 @@ void main() {
 
 group(' sign in with google method ', () {
   test('success google sign in, should return [ User ]', () async {
+    registerFallbackValue(AuthCredential(
+      providerId: 'test',
+      signInMethod: 'test',
+    ));
 
     when(() => googleSignIn.signIn(
     )).thenAnswer((_) async => googleSignInAccount );
@@ -43,9 +47,7 @@ group(' sign in with google method ', () {
     when(() => googleSignInAuthentication.accessToken).thenReturn( accesToken );
     when(() => googleSignInAuthentication.idToken).thenReturn( idToken);
 
-  // Verifica que el credential se crea correctamente con los tokens de acceso e ID
-
-    when(() => firebaseAuth.signInWithCredential(authCredential)).thenAnswer((_) async => userCredential);
+    when(() => firebaseAuth.signInWithCredential( any() )).thenAnswer((_) async => userCredential);
     
     
     when(() => userCredential.user).thenReturn( user );
@@ -56,48 +58,102 @@ group(' sign in with google method ', () {
     expect(result, equals( Right<Err, User>( user ) ));
     verify(() => googleSignIn.signIn()
     ).called(1);
+    verify(() => firebaseAuth.signInWithCredential( any())
+    ).called(1);
     verifyNoMoreInteractions( firebaseAuth );
 
     });
-    test('when user is null => failure google sign in, should return [ SignInErr ]', () async {
+  test('when GoogleSigninAccount is null => failure google sign in, should return [ SignInErr ]', () async {
+    registerFallbackValue(AuthCredential(
+      providerId: 'test',
+      signInMethod: 'test',
+    ));
 
-      when(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
-      )).thenAnswer((_) async => userCredential );
+    when(() => googleSignIn.signIn(
+    )).thenAnswer((_) async => null );
 
-      when(() => userCredential.user
-      ,).thenReturn( null );
+    when(() => googleSignInAccount.authentication).thenAnswer((_) async => googleSignInAuthentication);
+    when(() => googleSignInAuthentication.accessToken).thenReturn( accesToken );
+    when(() => googleSignInAuthentication.idToken).thenReturn( idToken);
 
-      final result = await googleAuthService.signInWithGoogle();
+    when(() => firebaseAuth.signInWithCredential( any() )).thenAnswer((_) async => userCredential);
+    
+    
+    when(() => userCredential.user).thenReturn( user );
 
-      //assert
-      expect(result, isA<Left<Err, User>>() );
-      verify(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
-      )).called(1);
-      verifyNoMoreInteractions( firebaseAuth );
+    final result = await googleAuthService.signInWithGoogle();
 
-    });
-    test('when throw [ FirebaseAuthException ] => failure google sign in, should return [ SignInErr ]', () async{
-
-      when(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
-      )).thenThrow((_) async => FirebaseAuthException(code: any( named: 'code' )) );
-
-      final result = googleAuthService.signInWithGoogle();
-
-      //assert
-      expect(result, isA<Left<Err, User>>() );
-      verify(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
-      )).called(1);
-      verifyNoMoreInteractions( firebaseAuth );
+    //assert
+    expect(result, isA< Left<Err, User>>());
+    verify(() => googleSignIn.signIn()
+    ).called(1);
+    verifyNever(() => firebaseAuth.signInWithCredential( any())
+    );
+    verifyNoMoreInteractions( firebaseAuth );
 
     });
+    
+  test('when User is null => failure google sign in, should return [ SignInErr ]', () async {
+    registerFallbackValue(AuthCredential(
+      providerId: 'test',
+      signInMethod: 'test',
+    ));
+
+    when(() => googleSignIn.signIn(
+    )).thenAnswer((_) async => googleSignInAccount  );
+
+    when(() => googleSignInAccount.authentication).thenAnswer((_) async => googleSignInAuthentication);
+    when(() => googleSignInAuthentication.accessToken).thenReturn( accesToken );
+    when(() => googleSignInAuthentication.idToken).thenReturn( idToken);
+
+    when(() => firebaseAuth.signInWithCredential( any() )).thenAnswer((_) async => userCredential);
+    
+    
+    when(() => userCredential.user).thenReturn( null );
+
+    final result = await googleAuthService.signInWithGoogle();
+
+    //assert
+    expect(result, isA< Left<Err, User>>());
+    verify(() => googleSignIn.signIn()
+    ).called(1);
+    verify(() => firebaseAuth.signInWithCredential( any())
+    ).called(1);
+    verifyNoMoreInteractions( firebaseAuth );
+
+    });
+    
+  test('when throws [ UnhandledException ]=> failure google sign in, should return [ SignInErr ]', () async {
+    registerFallbackValue(AuthCredential(
+      providerId: 'test',
+      signInMethod: 'test',
+    ));
+
+    when(() => googleSignIn.signIn(
+    )).thenThrow( Exception()  );
+
+    when(() => googleSignInAccount.authentication).thenAnswer((_) async => googleSignInAuthentication);
+    when(() => googleSignInAuthentication.accessToken).thenReturn( accesToken );
+    when(() => googleSignInAuthentication.idToken).thenReturn( idToken);
+
+    when(() => firebaseAuth.signInWithCredential( any() )).thenAnswer((_) async => userCredential);
+    
+    
+    when(() => userCredential.user).thenReturn( null );
+
+    final result = await googleAuthService.signInWithGoogle();
+
+    //assert
+    expect(result, isA< Left<Err, User>>());
+    verify(() => googleSignIn.signIn()
+    ).called(1);
+    verifyNever(() => firebaseAuth.signInWithCredential( any())
+    );
+    verifyNoMoreInteractions( firebaseAuth );
+
+    });
+    
+
   });
 
   group('google sign out', (){
@@ -105,7 +161,7 @@ group(' sign in with google method ', () {
       when(() => googleSignIn.signOut()).thenAnswer((_) async => null);
       when(() => firebaseAuth.signOut()).thenAnswer((_) async => Right( null ) );
 
-      // Act: Llamar a la función signOut
+
       final result = await googleAuthService.signOut();
 
       // Assert: Verificar que el resultado es un Right<void>

@@ -5,10 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthService {
-  final FirebaseAuth _auth;
-  final GoogleSignIn _googleSignIn;
+  final FirebaseAuth auth;
+  final GoogleSignIn googleSignIn;
 
-  GoogleAuthService({required FirebaseAuth auth, required GoogleSignIn googleSignIn}) : _auth = auth, _googleSignIn = googleSignIn;
+  GoogleAuthService({required this.auth, required this.googleSignIn}) ;
 
 
 
@@ -16,7 +16,7 @@ class GoogleAuthService {
   Future<EitherErr<User>> signInWithGoogle() async {
     try {
       // Selecciona una cuenta de Google
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) return left( SignInErr(  statusCode: 1, errMsg: 'Error al iniciar sesión con goole')  );
 
       // Obtiene las credenciales de autenticación de Google
@@ -29,7 +29,7 @@ class GoogleAuthService {
       );
 
       // Inicia sesión en Firebase con las credenciales de Google
-      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final UserCredential userCredential = await auth.signInWithCredential(credential);
       final User? user = userCredential.user;
       // Retorna el usuario autenticado
       if(user!=null) {
@@ -46,8 +46,8 @@ class GoogleAuthService {
   // Método para cerrar sesión
   Future<EitherErr<void>> signOut() async {
     try {
-      await _googleSignIn.signOut(); // Cierra sesión de Google
-      await _auth.signOut(); // Cierra sesión de Firebase
+      await googleSignIn.signOut(); // Cierra sesión de Google
+      await auth.signOut(); // Cierra sesión de Firebase
       return right( (){} );
     } catch (e) {
       return left( SignInErr(  statusCode: 1, errMsg: e.toString() )  );
