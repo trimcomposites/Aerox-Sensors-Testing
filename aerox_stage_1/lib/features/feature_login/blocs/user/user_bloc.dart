@@ -1,7 +1,7 @@
-import 'package:aerox_stage_1/domain/use_cases/email_sign_in_type.dart';
-import 'package:aerox_stage_1/domain/use_cases/register_user_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/sign_in_user_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/sign_out_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/email_sign_in_type.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';

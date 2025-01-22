@@ -1,6 +1,6 @@
-import 'package:aerox_stage_1/domain/use_cases/register_user_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/sign_in_user_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/sign_out_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';

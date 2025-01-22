@@ -1,6 +1,6 @@
 
 import 'package:aerox_stage_1/common/utils/typedef.dart';
-import 'package:aerox_stage_1/domain/use_cases/email_sign_in_type.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/email_sign_in_type.dart';
 import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';

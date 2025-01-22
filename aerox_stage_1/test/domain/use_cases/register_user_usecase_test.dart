@@ -2,17 +2,16 @@ import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/exceptions/sign_in_exception.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
-import 'package:aerox_stage_1/domain/use_cases/register_user_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/sign_in_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'mock_types.dart';
+import '../../mock_types.dart';
 
 late RegisterUserUsecase usecase;
 late LoginRepository loginRepo;
@@ -22,9 +21,7 @@ late FirebaseAuth auth;
 Future<void> main() async {
 
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(() async {
-    auth = MockFirebaseAuth();
-  });
+
   setUp((){
     loginRepo = MockLoginRepo();
     usecase = RegisterUserUsecase(loginRepo: loginRepo);
