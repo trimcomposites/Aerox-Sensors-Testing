@@ -6,7 +6,6 @@ import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_ba
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -18,7 +17,8 @@ void main(){
   late SignInUserUsecase signInUserUsecase;
   late SignOutUserUsecase signOutUserUsecase;
   late RegisterUserUsecase registerUserUsecase;
-  
+  final user = MockFirebaseUser();
+
   setUp((){
     signInUserUsecase = MockSignInUserUseCase();
     signOutUserUsecase = MockSignOutUserUsecase();
@@ -34,36 +34,33 @@ void main(){
   });
   tearDown( () => userBloc.close() );
 
-  void main() {
-  final user = MockFirebaseUser();
 
+  final userData = UserData(name: 'name', email: 'email', password: 'password');
+  final emailSignInUserParams= SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: userData);
+  final googleSignInUserParams= SignInUserUsecaseParams(signInType: EmailSignInType.google, userData: userData);
   group(  'sign in email', (){
     blocTest<UserBloc, UserState>('signin email success,emits [ user: [ User ], errormsg: [ null ] ]', 
       build: () {
-        when(() => signInUserUsecase( any( named: 'userData' ) )).thenAnswer( ( _ ) async => Right( user ) );
+      when(() => signInUserUsecase(any()))
+      .thenAnswer((_) async => Right(user));
         return userBloc;
       },
-      act: (bloc) => bloc.add( OnEmailSignInUser( email: any( named: 'email' ), password: any( named: 'password' ) ) ),
-      
+      act: (userBloc) => userBloc.add( OnEmailSignInUser( email: userData.email, password: userData.password ) ),
       expect: () => [
-        UserState( user: user ),
-        UserState( errorMessage: null )
+        UserState( user: user, errorMessage: null ),
       ],
-      verify: ( _ ) => signInUserUsecase( any( named: 'userData' ) )
     );
 
     blocTest<UserBloc, UserState>('signin email fails, emits [ user: [ null ], errormsg: [ String ] ]', 
       build: () {
-        when(() => signInUserUsecase( any( named: 'userData' ) )).thenAnswer( ( _ ) async => Left( SignInErr( errMsg: '', statusCode: 1 ) ) );
+        when(() => signInUserUsecase( any() )).thenAnswer( ( _ ) async => Left( SignInErr( errMsg: '', statusCode: 1 ) ) );
         return userBloc;
       },
-      act: (bloc) => bloc.add( OnEmailSignInUser( email: any( named: 'email' ), password: any( named: 'password' ) ) ),
+      act: (bloc) => bloc.add( OnEmailSignInUser( email: userData.email, password: userData.password ) ),
       
       expect: () => [
-        UserState( user: null ),
-        UserState( errorMessage: '' )
+        UserState( user: null, errorMessage: '' ),
       ],
-      verify: ( _ ) => signInUserUsecase( any( named: 'userData' ) )
     );
   });
 
@@ -76,24 +73,46 @@ void main(){
       act: (bloc) => bloc.add( OnEmailSignOutUser() ),
       
       expect: () => [
-        UserState( user: null ),
-        UserState( errorMessage: null )
+        UserState( user: null, errorMessage: null ),
       ],
-      verify: ( _ ) => signOutUserUsecase( EmailSignInType.email )
     );
 
     blocTest<UserBloc, UserState>('signOut email fails, emits [ user: [ User ], errormsg: [ String ] ]', 
       build: () {
-        when(() => signOutUserUsecase( EmailSignInType.email )).thenAnswer( ( _ ) async => left( SignInErr(errMsg: '', statusCode: 1) ) );
+        when(() => signOutUserUsecase( EmailSignInType.email )).thenAnswer( ( _ ) async => Left( SignInErr(errMsg: '', statusCode: 1) ) );
         return userBloc;
       },
       act: (bloc) => bloc.add( OnEmailSignOutUser() ),
       
       expect: () => [
-        UserState( user: user ),
-        UserState( errorMessage: '' )
+        UserState( user: null, errorMessage: '' )
       ],
-      verify: ( _ ) => signOutUserUsecase( EmailSignInType.email )
+    );
+  });
+  group(  'google sign in', (){
+    blocTest<UserBloc, UserState>('Google sign in success,emits [ user: [ User ], errormsg: [ null ] ]', 
+      build: () {
+        when(() => signInUserUsecase( any())).thenAnswer( ( _ ) async => Right( user ) );
+        return userBloc;
+      },
+      act: (bloc) => bloc.add( OnGoogleSignInUser() ),
+      
+      expect: () => [
+        UserState( user: user, errorMessage: null )
+      ],
+
+    );
+
+    blocTest<UserBloc, UserState>('google signOut fails, emits [ user: [ User ], errormsg: [ String ] ]', 
+      build: () {
+        when(() => signOutUserUsecase( EmailSignInType.google )).thenAnswer( ( _ ) async => Left( SignInErr(errMsg: '', statusCode: 1) ) );
+        return userBloc;
+      },
+      act: (bloc) => bloc.add( OnGoogleSignOutUser() ),
+      
+      expect: () => [
+        UserState( user: null, errorMessage: '' )
+      ],
     );
   });
 
@@ -101,4 +120,3 @@ void main(){
 
   
 
-}

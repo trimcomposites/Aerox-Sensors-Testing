@@ -46,7 +46,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       // ignore: avoid_single_cascade_in_expression_statements
       await signOutUseCase(  EmailSignInType.email )..fold(
       (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
-      (r) => emit( state.copyWith( user: null  ) ));
+      (r) => emit( state.copyWith( user: null, errorMessage: null ) ));
       print( state.user );
     });
     on<OnEmailRegisterUser>((event, emit) async {
