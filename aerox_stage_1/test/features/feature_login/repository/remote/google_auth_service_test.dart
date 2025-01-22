@@ -130,7 +130,7 @@ group(' sign in with google method ', () {
     ));
 
     when(() => googleSignIn.signIn(
-    )).thenThrow( Exception()  );
+    )).thenThrow( Exception() );
 
     when(() => googleSignInAccount.authentication).thenAnswer((_) async => googleSignInAuthentication);
     when(() => googleSignInAuthentication.accessToken).thenReturn( accesToken );
