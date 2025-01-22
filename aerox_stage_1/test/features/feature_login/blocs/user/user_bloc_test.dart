@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
@@ -19,19 +20,23 @@ void main(){
   late SignInUserUsecase signInUserUsecase;
   late SignOutUserUsecase signOutUserUsecase;
   late RegisterUserUsecase registerUserUsecase;
+  late CheckUserSignedInUsecase checkUserSignedInUsecase;
   late FirebaseAuth firebaseAuth;
-  final mockUser = MockFirebaseUser();
+  late User mockUser;
   final user = AeroxUser(name: 'name', email: 'email');
   setUp((){
     signInUserUsecase = MockSignInUserUseCase();
     signOutUserUsecase = MockSignOutUserUsecase();
     registerUserUsecase = MockRegisterUserUsecase();
+    checkUserSignedInUsecase = MockCheckUserSignedInUsecase();
     firebaseAuth = MockFirebaseAuth2();
+    mockUser = MockFirebaseUser();
     userBloc = UserBloc(
       registerUseCase: registerUserUsecase, 
       signInUsecase: signInUserUsecase, 
       signOutUseCase: signOutUserUsecase,
-      firebaseAuth: firebaseAuth
+      checkUserSignedInUsecase: checkUserSignedInUsecase
+
     );
   });
   setUpAll(() {
@@ -123,7 +128,7 @@ void main(){
   group('On check user is signed in', (){
   blocTest<UserBloc, UserState>('user is signed in emits [ user: [ User ] ]', 
         build: () {
-          when(() => firebaseAuth.currentUser ).thenReturn( mockUser );
+          when(() => checkUserSignedInUsecase() ).thenAnswer((_) => right( user ));
           return userBloc;
         },
         act: (bloc) => bloc.add( OnCheckUserIsSignedIn() ),
@@ -135,7 +140,7 @@ void main(){
   
   blocTest<UserBloc, UserState>('user is not signed in emits [ user: [ null ] ]', 
         build: () {
-          when(() => firebaseAuth.currentUser ).thenReturn( null );
+          when(() => checkUserSignedInUsecase() ).thenAnswer((_) => left( SignInErr(errMsg: 'errMsg', statusCode: 6) ));
           return userBloc;
         },
         act: (bloc) => bloc.add( OnCheckUserIsSignedIn() ),

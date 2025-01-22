@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
@@ -19,12 +20,13 @@ Future<void> dependencyInjectionInitialize() async{
       signInUsecase: sl(),
       registerUseCase: sl(),
       signOutUseCase: sl(),
-      firebaseAuth: sl()
+      checkUserSignedInUsecase: sl()
     ))
     //use cases
     ..registerLazySingleton(() => RegisterUserUsecase(loginRepo: sl()) )
     ..registerLazySingleton(() => SignInUserUsecase(loginRepo: sl()) )
     ..registerLazySingleton(() => SignOutUserUsecase(loginRepo: sl()) )
+    ..registerLazySingleton(() => CheckUserSignedInUsecase(firebaseAuth: sl()) )
 
     //repository
     ..registerLazySingleton(
