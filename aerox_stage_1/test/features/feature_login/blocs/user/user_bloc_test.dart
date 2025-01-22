@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
@@ -48,6 +49,21 @@ void main(){
         UserState( user: user ),
         UserState( errorMessage: null )
       ],
+      verify: ( _ ) => signInUserUsecase( any( named: 'userData' ) )
+    );
+
+    blocTest<UserBloc, UserState>('signin email fails, emits [ user: [ null ], errormsg: [ String ] ]', 
+      build: () {
+        when(() => signInUserUsecase( any( named: 'userData' ) )).thenAnswer( ( _ ) async => Left( SignInErr( errMsg: '', statusCode: 1 ) ) );
+        return userBloc;
+      },
+      act: (bloc) => bloc.add( OnEmailSignInUser( email: any( named: 'email' ), password: any( named: 'password' ) ) ),
+      
+      expect: () => [
+        UserState( user: null ),
+        UserState( errorMessage: '' )
+      ],
+      verify: ( _ ) => signInUserUsecase( any( named: 'userData' ) )
     );
   });
 
