@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
+import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -108,7 +109,7 @@ void main() {
       when(() => firebaseAuth.signOut(
       )).thenAnswer((_) async => Right( null ));
 
-    //act
+      //act
 
       final result = await emailAuthService.signOut();
 
@@ -116,10 +117,22 @@ void main() {
       verify(() => firebaseAuth.signOut(),).called(1);
       verifyNoMoreInteractions( firebaseAuth );
 
+    });
 
+    test('sign out failure, must return [Err] ', () async {
+      when(() => firebaseAuth.signOut(
+      )).thenThrow((_) async =>(_) async => Exception() );
 
+      //act
+
+      final result = await emailAuthService.signOut();
+
+      expect(result, isA<Left<Err, void>>());
+      verify(() => firebaseAuth.signOut(),).called(1);
+      verifyNoMoreInteractions( firebaseAuth );
 
     });
+
     
 
   });
