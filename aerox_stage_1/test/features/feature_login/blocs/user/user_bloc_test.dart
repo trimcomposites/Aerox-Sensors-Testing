@@ -37,7 +37,7 @@ void main(){
   void main() {
   final user = MockFirebaseUser();
 
-  group(  'success sign in email', (){
+  group(  'sign in email', (){
     blocTest<UserBloc, UserState>('signin email success,emits [ user: [ User ], errormsg: [ null ] ]', 
       build: () {
         when(() => signInUserUsecase( any( named: 'userData' ) )).thenAnswer( ( _ ) async => Right( user ) );
@@ -64,6 +64,36 @@ void main(){
         UserState( errorMessage: '' )
       ],
       verify: ( _ ) => signInUserUsecase( any( named: 'userData' ) )
+    );
+  });
+
+  group(  'sign out email', (){
+    blocTest<UserBloc, UserState>('signOut email success,emits [ user: [ null ], errormsg: [ null ] ]', 
+      build: () {
+        when(() => signOutUserUsecase( EmailSignInType.email )).thenAnswer( ( _ ) async => Right( null ) );
+        return userBloc;
+      },
+      act: (bloc) => bloc.add( OnEmailSignOutUser() ),
+      
+      expect: () => [
+        UserState( user: null ),
+        UserState( errorMessage: null )
+      ],
+      verify: ( _ ) => signOutUserUsecase( EmailSignInType.email )
+    );
+
+    blocTest<UserBloc, UserState>('signOut email fails, emits [ user: [ User ], errormsg: [ String ] ]', 
+      build: () {
+        when(() => signOutUserUsecase( EmailSignInType.email )).thenAnswer( ( _ ) async => left( SignInErr(errMsg: '', statusCode: 1) ) );
+        return userBloc;
+      },
+      act: (bloc) => bloc.add( OnEmailSignOutUser() ),
+      
+      expect: () => [
+        UserState( user: user ),
+        UserState( errorMessage: '' )
+      ],
+      verify: ( _ ) => signOutUserUsecase( EmailSignInType.email )
     );
   });
 

@@ -32,6 +32,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
       (r) => emit( state.copyWith( user: null  ) ));
     });
+    
     on<OnEmailSignInUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );
       // ignore: avoid_single_cascade_in_expression_statements
