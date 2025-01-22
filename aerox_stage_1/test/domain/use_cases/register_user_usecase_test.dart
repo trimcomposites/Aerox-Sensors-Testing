@@ -33,7 +33,6 @@ Future<void> main() async {
 
 
   final params = SignInUserUsecaseParams.empty();
-  final signInExcception = SignInException(message: '', statusCode: 1);
 
   group('create users', (){
     test( 'call login repo and return user if values'
