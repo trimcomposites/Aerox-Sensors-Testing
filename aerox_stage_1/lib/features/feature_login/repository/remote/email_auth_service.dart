@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,7 +16,7 @@ class EmailAuthService {
 
   Stream<User?> get authStateChanges => firebaseAuth.authStateChanges();
 
-  Future<EitherErr<User>> signInWithEmail({
+  Future<EitherErr<AeroxUser>> signInWithEmail({
     required UserData userData
   }) async {
     try {
@@ -25,7 +26,7 @@ class EmailAuthService {
       );
       User? user = credential.user;
 
-      if (user != null) return right( user );
+      if (user != null) return right( AeroxUser.fromFirebaseUser(user) );
 
       return left(SignInErr( errMsg: 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.', statusCode: 2 ));
     } on FirebaseAuthException catch (e) {
@@ -35,7 +36,7 @@ class EmailAuthService {
     }
   }
 
-  Future<EitherErr<User>> createUserWithEmail({
+  Future<EitherErr<AeroxUser>> createUserWithEmail({
     required UserData userData
   }) async {
     try {
@@ -45,7 +46,7 @@ class EmailAuthService {
       );
       User? user = credential.user;
 
-      if (user != null) return right( user );
+      if (user != null) return right( AeroxUser.fromFirebaseUser(user) );
 
       return left(SignInErr( errMsg: 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.', statusCode: 2 ));
     } on FirebaseAuthException catch (e) {

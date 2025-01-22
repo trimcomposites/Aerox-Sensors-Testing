@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
@@ -19,8 +20,8 @@ void main(){
   late SignOutUserUsecase signOutUserUsecase;
   late RegisterUserUsecase registerUserUsecase;
   late FirebaseAuth firebaseAuth;
-  final user = MockFirebaseUser();
-
+  final mockUser = MockFirebaseUser();
+  final user = AeroxUser(name: 'name', email: 'email');
   setUp((){
     signInUserUsecase = MockSignInUserUseCase();
     signOutUserUsecase = MockSignOutUserUsecase();
@@ -122,7 +123,7 @@ void main(){
   group('On check user is signed in', (){
   blocTest<UserBloc, UserState>('user is signed in emits [ user: [ User ] ]', 
         build: () {
-          when(() => firebaseAuth.currentUser ).thenReturn( user);
+          when(() => firebaseAuth.currentUser ).thenReturn( mockUser );
           return userBloc;
         },
         act: (bloc) => bloc.add( OnCheckUserIsSignedIn() ),
@@ -142,7 +143,7 @@ void main(){
         expect: () => [
           UserState( user: null )
         ],
-    );
+  );
   });
 
 }

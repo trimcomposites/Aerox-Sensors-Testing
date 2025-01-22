@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/exceptions/sign_in_exception.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
@@ -15,7 +16,7 @@ import '../../mock_types.dart';
 
 late RegisterUserUsecase usecase;
 late LoginRepository loginRepo;
-late User mockUser;
+//late User mockUser;
 late FirebaseAuth auth;
 
 Future<void> main() async {
@@ -25,11 +26,12 @@ Future<void> main() async {
   setUp((){
     loginRepo = MockLoginRepo();
     usecase = RegisterUserUsecase(loginRepo: loginRepo);
-    mockUser = MockFirebaseUser();
+    //mockUser = MockFirebaseUser();
   });
 
 
   final params = SignInUserUsecaseParams.empty();
+  final user = AeroxUser(name: 'name', email: 'email');
 
   group('create users', (){
     test( 'call login repo and return user if values'
@@ -39,10 +41,10 @@ Future<void> main() async {
       () => loginRepo.registerWithEmail(
         params.userData!
         )
-    ).thenAnswer( ( _ ) async => Right( mockUser ) );
+    ).thenAnswer( ( _ ) async => Right( user ) );
 
     final result = await usecase( params.userData! );
-    expect(result, equals(  Right<dynamic, User>( mockUser ) ));
+    expect(result, equals(  Right<dynamic, AeroxUser>( user ) ));
     verify(() =>  loginRepo.registerWithEmail( params.userData! )).called(1);
     verifyNoMoreInteractions( loginRepo );
     });

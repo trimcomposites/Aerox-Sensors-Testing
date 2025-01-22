@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/email_sign_in_type.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
@@ -53,20 +54,27 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<OnEmailRegisterUser>((event, emit) async {
       final userData = UserData(name: 'name', email: event.email, password: event.password );
       dynamic result = await registerUseCase(userData);
-      if( result is User ){
+      if( result is AeroxUser ){
         emit( state.copyWith( user: result, errorMessage: null ) );
       }else if ( result is String ) {
         emit( state.copyWith( errorMessage: result ) );
       }
     });
+
     on<OnDeleteErrorMsg>((event, emit) {
       emit( state.copyWith( errorMessage: null ) );
       print( state.errorMessage );
     },);
+
     on<OnCheckUserIsSignedIn>((event, emit) {
       User? user = firebaseAuth.currentUser;
-      emit( state.copyWith( user: user, ) );
-      print( user );
+      if(user!=null){
+        AeroxUser currentUser = AeroxUser.fromFirebaseUser(user);
+        emit( state.copyWith( user: currentUser ) );
+      }else{
+        emit( state.copyWith( user: null ) );
+      }
+
     });
 
 

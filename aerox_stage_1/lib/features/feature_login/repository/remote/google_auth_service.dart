@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -13,7 +14,7 @@ class GoogleAuthService {
 
 
   // Método para iniciar sesión con Google
-  Future<EitherErr<User>> signInWithGoogle() async {
+  Future<EitherErr<AeroxUser>> signInWithGoogle() async {
     try {
       // Selecciona una cuenta de Google
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
@@ -33,7 +34,7 @@ class GoogleAuthService {
       final User? user = userCredential.user;
       // Retorna el usuario autenticado
       if(user!=null) {
-        return right( user  );
+        return right( AeroxUser.fromFirebaseUser(user)  );
       } else {
         return left( SignInErr(errMsg: 'error, usuario no encontrado', statusCode: 3) );
       }

@@ -2,7 +2,7 @@ part of 'user_bloc.dart';
 
 class UserState extends Equatable {
 
-  final User? user;
+  final AeroxUser? user;
    final String? errorMessage;
 
   UserState({
@@ -12,7 +12,7 @@ class UserState extends Equatable {
 
   
   UserState copyWith({
-    User? user,
+    AeroxUser? user,
     bool? isLoading,
     String? errorMessage,
   }) {

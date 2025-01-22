@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'remote_barrel.dart';
@@ -10,7 +11,7 @@ class LoginRepository{
   final EmailAuthService emailAuthService;
   final GoogleAuthService googleAuthService;
 
-  Future<EitherErr<User>> signInUser( { required EmailSignInType signInType, UserData? userData }) async{
+  Future<EitherErr<AeroxUser>>signInUser( { required EmailSignInType signInType, UserData? userData }) async{
     switch( signInType ){
       case EmailSignInType.email:
       return emailAuthService.signInWithEmail(userData: userData! );
@@ -43,7 +44,7 @@ class LoginRepository{
     }
   }
 
-  Future<EitherErr<User>> registerWithEmail( UserData userData ) async{
+  Future<EitherErr<AeroxUser>> registerWithEmail( UserData userData ) async{
     final user = await emailAuthService.createUserWithEmail( userData: userData );
     return user;
   }
