@@ -1,5 +1,6 @@
 
 import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/email_sign_in_type.dart';
 import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
@@ -7,15 +8,15 @@ import 'package:aerox_stage_1/features/feature_login/repository/remote/login_rep
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class SignInUserUsecase extends AsyncUseCaseWithParams<User, SignInUserUsecaseParams>{
+class SignInUserUsecase extends AsyncUseCaseWithParams<AeroxUser, SignInUserUsecaseParams>{
 
   const SignInUserUsecase({ required this.loginRepo });
 
   final LoginRepository loginRepo;
 
   @override
-  Future<EitherErr<User>> call( SignInUserUsecaseParams params ) async {
-    var user = loginRepo.signInUser( signInType: params.signInType, userData: params.userData );
+  Future<EitherErr<AeroxUser>>call( SignInUserUsecaseParams params ) async {
+    final user = loginRepo.signInUser( signInType: params.signInType, userData: params.userData );
     return user;
 
   } 
