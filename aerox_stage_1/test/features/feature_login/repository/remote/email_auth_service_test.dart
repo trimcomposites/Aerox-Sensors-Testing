@@ -1,5 +1,4 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
-import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +23,7 @@ void main() {
   final userCredential = MockUserCredential();
   final user = MockFirebaseUser();
 
-  group('email auth service ...', () {
+  group(' sign in with email method ', () {
   test('success email sign in, should return [ User ]', () async {
 
     when(() => firebaseAuth.signInWithEmailAndPassword(
@@ -103,4 +102,28 @@ void main() {
 
     });
   });
+
+  group(' sign out method ', ()  {
+    test('sign out success, must return [void] ', () async {
+      when(() => firebaseAuth.signOut(
+      )).thenAnswer((_) async => Right( null ));
+
+    //act
+
+      final result = await emailAuthService.signOut();
+
+      expect(result, isA<Right<Err, void>>());
+      verify(() => firebaseAuth.signOut(),).called(1);
+      verifyNoMoreInteractions( firebaseAuth );
+
+
+
+
+    });
+    
+
+  });
+
+
+
 }
