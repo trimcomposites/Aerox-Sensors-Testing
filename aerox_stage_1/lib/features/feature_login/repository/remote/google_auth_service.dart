@@ -5,17 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthService {
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final GoogleSignIn _googleSignIn = GoogleSignIn();
-  static final GoogleAuthService _instance = GoogleAuthService._internal();
+  final FirebaseAuth _auth;
+  final GoogleSignIn _googleSignIn;
 
-    // Constructor privado
-    GoogleAuthService._internal();
+  GoogleAuthService({required FirebaseAuth auth, required GoogleSignIn googleSignIn}) : _auth = auth, _googleSignIn = googleSignIn;
 
-    // Devuelve la instancia única
-    factory GoogleAuthService() {
-      return _instance;
-    }
+
 
   // Método para iniciar sesión con Google
   Future<EitherErr<User>> signInWithGoogle() async {
@@ -35,9 +30,13 @@ class GoogleAuthService {
 
       // Inicia sesión en Firebase con las credenciales de Google
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
-
+      final User? user = userCredential.user;
       // Retorna el usuario autenticado
-      return right( userCredential.user! );  
+      if(user!=null) {
+        return right( user  );
+      } else {
+        return left( SignInErr(errMsg: 'error, usuario no encontrado', statusCode: 3) );
+      }
     } catch (e) {
       print('Error en signInWithGoogle: $e');
       return left( SignInErr(  statusCode: 1, errMsg: e.toString() )  );

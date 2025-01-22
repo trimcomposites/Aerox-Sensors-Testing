@@ -7,6 +7,7 @@ import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 final sl = GetIt.instance;
 
@@ -37,7 +38,11 @@ Future<void> dependencyInjectionInitialize() async{
 
     ..registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance)
     ..registerLazySingleton(() => EmailAuthService(firebaseAuth: sl()))
-    ..registerLazySingleton(() => GoogleAuthService());
+    ..registerLazySingleton(() => GoogleAuthService(
+      auth: sl(),
+      googleSignIn: sl()
+    ))
+    ..registerLazySingleton(() => GoogleSignIn());
 
 }
    
