@@ -9,52 +9,45 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthService {
+
   final FirebaseAuth auth;
   final GoogleSignIn googleSignIn;
 
-  GoogleAuthService({required this.auth, required this.googleSignIn}) ;
-
-
-
-  // Método para iniciar sesión con Google
-  Future<EitherErr<AeroxUser>> signInWithGoogle() async {
-     return EitherCatchExtension.catchE<AeroxUser, SignInErr>(() async {
-      // Selecciona una cuenta de Google
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      if (googleUser == null) {
-        throw Exception('Error al iniciar sesión con Google');
-      }
-
-      // Obtiene las credenciales de autenticación de Google
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-      // Crea una credencial de Firebase
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      // Inicia sesión en Firebase con las credenciales de Google
-      final UserCredential userCredential = await auth.signInWithCredential(credential);
-      final User? user = userCredential.user;
-
-      if (user != null) {
-        return user.toAeroxUser();
-      } else {
-        throw Exception('Usuario no encontrado');
-      }
-    }, (message, statusCode) => SignInErr(errMsg: message, statusCode: statusCode));
-  }
-
-
-  // Método para cerrar sesión
-  Future<EitherErr<void>> signOut() async {
-    try {
-      await googleSignIn.signOut(); // Cierra sesión de Google
-      await auth.signOut(); // Cierra sesión de Firebase
-      return right( (){} );
-    } catch (e) {
-      return left( SignInErr(  statusCode: StatusCode.googleSignInError, errMsg: e.toString() )  );
+  GoogleAuthService({required this.auth, required this.googleSignIn});
+  
+Future<EitherErr<AeroxUser>> signInWithGoogle() async {
+  return EitherCatch.catchE<AeroxUser, SignInErr>(() async {
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    if (googleUser == null) {
+      throw Exception('Error al iniciar sesión con Google');
     }
+
+    final GoogleSignInAuthentication? googleAuth = await googleUser.authentication;
+    if (googleAuth == null) {
+      throw Exception('Error al obtener las credenciales de Google');
+    }
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final UserCredential userCredential = await auth.signInWithCredential(credential);
+    final User? user = userCredential.user;
+
+    if (user != null) {
+      return user.toAeroxUser();
+    } else {
+      throw Exception('Usuario no encontrado');
+    }
+  }, (exception) => SignInErr(errMsg: exception.toString(), statusCode: StatusCode.googleSignInError));
+}
+
+  Future<EitherErr<void>> signOut() async {
+    return EitherCatch.catchE<void, SignInErr>(() async {
+      await googleSignIn.signOut();
+      await auth.signOut();
+      return null;
+    }, (exception) => SignInErr(errMsg: exception.toString(), statusCode: StatusCode.googleSignInError));
   }
 }
