@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../../domain/use_cases/login/reset_password_usecase_test.dart';
 import '../../../../mock_types.dart';
 
 void main(){
@@ -150,6 +151,31 @@ void main(){
           UserState( user: null )
         ],
   );
+  });
+  group('On reset password', (){
+  blocTest<UserBloc, UserState>('reset password success, emits [ errorMessage: [ String ] ', 
+        build: () {
+          when(() => resetPasswordUsecase( email ) ).thenAnswer((_) async => Right( null ));
+          return userBloc;
+        },
+        act: (bloc) => bloc.add( OnPasswordReset( email: email ) ),
+        
+        expect: () => [
+          isA<UserState>().having((state) => state.errorMessage, 'errorMessage', isNotNull),
+        ],
+      );
+  
+  blocTest<UserBloc, UserState>('reset password success, failure [ errorMessage: [ String ] ]', 
+      build: () {
+          when(() => resetPasswordUsecase( email ) ).thenAnswer((_) async => Left( SignInErr(errMsg: '', statusCode: 1) ));
+          return userBloc;
+        },
+        act: (bloc) => bloc.add( OnPasswordReset( email: email ) ),
+        
+        expect: () => [
+          isA<UserState>().having((state) => state.errorMessage, 'errorMessage', isNotNull),
+        ],
+      );
   });
 
   blocTest<UserBloc, UserState>('On delete error message, emits [ errorMessage: [ null ] ]', 
