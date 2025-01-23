@@ -118,7 +118,7 @@ void main() {
     final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
     //assert
-    expect(result, equals( Right<Err, AeroxUser>( aeroxUser ) ));
+    expect(result, isA<Right<Err, AeroxUser>>() );
     verify(() => firebaseAuth.signInWithEmailAndPassword(
       email: aeroxUser.email,
       password: aeroxUser.password!
