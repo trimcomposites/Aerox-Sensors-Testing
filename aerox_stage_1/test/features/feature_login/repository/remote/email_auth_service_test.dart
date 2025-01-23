@@ -213,6 +213,36 @@ void main() {
     });
 
   });
+  group(' reset password method ', ()  {
+    final email = 'roberto@gmail.com';
+    test('reset password success, must return [void] ', () async {
+      when(() => firebaseAuth.sendPasswordResetEmail( email: email )
+      ).thenAnswer((_) async => Right( null ));
+
+      //act
+
+      final result = await emailAuthService.sendPasswordResetEmail( email:email );
+
+      expect(result, isA<Right<Err, void>>());
+      verify(() => firebaseAuth.sendPasswordResetEmail( email: email,)).called(1);
+      verifyNoMoreInteractions( firebaseAuth );
+
+    });
+
+    test('reset password failure, must return [Err] ', () async {
+      when(() => firebaseAuth.sendPasswordResetEmail( email: email )
+      ).thenThrow((_) async =>(_) async => Exception() );
+      //act
+
+      final result = await emailAuthService.sendPasswordResetEmail( email:email );
+
+      expect(result, isA<Left<Err, void>>());
+      verify(() => firebaseAuth.sendPasswordResetEmail( email: email,)).called(1);
+      verifyNoMoreInteractions( firebaseAuth );
+
+    });
+
+  });
 
 
 
