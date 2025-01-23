@@ -39,7 +39,7 @@ void main() {
     final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
     //assert
-    expect(result, equals( Right<Err, User>( user ) ));
+    expect(result, isA<Right<Err, AeroxUser>>() );
     verify(() => firebaseAuth.signInWithEmailAndPassword(
       email: aeroxUser.email,
       password: aeroxUser.password!
@@ -60,7 +60,7 @@ void main() {
       final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
       //assert
-      expect(result, isA<Left<Err, User>>() );
+      expect(result, isA<Left<Err, AeroxUser>>()  );
       verify(() => firebaseAuth.signInWithEmailAndPassword(
         email: aeroxUser.email,
         password: aeroxUser.password!
@@ -78,7 +78,7 @@ void main() {
       final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
       //assert
-      expect(result, isA<Left<Err, User>>() );
+      expect(result, isA<Left<Err, AeroxUser>>() );
       verify(() => firebaseAuth.signInWithEmailAndPassword(
         email: aeroxUser.email,
         password: aeroxUser.password!
@@ -95,7 +95,7 @@ void main() {
       final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
       //assert
-      expect(result, isA<Left<Err, User>>() );
+      expect(result, isA<Left<Err, AeroxUser>>() );
       verify(() => firebaseAuth.signInWithEmailAndPassword(
         email: aeroxUser.email,
         password: aeroxUser.password!
@@ -118,7 +118,7 @@ void main() {
     final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
     //assert
-    expect(result, equals( Right<Err, User>( user ) ));
+    expect(result, equals( Right<Err, AeroxUser>( aeroxUser ) ));
     verify(() => firebaseAuth.signInWithEmailAndPassword(
       email: aeroxUser.email,
       password: aeroxUser.password!
@@ -139,7 +139,7 @@ void main() {
       final result = await emailAuthService.createUserWithEmail( aeroxUser: aeroxUser  );
 
       //assert
-      expect(result, isA<Left<Err, User>>() );
+      expect(result, isA<Left<Err, AeroxUser>>() );
       verify(() => firebaseAuth.createUserWithEmailAndPassword(
         email: aeroxUser.email,
         password: aeroxUser.password!
@@ -157,7 +157,7 @@ void main() {
       final result = await emailAuthService.createUserWithEmail( aeroxUser: aeroxUser  );
 
       //assert
-      expect(result, isA<Left<Err, User>>() );
+      expect(result, isA<Left<Err, AeroxUser>>() );
       verify(() => firebaseAuth.createUserWithEmailAndPassword(
         email: aeroxUser.email,
         password: aeroxUser.password!
@@ -174,7 +174,7 @@ void main() {
       final result = await emailAuthService.createUserWithEmail( aeroxUser: aeroxUser  );
 
       //assert
-      expect(result, isA<Left<Err, User>>() );
+      expect(result, isA<Left<Err, AeroxUser>>() );
       verify(() => firebaseAuth.createUserWithEmailAndPassword(
         email: aeroxUser.email,
         password: aeroxUser.password!

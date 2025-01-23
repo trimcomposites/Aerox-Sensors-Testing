@@ -75,8 +75,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       print( state.errorMessage );
     },);
 
-    on<OnCheckUserIsSignedIn>((event, emit) {
-      checkUserSignedInUsecase().fold(
+    on<OnCheckUserIsSignedIn>((event, emit) async{
+      final res= await checkUserSignedInUsecase();
+      res.fold(
         (l) => emit( state.copyWith( user: null, errorMessage: null ) ),
         (r) => emit( state.copyWith( user: r ) ));
 

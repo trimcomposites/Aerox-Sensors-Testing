@@ -28,7 +28,7 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerLazySingleton(() => RegisterUserUsecase(loginRepo: sl()) )
     ..registerLazySingleton(() => SignInUserUsecase(loginRepo: sl()) )
     ..registerLazySingleton(() => SignOutUserUsecase(loginRepo: sl()) )
-    ..registerLazySingleton(() => CheckUserSignedInUsecase(firebaseAuth: sl()) )
+    ..registerLazySingleton(() => CheckUserSignedInUsecase(loginRepo: sl()) )
     ..registerLazySingleton(() => ResetPasswordUsecase( loginRepo: sl() ) )
 
     //repository

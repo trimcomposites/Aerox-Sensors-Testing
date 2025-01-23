@@ -1,7 +1,7 @@
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
-import 'package:aerox_stage_1/domain/models/firebase_user_extension.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_user_extension.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

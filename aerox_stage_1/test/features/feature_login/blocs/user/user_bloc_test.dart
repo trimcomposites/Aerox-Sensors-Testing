@@ -130,7 +130,7 @@ void main(){
   group('On check user is signed in', (){
   blocTest<UserBloc, UserState>('user is signed in emits [ user: [ User ] ]', 
         build: () {
-          when(() => checkUserSignedInUsecase() ).thenAnswer((_) => right( user ));
+          when(() => checkUserSignedInUsecase() ).thenAnswer((_) async => right( user ));
           return userBloc;
         },
         act: (bloc) => bloc.add( OnCheckUserIsSignedIn() ),
@@ -142,7 +142,7 @@ void main(){
   
   blocTest<UserBloc, UserState>('user is not signed in emits [ user: [ null ] ]', 
         build: () {
-          when(() => checkUserSignedInUsecase() ).thenAnswer((_) => left( SignInErr(errMsg: 'errMsg', statusCode: 6) ));
+          when(() => checkUserSignedInUsecase() ).thenAnswer((_) async => left( SignInErr(errMsg: 'errMsg', statusCode: 6) ));
           return userBloc;
         },
         act: (bloc) => bloc.add( OnCheckUserIsSignedIn() ),

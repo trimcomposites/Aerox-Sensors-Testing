@@ -1,5 +1,8 @@
+import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_user_extension.dart';
+import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'remote_barrel.dart';
@@ -54,6 +57,14 @@ class LoginRepository{
     return result;
   }
 
+  Future<EitherErr<AeroxUser>>checkUserSignedIn() async{
+    final result = firebaseAuth.currentUser;
+    if(result!=null) {
+      return right(result.toAeroxUser());
+    } else {
+      return left(SignInErr(errMsg: 'no hay usuario loggeado', statusCode: 1));
+    }
+  }
 
 
 }

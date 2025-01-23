@@ -23,15 +23,15 @@ void main() {
   });
     final user = AeroxUser(name: 'name', email: 'email');
 
-  final params = SignInUserUsecaseParams.empty();
+  final params = SignInUserUsecaseParams(signInType: EmailSignInType.email, user: user);
   test(' sign in user use case  should return AeroxUser', () async{
 
     //arrage
 
     when(() => repository.signInUser(
       signInType: params.signInType,
-      aeroxUser: any( named: 'userData' )
-      )).thenAnswer((_) async => Right(user));
+      aeroxUser: user
+      )).thenAnswer((_) async => Right( user ));
 
     //act
 
