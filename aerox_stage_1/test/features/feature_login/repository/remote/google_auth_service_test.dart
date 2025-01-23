@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +25,7 @@ void main() {
   });
 
 
-  final userData = UserData(name: 'name', email: 'email', password: 'password');
+  final aeroxUser = AeroxUser(name: 'name', email: 'email', password: 'password');
   //final authCredential = MockAuthCredential();
   final userCredential = MockUserCredential();
   final googleSignInAccount = MockGoogleSignInAccount();

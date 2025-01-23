@@ -30,7 +30,7 @@ void main() {
 
     when(() => repository.signInUser(
       signInType: params.signInType,
-      userData: any( named: 'userData' )
+      aeroxUser: any( named: 'userData' )
       )).thenAnswer((_) async => Right(user));
 
     //act
@@ -41,7 +41,7 @@ void main() {
     expect(result, equals(  Right<dynamic, AeroxUser>( user ) ));
      verify(() => repository.signInUser(
        signInType: params.signInType, 
-       userData: params.userData
+       aeroxUser: params.user
      )).called(1);
      verifyNoMoreInteractions( repository );
 

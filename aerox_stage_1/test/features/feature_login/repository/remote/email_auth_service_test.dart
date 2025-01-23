@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,7 +21,7 @@ void main() {
   });
 
 
-  final userData = UserData(name: 'name', email: 'email', password: 'password');
+  final aeroxUser = AeroxUser(name: 'name', email: 'email', password: 'password');
   final userCredential = MockUserCredential();
   final user = MockFirebaseUser();
 
@@ -28,20 +29,20 @@ void main() {
   test('success email sign in, should return [ User ]', () async {
 
     when(() => firebaseAuth.signInWithEmailAndPassword(
-      email: userData.email,
-      password: userData.password
+      email: aeroxUser.email,
+      password: aeroxUser.password!
     )).thenAnswer((_) async => userCredential );
 
     when(() => userCredential.user
     ,).thenReturn( user );
 
-    final result = await emailAuthService.signInWithEmail( userData: userData  );
+    final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
     //assert
     expect(result, equals( Right<Err, User>( user ) ));
     verify(() => firebaseAuth.signInWithEmailAndPassword(
-      email: userData.email,
-      password: userData.password
+      email: aeroxUser.email,
+      password: aeroxUser.password!
     )).called(1);
     verifyNoMoreInteractions( firebaseAuth );
 
@@ -49,20 +50,20 @@ void main() {
     test('when user is null => failure email sign in, should return [ SignInErr ]', () async {
 
       when(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).thenAnswer((_) async => userCredential );
 
       when(() => userCredential.user
       ,).thenReturn( null );
 
-      final result = await emailAuthService.signInWithEmail( userData: userData  );
+      final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
       //assert
       expect(result, isA<Left<Err, User>>() );
       verify(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).called(1);
       verifyNoMoreInteractions( firebaseAuth );
 
@@ -70,34 +71,34 @@ void main() {
     test('when throw [ FirebaseAuthException ] => failure email sign in, should return [ SignInErr ]', () async{
 
       when(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).thenThrow((_) async => FirebaseAuthException(code: any( named: 'code' )) );
 
-      final result = await emailAuthService.signInWithEmail( userData: userData  );
+      final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
       //assert
       expect(result, isA<Left<Err, User>>() );
       verify(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).called(1);
       verifyNoMoreInteractions( firebaseAuth );
 
     });
     test('when throw [ UnhandledException ] => failure email sign in, should return [ SignInErr ]', () async {
       when(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).thenThrow((_) async => Exception() );
 
-      final result = await emailAuthService.signInWithEmail( userData: userData  );
+      final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
       //assert
       expect(result, isA<Left<Err, User>>() );
       verify(() => firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).called(1);
       verifyNoMoreInteractions( firebaseAuth );
 
@@ -107,20 +108,20 @@ void main() {
   test('success create user, should return [ User ]', () async {
 
     when(() => firebaseAuth.signInWithEmailAndPassword(
-      email: userData.email,
-      password: userData.password
+      email: aeroxUser.email,
+      password: aeroxUser.password!
     )).thenAnswer((_) async => userCredential );
 
     when(() => userCredential.user
     ,).thenReturn( user );
 
-    final result = await emailAuthService.signInWithEmail( userData: userData  );
+    final result = await emailAuthService.signInWithEmail( aeroxUser: aeroxUser  );
 
     //assert
     expect(result, equals( Right<Err, User>( user ) ));
     verify(() => firebaseAuth.signInWithEmailAndPassword(
-      email: userData.email,
-      password: userData.password
+      email: aeroxUser.email,
+      password: aeroxUser.password!
     )).called(1);
     verifyNoMoreInteractions( firebaseAuth );
 
@@ -128,20 +129,20 @@ void main() {
     test('when user is null => failure create user, should return [ SignInErr ]', () async {
 
       when(() => firebaseAuth.createUserWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).thenAnswer((_) async => userCredential );
 
       when(() => userCredential.user
       ,).thenReturn( null );
 
-      final result = await emailAuthService.createUserWithEmail( userData: userData  );
+      final result = await emailAuthService.createUserWithEmail( aeroxUser: aeroxUser  );
 
       //assert
       expect(result, isA<Left<Err, User>>() );
       verify(() => firebaseAuth.createUserWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).called(1);
       verifyNoMoreInteractions( firebaseAuth );
 
@@ -149,34 +150,34 @@ void main() {
     test('when throw [ FirebaseAuthException ] => failure create user, should return [ SignInErr ]', () async{
 
       when(() => firebaseAuth.createUserWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).thenThrow((_) async => FirebaseAuthException(code: any( named: 'code' )) );
 
-      final result = await emailAuthService.createUserWithEmail( userData: userData  );
+      final result = await emailAuthService.createUserWithEmail( aeroxUser: aeroxUser  );
 
       //assert
       expect(result, isA<Left<Err, User>>() );
       verify(() => firebaseAuth.createUserWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).called(1);
       verifyNoMoreInteractions( firebaseAuth );
 
     });
     test('when throw [ UnhandledException ] => failure create user, should return [ SignInErr ]', () async {
       when(() => firebaseAuth.createUserWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).thenThrow((_) async => Exception() );
 
-      final result = await emailAuthService.createUserWithEmail( userData: userData  );
+      final result = await emailAuthService.createUserWithEmail( aeroxUser: aeroxUser  );
 
       //assert
       expect(result, isA<Left<Err, User>>() );
       verify(() => firebaseAuth.createUserWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password
+        email: aeroxUser.email,
+        password: aeroxUser.password!
       )).called(1);
       verifyNoMoreInteractions( firebaseAuth );
 

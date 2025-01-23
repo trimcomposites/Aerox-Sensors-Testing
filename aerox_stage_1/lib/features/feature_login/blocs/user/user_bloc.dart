@@ -5,7 +5,6 @@ import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart'
 import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
-import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,9 +45,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
     
     on<OnEmailSignInUser>((event, emit) async {
-      final userData = UserData(name: 'name', email: event.email, password: event.password );
+      final user = AeroxUser(name: 'name', email: event.email, password: event.password );
       // ignore: avoid_single_cascade_in_expression_statements
-      await signInUsecase( SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: userData) )..fold(
+      await signInUsecase( SignInUserUsecaseParams(signInType: EmailSignInType.email, user: user) )..fold(
       (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
       (r) => emit( state.copyWith( user: r, errorMessage: null  ) ));
 
@@ -62,8 +61,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       print( state.user );
     });
     on<OnEmailRegisterUser>((event, emit) async {
-      final userData = UserData(name: 'name', email: event.email, password: event.password );
-      dynamic result = await registerUseCase(userData);
+      final user = AeroxUser(name: 'name', email: event.email, password: event.password );
+      dynamic result = await registerUseCase(user);
       if( result is AeroxUser ){
         emit( state.copyWith( user: result, errorMessage: null ) );
       }else if ( result is String ) {

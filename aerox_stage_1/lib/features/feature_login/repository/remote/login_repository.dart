@@ -11,10 +11,10 @@ class LoginRepository{
   final EmailAuthService emailAuthService;
   final GoogleAuthService googleAuthService;
 
-  Future<EitherErr<AeroxUser>>signInUser( { required EmailSignInType signInType, UserData? userData }) async{
+  Future<EitherErr<AeroxUser>>signInUser( { required EmailSignInType signInType, AeroxUser? aeroxUser }) async{
     switch( signInType ){
       case EmailSignInType.email:
-      return emailAuthService.signInWithEmail(userData: userData! );
+      return emailAuthService.signInWithEmail(aeroxUser: aeroxUser! );
       case EmailSignInType.google:
         return googleAuthService.signInWithGoogle();
       case EmailSignInType.apple:
@@ -44,8 +44,8 @@ class LoginRepository{
     }
   }
 
-  Future<EitherErr<AeroxUser>> registerWithEmail( UserData userData ) async{
-    final user = await emailAuthService.createUserWithEmail( userData: userData );
+  Future<EitherErr<AeroxUser>> registerWithEmail( AeroxUser aeroxUser ) async{
+    final user = await emailAuthService.createUserWithEmail( aeroxUser: aeroxUser );
     return user;
   }
 

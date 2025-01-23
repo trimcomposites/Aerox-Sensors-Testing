@@ -5,7 +5,6 @@ import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
-import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,13 +38,13 @@ Future<void> main() async {
     () async{
       when(
       () => loginRepo.registerWithEmail(
-        params.userData!
+        params.user!
         )
     ).thenAnswer( ( _ ) async => Right( user ) );
 
-    final result = await usecase( params.userData! );
+    final result = await usecase( params.user! );
     expect(result, equals(  Right<dynamic, AeroxUser>( user ) ));
-    verify(() =>  loginRepo.registerWithEmail( params.userData! )).called(1);
+    verify(() =>  loginRepo.registerWithEmail( params.user! )).called(1);
     verifyNoMoreInteractions( loginRepo );
     });
 
@@ -55,14 +54,14 @@ Future<void> main() async {
     final expectedErr = SignInErr( errMsg: '', statusCode: 1);
       when(
       () => loginRepo.registerWithEmail(
-        params.userData!
+        params.user!
         )
     ).thenAnswer( (_) async => Left( expectedErr ));
 
-    final result = await usecase( params.userData!);
+    final result = await usecase( params.user!);
     
     expect(result, equals( Left<Err, dynamic>( expectedErr)));
-    verify(() =>  loginRepo.registerWithEmail( params.userData! )).called(1);
+    verify(() =>  loginRepo.registerWithEmail( params.user! )).called(1);
     verifyNoMoreInteractions( loginRepo );
     });
 

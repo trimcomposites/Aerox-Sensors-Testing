@@ -42,14 +42,14 @@ void main(){
     );
   });
   setUpAll(() {
-    registerFallbackValue( SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: UserData(name: 'name', email: 'email', password: 'password')) );
+    registerFallbackValue( SignInUserUsecaseParams(signInType: EmailSignInType.email, user: AeroxUser(name: 'name', email: 'email', password: 'password')) );
   });
   tearDown( () => userBloc.close() );
 
 
-  final userData = UserData(name: 'name', email: 'email', password: 'password');
-  final emailSignInUserParams= SignInUserUsecaseParams(signInType: EmailSignInType.email, userData: userData);
-  final googleSignInUserParams= SignInUserUsecaseParams(signInType: EmailSignInType.google, userData: userData);
+  final aeroxUser = AeroxUser(name: 'name', email: 'email', password: 'password');
+  final emailSignInUserParams= SignInUserUsecaseParams(signInType: EmailSignInType.email, user: aeroxUser);
+  final googleSignInUserParams= SignInUserUsecaseParams(signInType: EmailSignInType.google, user: aeroxUser);
   group(  'sign in email', (){
     blocTest<UserBloc, UserState>('signin email success,emits [ user: [ User ], errormsg: [ null ] ]', 
       build: () {
@@ -57,7 +57,7 @@ void main(){
       .thenAnswer((_) async => Right(user));
         return userBloc;
       },
-      act: (userBloc) => userBloc.add( OnEmailSignInUser( email: userData.email, password: userData.password ) ),
+      act: (userBloc) => userBloc.add( OnEmailSignInUser( email: aeroxUser.email, password: aeroxUser.password! ) ),
       expect: () => [
         UserState( user: user, errorMessage: null ),
       ],
@@ -68,7 +68,7 @@ void main(){
         when(() => signInUserUsecase( any() )).thenAnswer( ( _ ) async => Left( SignInErr( errMsg: '', statusCode: 1 ) ) );
         return userBloc;
       },
-      act: (bloc) => bloc.add( OnEmailSignInUser( email: userData.email, password: userData.password ) ),
+      act: (bloc) => bloc.add( OnEmailSignInUser( email: aeroxUser.email, password: aeroxUser.password! ) ),
       
       expect: () => [
         UserState( user: null, errorMessage: '' ),
@@ -91,13 +91,13 @@ void main(){
 
     blocTest<UserBloc, UserState>('signOut email fails, emits [ user: [ User ], errormsg: [ String ] ]', 
       build: () {
-        when(() => signOutUserUsecase( EmailSignInType.email )).thenAnswer( ( _ ) async => Left( SignInErr(errMsg: '', statusCode: 1) ) );
+        when(() => signOutUserUsecase( EmailSignInType.email )).thenAnswer( ( _ ) async => Left( SignInErr(errMsg: 'text', statusCode: 1) ) );
         return userBloc;
       },
       act: (bloc) => bloc.add( OnEmailSignOutUser() ),
       
       expect: () => [
-        UserState( user: null, errorMessage: '' )
+        UserState( user: null, errorMessage: 'text' )
       ],
     );
   });

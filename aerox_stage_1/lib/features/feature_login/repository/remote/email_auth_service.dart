@@ -1,7 +1,6 @@
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
-import 'package:aerox_stage_1/domain/user_data.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -17,12 +16,12 @@ class EmailAuthService {
   Stream<User?> get authStateChanges => firebaseAuth.authStateChanges();
 
   Future<EitherErr<AeroxUser>> signInWithEmail({
-    required UserData userData
+    required AeroxUser aeroxUser
   }) async {
     try {
       UserCredential credential = await firebaseAuth.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password,
+        email: aeroxUser.email,
+        password: aeroxUser.password!,
       );
       User? user = credential.user;
 
@@ -37,12 +36,12 @@ class EmailAuthService {
   }
 
   Future<EitherErr<AeroxUser>> createUserWithEmail({
-    required UserData userData
+    required AeroxUser aeroxUser
   }) async {
     try {
       UserCredential credential = await firebaseAuth.createUserWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password,
+        email: aeroxUser.email,
+        password: aeroxUser.password!,
       );
       User? user = credential.user;
 
