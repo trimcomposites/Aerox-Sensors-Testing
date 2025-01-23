@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aerox_stage_1/features/feature_details/repository/ui/details_screen.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/widgets/login_with_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,11 +59,14 @@ class LoginMainScreenContent extends StatelessWidget {
               const SizedBox(height: 30),
 
               AppButton(  //temp
-                text: 'Cerrar Sesión',
+                text: 'DEtalles previsualización',
                 backgroundColor: Colors.transparent,
                 onPressed: (){
-                  userBloc.add( OnGoogleSignOutUser() );
-                  userBloc.add( OnEmailSignOutUser() )
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: ( context ) => DetailsScreen()
+                    )
+                  )
                 ;}   
               ),
               const SizedBox(height: 30),
