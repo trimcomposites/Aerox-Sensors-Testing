@@ -1,6 +1,7 @@
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
+import 'package:aerox_stage_1/domain/models/firebase_user_extension.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -25,7 +26,7 @@ class EmailAuthService {
       );
       User? user = credential.user;
 
-      if (user != null) return right( AeroxUser.fromFirebaseUser(user) );
+      if (user != null) return right( user.toAeroxUser() );
 
       return left(SignInErr( errMsg: 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.', statusCode: 2 ));
     } on FirebaseAuthException catch (e) {
@@ -45,7 +46,7 @@ class EmailAuthService {
       );
       User? user = credential.user;
 
-      if (user != null) return right( AeroxUser.fromFirebaseUser(user) );
+      if (user != null) return right( user.toAeroxUser() );
 
       return left(SignInErr( errMsg: 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.', statusCode: 2 ));
     } on FirebaseAuthException catch (e) {
