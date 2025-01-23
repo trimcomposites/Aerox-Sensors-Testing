@@ -49,6 +49,11 @@ class LoginRepository{
     return user;
   }
 
+  Future<EitherErr<void>> resetPassword( { required String email} ) async{
+    final result = emailAuthService.sendPasswordResetEmail(email: email);
+    return result;
+  }
+
 
 
 }

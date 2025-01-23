@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
@@ -21,21 +22,21 @@ void main(){
   late SignOutUserUsecase signOutUserUsecase;
   late RegisterUserUsecase registerUserUsecase;
   late CheckUserSignedInUsecase checkUserSignedInUsecase;
-  late FirebaseAuth firebaseAuth;
-  late User mockUser;
+  late ResetPasswordUsecase resetPasswordUsecase;
   final user = AeroxUser(name: 'name', email: 'email');
   setUp((){
     signInUserUsecase = MockSignInUserUseCase();
     signOutUserUsecase = MockSignOutUserUsecase();
     registerUserUsecase = MockRegisterUserUsecase();
     checkUserSignedInUsecase = MockCheckUserSignedInUsecase();
-    firebaseAuth = MockFirebaseAuth2();
-    mockUser = MockFirebaseUser();
+    resetPasswordUsecase = MockResetPasswordUsecase();
+
     userBloc = UserBloc(
       registerUseCase: registerUserUsecase, 
       signInUsecase: signInUserUsecase, 
       signOutUseCase: signOutUserUsecase,
-      checkUserSignedInUsecase: checkUserSignedInUsecase
+      checkUserSignedInUsecase: checkUserSignedInUsecase,
+      resetPasswordUsecase: resetPasswordUsecase
 
     );
   });
