@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/utils/either_catch.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/status_code.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
@@ -17,10 +18,12 @@ class GoogleAuthService {
 
   // Método para iniciar sesión con Google
   Future<EitherErr<AeroxUser>> signInWithGoogle() async {
-    try {
+     return EitherCatchExtension.catchE<AeroxUser, SignInErr>(() async {
       // Selecciona una cuenta de Google
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      if (googleUser == null) return left( SignInErr(  statusCode: StatusCode.googleSignInError, errMsg: 'Error al iniciar sesión con goole')  );
+      if (googleUser == null) {
+        throw Exception('Error al iniciar sesión con Google');
+      }
 
       // Obtiene las credenciales de autenticación de Google
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -34,17 +37,15 @@ class GoogleAuthService {
       // Inicia sesión en Firebase con las credenciales de Google
       final UserCredential userCredential = await auth.signInWithCredential(credential);
       final User? user = userCredential.user;
-      // Retorna el usuario autenticado
-      if(user!=null) {
-        return right( user.toAeroxUser()  );
+
+      if (user != null) {
+        return user.toAeroxUser();
       } else {
-        return left( SignInErr(errMsg: 'error, usuario no encontrado', statusCode: StatusCode.googleSignInError) );
+        throw Exception('Usuario no encontrado');
       }
-    } catch (e) {
-      print('Error en signInWithGoogle: $e');
-      return left( SignInErr(  statusCode: StatusCode.googleSignInError, errMsg: e.toString() )  );
-    }
+    }, (message, statusCode) => SignInErr(errMsg: message, statusCode: statusCode));
   }
+
 
   // Método para cerrar sesión
   Future<EitherErr<void>> signOut() async {

@@ -1,4 +1,6 @@
+import 'package:aerox_stage_1/common/utils/either_catch.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
+import 'package:aerox_stage_1/common/utils/error/err/status_code.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_user_extension.dart';
@@ -17,25 +19,27 @@ class EmailAuthService {
   Stream<User?> get authStateChanges => firebaseAuth.authStateChanges();
 
   Future<EitherErr<AeroxUser>> signInWithEmail({
-    required AeroxUser aeroxUser
+    required AeroxUser aeroxUser,
   }) async {
-    try {
+    return EitherCatchExtension.catchE<AeroxUser, SignInErr>(() async {
+      // Intento de inicio de sesión con el correo y la contraseña
       UserCredential credential = await firebaseAuth.signInWithEmailAndPassword(
         email: aeroxUser.email,
         password: aeroxUser.password!,
       );
+
+      // Obtenemos el usuario de la credencial
       User? user = credential.user;
 
-      if (user != null) return right( user.toAeroxUser() );
-
-      return left(SignInErr( errMsg: 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.', statusCode: 2 ));
-    } on FirebaseAuthException catch (e) {
-      return left( _handleSignInError(e) );
-    } catch (error) {
-      return left(SignInErr( errMsg: error.toString(), statusCode: 2 ));
-    }
+      // Verificamos si el usuario existe
+      if (user != null) {
+        return user.toAeroxUser();
+      } else {
+        // Si no hay usuario, lanzamos un error
+        throw Exception('Ocurrió un error desconocido. Por favor, inténtelo nuevamente.');
+      }
+    }, (message, statusCode) => SignInErr(errMsg: message, statusCode: statusCode));
   }
-
   Future<EitherErr<AeroxUser>> createUserWithEmail({
     required AeroxUser aeroxUser
   }) async {
@@ -48,11 +52,11 @@ class EmailAuthService {
 
       if (user != null) return right( user.toAeroxUser() );
 
-      return left(SignInErr( errMsg: 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.', statusCode: 2 ));
+      return left(SignInErr( errMsg: 'Ocurrió un error desconocido. Por favor, inténtelo nuevamente.', statusCode: StatusCode.registrationFailed ));
     } on FirebaseAuthException catch (e) {
       return left(_handleSignUpError(e));
     } catch (error) {
-      return left(SignInErr( errMsg: 'Ocurrió un error desconocido. $error', statusCode: 2 ));
+      return left(SignInErr( errMsg: 'Ocurrió un error desconocido. $error', statusCode: StatusCode.registrationFailed ));
     }
   }
 
@@ -60,7 +64,7 @@ class EmailAuthService {
     try{
       return right(firebaseAuth.signOut() ) ;
     }catch( e ){
-      return left(SignInErr( errMsg: e.toString() , statusCode: 2 ));
+      return left(SignInErr( errMsg: e.toString() , statusCode: StatusCode.authenticationFailed ));
     }
    
   }
@@ -80,59 +84,61 @@ class EmailAuthService {
       // Maneja cualquier otro error
       return left(SignInErr(
         errMsg: 'Ocurrió un error al enviar el correo de restablecimiento. $error',
-        statusCode: 2,
+        statusCode: StatusCode.authenticationFailed,
       ));
     }
   }
 
   static SignInErr _handleSignInError(FirebaseAuthException e) {
+    String errMsg ='';
+
     switch (e.code) {
       case 'user-not-found':
-        return SignInErr( errMsg: 'No se encontró un usuario con ese correo. Verifique e intente nuevamente.', statusCode: 2 );
+        errMsg = 'No se encontró un usuario con ese correo. Verifique e intente nuevamente.';
       case 'wrong-password':
-      return SignInErr( errMsg: 'La contraseña es incorrecta. Por favor, intente nuevamente.', statusCode: 2 );
+        errMsg = 'La contraseña es incorrecta. Por favor, intente nuevamente.';
       case 'invalid-email':
-        return SignInErr( errMsg: 'El formato del correo es inválido. Verifique el correo ingresado.', statusCode: 2 );
+         errMsg = 'El formato del correo es inválido. Verifique el correo ingresado.';
       case 'user-disabled':
-        return SignInErr( errMsg: 'La cuenta ha sido deshabilitada. Contacte al soporte.', statusCode: 2 );
+        errMsg = 'La cuenta ha sido deshabilitada. Contacte al soporte.';
       default:
-        return SignInErr( errMsg: e.message!, statusCode: 2 );
+      errMsg = 'Error desconocido';
     }
+    return SignInErr( errMsg: errMsg, statusCode: StatusCode.authenticationFailed );
   }
-
   static SignInErr _handleSignUpError(FirebaseAuthException e) {
+    String errMsg ='';
+
     switch (e.code) {
       case 'email-already-in-use':
-      return SignInErr( errMsg: 'El correo ya está en uso. Intente con otro correo.', statusCode: 2 );
+        errMsg = 'El correo ya está en uso. Intente con otro correo.';
       case 'weak-password':
-      return SignInErr( errMsg: 'La contraseña es demasiado débil. Intente con una más segura.', statusCode: 2 );
+        errMsg = 'La contraseña es demasiado débil. Intente con una más segura.';
       case 'invalid-email':
-      return SignInErr( errMsg: 'El formato del correo es inválido. Verifique el correo ingresado.', statusCode: 2 );
+         errMsg = 'El formato del correo es inválido. Verifique el correo ingresado.';
       default:
-      return SignInErr( errMsg: 'Error desconocido: ${e.message}', statusCode: 2 );
+      errMsg = 'Error desconocido';
     }
+    return SignInErr( errMsg: errMsg, statusCode: StatusCode.registrationFailed );
+  }
+
+
+  static SignInErr _handlePasswordResetError(FirebaseAuthException e) {
+    String errMsg ='';
+
+    switch (e.code) {
+      case 'user-not-found':
+        errMsg = 'No existe una cuenta con este correo electrónico. Por favor, verifique e intente nuevamente.';
+      case 'invalid-email':
+         errMsg = 'El formato del correo es inválido. Verifique el correo ingresado.';
+      default:
+      errMsg = 'Error desconocido';
+    }
+    return SignInErr( errMsg: errMsg, statusCode: StatusCode.passwordResetFailed );
   }
 }
 
-SignInErr _handlePasswordResetError(FirebaseAuthException e) {
-  switch (e.code) {
-    case 'invalid-email':
-      return SignInErr(
-        errMsg: 'El correo electrónico proporcionado no es válido. Por favor, verifíquelo e intente nuevamente.',
-        statusCode: 3,
-      );
-    case 'user-not-found':
-      return SignInErr(
-        errMsg: 'No existe una cuenta con este correo electrónico. Por favor, verifique e intente nuevamente.',
-        statusCode: 4,
-      );
-    default:
-      return SignInErr(
-        errMsg: 'Error desconocido al enviar el correo: ${e.message}',
-        statusCode: 2,
-      );
-  }
-}
+
 
 
 
