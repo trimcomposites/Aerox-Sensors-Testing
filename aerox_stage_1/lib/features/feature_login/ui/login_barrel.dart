@@ -25,3 +25,4 @@ export 'package:aerox_stage_1/features/feature_login/ui/widgets/user_data_text_f
 export 'package:flutter/material.dart';
 export 'package:google_fonts/google_fonts.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/widgets/app_button.dart';
+export 'package:aerox_stage_1/features/feature_login/ui/reset_password_screen.dart';

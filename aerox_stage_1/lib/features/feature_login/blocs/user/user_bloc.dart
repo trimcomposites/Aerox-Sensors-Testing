@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/email_sign_in_type.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/domain/user_data.dart';
@@ -19,9 +20,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final RegisterUserUsecase registerUseCase;
   final SignInUserUsecase signInUsecase;
   final CheckUserSignedInUsecase checkUserSignedInUsecase;
+  final ResetPasswordUsecase resetPasswordUsecase;
 
 
-  UserBloc({ required this.signInUsecase, required this.signOutUseCase, required this.registerUseCase , required this.checkUserSignedInUsecase }) : super(UserState()) {
+  UserBloc({ 
+    required this.signInUsecase, 
+    required this.signOutUseCase, 
+    required this.registerUseCase , 
+    required this.checkUserSignedInUsecase , 
+    required this.resetPasswordUsecase
+  }) : super(UserState()) {
 
     on<OnGoogleSignInUser>((event, emit) async{
       // ignore: avoid_single_cascade_in_expression_statements
@@ -72,6 +80,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       checkUserSignedInUsecase().fold(
         (l) => emit( state.copyWith( user: null, errorMessage: null ) ),
         (r) => emit( state.copyWith( user: r ) ));
+
+    });
+    on<OnPasswordReset>((event, emit) async {
+      // ignore: avoid_single_cascade_in_expression_statements
+      await resetPasswordUsecase( event.email )..fold(
+        //TODO: show snackbar en cada caso
+        (l) => emit( state.copyWith( user: null, errorMessage: 'No se ha podido mandar msj' ) ),
+        (r) => emit( state.copyWith( user: null) ));
 
     });
 

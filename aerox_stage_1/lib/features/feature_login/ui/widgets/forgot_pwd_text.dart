@@ -1,3 +1,4 @@
+
 import 'package:flutter/gestures.dart';
 
 import '../login_barrel.dart';
@@ -30,10 +31,10 @@ class ForgotPwdText extends StatelessWidget {
                 decoration: TextDecoration.underline
               ),
               recognizer: TapGestureRecognizer()..onTap = () {
-                // TODO: Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
-                // );
+                TODO: Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
+                );
               },
             ),
           ],

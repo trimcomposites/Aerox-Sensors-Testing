@@ -32,3 +32,11 @@ class OnCheckUserIsSignedIn extends UserEvent{
 class OnDeleteErrorMsg extends UserEvent{
 
 }
+
+class OnPasswordReset extends UserEvent{
+
+  final String email;
+
+  OnPasswordReset({required this.email});
+
+}
