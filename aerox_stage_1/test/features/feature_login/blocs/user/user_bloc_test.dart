@@ -151,6 +151,15 @@ void main(){
   );
   });
 
+  blocTest<UserBloc, UserState>('On delete error message, emits [ errorMessage: [ null ] ]', 
+        build: () => userBloc,
+        act: (bloc) => bloc.add( OnDeleteErrorMsg() ),
+        
+        expect: () => [
+          UserState( errorMessage: null )
+        ],
+  );
+
 }
 
   
