@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
+import 'package:aerox_stage_1/common/utils/error/err/status_code.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_user_extension.dart';
@@ -19,7 +20,7 @@ class GoogleAuthService {
     try {
       // Selecciona una cuenta de Google
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      if (googleUser == null) return left( SignInErr(  statusCode: 1, errMsg: 'Error al iniciar sesión con goole')  );
+      if (googleUser == null) return left( SignInErr(  statusCode: StatusCode.googleSignInError, errMsg: 'Error al iniciar sesión con goole')  );
 
       // Obtiene las credenciales de autenticación de Google
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -37,11 +38,11 @@ class GoogleAuthService {
       if(user!=null) {
         return right( user.toAeroxUser()  );
       } else {
-        return left( SignInErr(errMsg: 'error, usuario no encontrado', statusCode: 3) );
+        return left( SignInErr(errMsg: 'error, usuario no encontrado', statusCode: StatusCode.googleSignInError) );
       }
     } catch (e) {
       print('Error en signInWithGoogle: $e');
-      return left( SignInErr(  statusCode: 1, errMsg: e.toString() )  );
+      return left( SignInErr(  statusCode: StatusCode.googleSignInError, errMsg: e.toString() )  );
     }
   }
 
@@ -52,7 +53,7 @@ class GoogleAuthService {
       await auth.signOut(); // Cierra sesión de Firebase
       return right( (){} );
     } catch (e) {
-      return left( SignInErr(  statusCode: 1, errMsg: e.toString() )  );
+      return left( SignInErr(  statusCode: StatusCode.googleSignInError, errMsg: e.toString() )  );
     }
   }
 }
