@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
+import 'package:aerox_stage_1/common/utils/error/err/status_code.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_user_extension.dart';
@@ -62,7 +63,7 @@ class LoginRepository{
     if(result!=null) {
       return right(result.toAeroxUser());
     } else {
-      return left(SignInErr(errMsg: 'no hay usuario loggeado', statusCode: 1));
+      return left(SignInErr(errMsg: 'no hay usuario loggeado', statusCode: StatusCode.networkError));
     }
   }
 
