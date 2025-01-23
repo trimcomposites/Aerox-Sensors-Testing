@@ -86,7 +86,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       // ignore: avoid_single_cascade_in_expression_statements
       await resetPasswordUsecase( event.email )..fold(
         //TODO: show snackbar en cada caso
-        (l) => emit( state.copyWith( user: null, errorMessage: 'No se ha podido mandar msj' ) ),
+        (l) => emit( state.copyWith( user: null, errorMessage: l.errMsg ) ),
         (r) => emit( state.copyWith( user: null) ));
 
     });

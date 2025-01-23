@@ -20,7 +20,7 @@ export 'package:aerox_stage_1/features/feature_login/ui/login_with_email_content
 export 'package:aerox_stage_1/features/feature_login/ui/create_account_screen.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/widgets/back_button_app_bar.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/widgets/background_image.dart';
-export 'package:aerox_stage_1/features/feature_login/ui/widgets/forgot_pwd_text.dart';
+export 'package:aerox_stage_1/features/feature_login/ui/widgets/text_with_underlined_funct.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/widgets/user_data_text_field.dart';
 export 'package:flutter/material.dart';
 export 'package:google_fonts/google_fonts.dart';

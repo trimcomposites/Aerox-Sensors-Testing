@@ -68,7 +68,17 @@ class LoginWithEmailContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
 
-                ForgotPwdText(),
+                TextWithUnderLinedFunct(
+                  text: '¿Olvidaste tu contraseña?',
+                  underlineText: 'Cambiala aquí.',
+                  onTap: (){
+                    userBloc.add( OnDeleteErrorMsg() );
+                    Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => ResetPasswordScreen()),
+                  );
+                    
+                  },
+                ),
 
                 const SizedBox( height: 30, ),
 

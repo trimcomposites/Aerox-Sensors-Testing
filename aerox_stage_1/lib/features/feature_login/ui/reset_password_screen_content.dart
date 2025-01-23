@@ -59,7 +59,16 @@ class ResetPasswordScreenContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
 
-                ForgotPwdText(),
+                TextWithUnderLinedFunct(
+                  text: 'Para iniciar sesión',
+                  underlineText: 'pulsa aquí.',
+                  onTap: (){
+                    userBloc.add( OnDeleteErrorMsg() );
+                    Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => LoginWithEmailScreen()),
+                  );
+                  }
+                ),
 
                 const SizedBox( height: 30, ),
 
