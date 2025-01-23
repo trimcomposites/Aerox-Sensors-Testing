@@ -64,6 +64,26 @@ class EmailAuthService {
     }
    
   }
+  Future<EitherErr<void>> sendPasswordResetEmail({
+    required String email,
+  }) async {
+    try {
+      // Envía el correo para restablecer la contraseña
+      await firebaseAuth.sendPasswordResetEmail(email: email);
+
+      // Si es exitoso, retorna un resultado positivo
+      return right(null);
+    } on FirebaseAuthException catch (e) {
+      // Maneja errores específicos de Firebase
+      return left(_handlePasswordResetError(e));
+    } catch (error) {
+      // Maneja cualquier otro error
+      return left(SignInErr(
+        errMsg: 'Ocurrió un error al enviar el correo de restablecimiento. $error',
+        statusCode: 2,
+      ));
+    }
+  }
 
   static SignInErr _handleSignInError(FirebaseAuthException e) {
     switch (e.code) {
@@ -94,7 +114,25 @@ class EmailAuthService {
   }
 }
 
-
+SignInErr _handlePasswordResetError(FirebaseAuthException e) {
+  switch (e.code) {
+    case 'invalid-email':
+      return SignInErr(
+        errMsg: 'El correo electrónico proporcionado no es válido. Por favor, verifíquelo e intente nuevamente.',
+        statusCode: 3,
+      );
+    case 'user-not-found':
+      return SignInErr(
+        errMsg: 'No existe una cuenta con este correo electrónico. Por favor, verifique e intente nuevamente.',
+        statusCode: 4,
+      );
+    default:
+      return SignInErr(
+        errMsg: 'Error desconocido al enviar el correo: ${e.message}',
+        statusCode: 2,
+      );
+  }
+}
 
 
 
