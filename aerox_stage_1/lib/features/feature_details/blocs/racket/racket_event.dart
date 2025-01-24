@@ -7,3 +7,11 @@ class RacketEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class OnGetRackets extends RacketEvent {
+  
+}
+class OnSelectRacket extends RacketEvent {
+  final Racket racket;
+
+  OnSelectRacket({required this.racket});
+}
