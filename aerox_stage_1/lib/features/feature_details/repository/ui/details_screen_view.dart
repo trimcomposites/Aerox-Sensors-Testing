@@ -28,8 +28,10 @@ class DetailsScreenView extends StatelessWidget {
               leading: Icon( Icons.arrow_drop_up, color: Colors.white, ),
               trailing: SizedBox.shrink(),
               children: [
-                SpecsDataText( data: [ 'Weight', '343,756g' ], deviceSize: deviceSize,),
-                SpecsDataText( data: [ 'Balance', '343,756g', 'HeadLight' ], deviceSize: deviceSize,),
+                SpecsDataText( data: [ 'Weight', '343,756g' ],),
+                SpecsDataText( data: [ 'Balance', '343,756g', 'HeadLight' ], ),
+                SpecsDataText( data: [ 'Weight', '343,756g', '>Numero => Potencia' ], ),
+
               ],
             )
             
@@ -43,26 +45,34 @@ class DetailsScreenView extends StatelessWidget {
 
 class SpecsDataText extends StatelessWidget {
   const SpecsDataText({
-    super.key, 
-    this.data = const [], required this.deviceSize
+    super.key,
+    this.data = const [],
   });
+
   final List<String> data;
-  final double deviceSize;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: EdgeInsets.only( bottom: 10 ), 
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10),
 
-      children: [
-        for (String text in data)
-        Container(
-          child: Text(text, style: TextStyle( color: Colors.white ),),
-          width: 100,
-          ),
-
-      ]
-    )
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text( data[0], style: TextStyle(  color: Colors.white), ),
+                SizedBox( width: 50, ),
+                Text( data[1], style: TextStyle(  color: Colors.white), ),
+              ],
+            ),
+            SizedBox(width: 50,),
+            data.length>2
+            ? Text( data[2], style: TextStyle(  color: Colors.white), )
+            : SizedBox(width: 10,)
+          ],
+        ),
+      
     );
   }
 }
