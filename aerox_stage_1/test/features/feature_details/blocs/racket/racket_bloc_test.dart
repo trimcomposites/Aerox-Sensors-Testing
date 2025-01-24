@@ -23,6 +23,7 @@ void main() {
 
   final List<Racket> rackets = [];
   final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
+  final Racket racket = Racket(name: 'name', length: 1, weight: 1, img: 'img', pattern: 'pattern', balance: 1);
   group(' on get racket event ...', () {
     blocTest<RacketBloc, RacketState>('on get rackets success, emits [ rackets: [ List<Racket> ]', 
       build: () {
@@ -49,5 +50,16 @@ void main() {
       ],
     );
   });
-
+  
+  group(('on select racket event'), (){
+    blocTest<RacketBloc, RacketState>('on get rackets success, emits [ myRacket: [ Racket ]', 
+      build: () => racketBloc,
+      
+      act: (bloc) => bloc.add( OnSelectRacket( racket: racket ) ),
+      
+      expect: () => [
+        RacketState( myRacket: racket ),
+      ],
+    );
+  });
 }
