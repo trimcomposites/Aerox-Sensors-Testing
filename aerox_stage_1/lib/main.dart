@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/services/injection_container.dart';
+import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_options.dart';
 import 'package:aerox_stage_1/features/feature_splash/ui/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,7 +16,11 @@ void main() async{
     MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: ( context )=>sl<UserBloc>()..add( OnCheckUserIsSignedIn() ) )
+          create: ( context )=>sl<UserBloc>()..add( OnCheckUserIsSignedIn() ) 
+        ),
+        BlocProvider(
+          create: ( context )=>sl<RacketBloc>()..add( OnGetRackets() ) 
+        ),
     ],
     child: const MyApp())
   );
