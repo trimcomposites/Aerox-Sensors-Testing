@@ -16,7 +16,7 @@ class RacketRepository {
     if ( remote) {
       return datasource.remotegetRackets();
     }else{
-      return  right([]);
+      return right([]);
     }
   } 
 }

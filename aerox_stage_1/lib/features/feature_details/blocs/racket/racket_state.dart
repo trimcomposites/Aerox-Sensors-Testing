@@ -11,7 +11,7 @@ class RacketState extends Equatable {
   });
 
   
-  RacketState(copyWith({
+  RacketState copyWith({
     Racket? myRacket,
      List<Racket>? rackets,
   }) {
@@ -23,5 +23,5 @@ class RacketState extends Equatable {
 
 
   @override
-  List<Object?> get props => [user, errorMessage];
+  List<Object?> get props => [rackets, myRacket];
 }
