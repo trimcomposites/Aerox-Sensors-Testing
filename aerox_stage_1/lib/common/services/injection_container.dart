@@ -3,6 +3,10 @@ import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart'
 import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
+import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
+import 'package:aerox_stage_1/features/feature_details/repository/remote/mock_racket_datasource.dart';
+import 'package:aerox_stage_1/features/feature_details/repository/remote/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
@@ -24,12 +28,20 @@ Future<void> dependencyInjectionInitialize() async{
       checkUserSignedInUsecase: sl(),
       resetPasswordUsecase: sl()
     ))
-    //use cases
+    ..registerFactory(() => RacketBloc(
+      getRacketsUsecase: sl()
+    ))
+    //use cases//
+
+    //login
     ..registerLazySingleton(() => RegisterUserUsecase(loginRepo: sl()) )
     ..registerLazySingleton(() => SignInUserUsecase(loginRepo: sl()) )
     ..registerLazySingleton(() => SignOutUserUsecase(loginRepo: sl()) )
     ..registerLazySingleton(() => CheckUserSignedInUsecase(loginRepo: sl()) )
     ..registerLazySingleton(() => ResetPasswordUsecase( loginRepo: sl() ) )
+
+    //racket
+    ..registerLazySingleton(() =>GetRacketsUsecase(racketRepository: sl()) )
 
     //repository
     ..registerLazySingleton(
@@ -39,16 +51,25 @@ Future<void> dependencyInjectionInitialize() async{
         googleAuthService: sl()
       )
     )
+    ..registerLazySingleton(
+      () => RacketRepository(
+        datasource: sl(),
+      )
+    )
 
-    //services
+    //services//
 
+    //login
     ..registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance)
     ..registerLazySingleton(() => EmailAuthService(firebaseAuth: sl()))
     ..registerLazySingleton(() => GoogleAuthService(
       auth: sl(),
       googleSignIn: sl()
     ))
-    ..registerLazySingleton(() => GoogleSignIn());
+    ..registerLazySingleton(() => GoogleSignIn())
+
+    //racket
+    ..registerLazySingleton(() => MockRacketDatasource()); 
 
 }
    
