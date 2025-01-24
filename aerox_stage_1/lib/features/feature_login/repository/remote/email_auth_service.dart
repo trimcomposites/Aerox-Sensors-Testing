@@ -21,7 +21,7 @@ class EmailAuthService {
   Future<EitherErr<AeroxUser>> signInWithEmail({
     required AeroxUser aeroxUser,
   }) async {
-    return EitherCatch.catchE<AeroxUser, SignInErr>(() async {
+    return EitherCatch.catchAsync<AeroxUser, SignInErr>(() async {
       // Intento de inicio de sesión con el correo y la contraseña
       UserCredential credential = await firebaseAuth.signInWithEmailAndPassword(
         email: aeroxUser.email,
@@ -39,7 +39,7 @@ class EmailAuthService {
 Future<EitherErr<AeroxUser>> createUserWithEmail({
   required AeroxUser aeroxUser,
 }) async {
-  return EitherCatch.catchE<AeroxUser, SignInErr>(() async {
+  return EitherCatch.catchAsync<AeroxUser, SignInErr>(() async {
     UserCredential credential = await firebaseAuth.createUserWithEmailAndPassword(
       email: aeroxUser.email,
       password: aeroxUser.password!,
@@ -55,7 +55,7 @@ Future<EitherErr<AeroxUser>> createUserWithEmail({
   }, (exception) => SignInErr(errMsg: _handleSignUpError(exception), statusCode: StatusCode.registrationFailed));
 }
 Future<EitherErr<void>> signOut() async {
-  return EitherCatch.catchE<void, SignInErr>(() async {
+  return EitherCatch.catchAsync<void, SignInErr>(() async {
     await firebaseAuth.signOut();  // Llamamos a signOut() de Firebase Auth
   }, (exception) => SignInErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
 }
@@ -63,7 +63,7 @@ Future<EitherErr<void>> signOut() async {
 Future<EitherErr<void>> sendPasswordResetEmail({
   required String email,
 }) async {
-  return EitherCatch.catchE<void, SignInErr>(() async {
+  return EitherCatch.catchAsync<void, SignInErr>(() async {
     // Envía el correo para restablecer la contraseña
     await firebaseAuth.sendPasswordResetEmail(email: email);
   }, (exception) => SignInErr(

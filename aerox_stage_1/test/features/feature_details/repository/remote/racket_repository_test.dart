@@ -1,0 +1,51 @@
+import 'package:aerox_stage_1/common/utils/error/err/err.dart';
+import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
+import 'package:aerox_stage_1/domain/models/racket.dart';
+import 'package:aerox_stage_1/features/feature_details/repository/remote/mock_racket_datasource.dart';
+import 'package:aerox_stage_1/features/feature_details/repository/remote/racket_repository.dart';
+import 'package:dartz/dartz.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+import '../../../../mock_types.dart';
+
+
+void main() {
+  late MockRacketDatasource datasource;
+  late RacketRepository repository;
+  setUp((){
+    datasource = MockMockRacketDataSource();
+    repository = RacketRepository(datasource: datasource);
+    
+  });
+
+  const List<Racket> mockRackets = [];
+  final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
+
+    group('remote get rackets', (){
+      test('success get rackets, must return [ List<Racket> ]', ()async{
+        
+        //arrange
+        when(() => datasource.remotegetRackets()
+        ).thenAnswer( ( _ ) async => Right( mockRackets ) );
+        //act
+        final rackets = await repository.getRackets( remote: true );
+        //assert
+        expect(rackets, isA< Right<Err, List<Racket>>>());
+
+      });
+      test('failure get rackets, must return [ RAcketErr]', ()async{
+        //arrange
+        when(() => datasource.remotegetRackets()
+        ).thenAnswer( ( _ ) async => Left( racketErr )  );
+        //act
+        final rackets = await repository.getRackets( remote: true );
+        //assert
+        expect(rackets, isA< Left<Err, List<Racket>>>());
+
+
+    });
+    });
+
+
+}

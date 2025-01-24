@@ -16,7 +16,7 @@ class GoogleAuthService {
   GoogleAuthService({required this.auth, required this.googleSignIn});
   
 Future<EitherErr<AeroxUser>> signInWithGoogle() async {
-  return EitherCatch.catchE<AeroxUser, SignInErr>(() async {
+  return EitherCatch.catchAsync<AeroxUser, SignInErr>(() async {
     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
     if (googleUser == null) {
       throw Exception('Error al iniciar sesión con Google');
@@ -44,7 +44,7 @@ Future<EitherErr<AeroxUser>> signInWithGoogle() async {
 }
 
   Future<EitherErr<void>> signOut() async {
-    return EitherCatch.catchE<void, SignInErr>(() async {
+    return EitherCatch.catchAsync<void, SignInErr>(() async {
       await googleSignIn.signOut();
       await auth.signOut();
       return null;

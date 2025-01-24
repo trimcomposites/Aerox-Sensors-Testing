@@ -9,7 +9,7 @@ class Racket extends Equatable{
   final num balance;
   
 
-  Racket({
+  const Racket({
     required this.name,
     required this.length,
     required this.weight,

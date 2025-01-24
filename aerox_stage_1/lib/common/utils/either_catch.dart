@@ -4,12 +4,25 @@ import 'package:dartz/dartz.dart';
 
 extension EitherCatch on Either {
  
-  static Future<Either<Err, R>> catchE<R, E extends Err>(
+  static Future<Either<Err, R>> catchAsync<R, E extends Err>(
     Future<R> Function() block,  
     Err Function(Exception exception) errorBlock,  //
   ) async {
     try {
       final result = await block();  
+      return Right(result);  
+    } on Exception catch (e) {
+ 
+      return Left(errorBlock(e));  
+    }
+ 
+  }
+  static Either<Err, R> catchE<R, E extends Err>(
+    R Function() block,  
+    Err Function(Exception exception) errorBlock,  //
+  ) {
+    try {
+      final result = block();  
       return Right(result);  
     } on Exception catch (e) {
  

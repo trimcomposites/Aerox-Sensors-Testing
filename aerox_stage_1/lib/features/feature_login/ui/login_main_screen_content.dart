@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aerox_stage_1/features/feature_details/repository/ui/details_screen.dart';
+import 'package:aerox_stage_1/features/feature_details/ui/details_screen.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/widgets/login_with_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

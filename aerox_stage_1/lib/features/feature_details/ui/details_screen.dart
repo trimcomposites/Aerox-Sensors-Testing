@@ -1,8 +1,8 @@
-import 'package:aerox_stage_1/features/feature_details/repository/ui/details_screen_view.dart';
-import 'package:aerox_stage_1/features/feature_details/repository/ui/with_menu_and_return_app_bar.dart';
+import 'package:aerox_stage_1/features/feature_details/ui/details_screen_view.dart';
+import 'package:aerox_stage_1/features/feature_details/ui/with_menu_and_return_app_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../../../feature_login/ui/login_barrel.dart';
+import '../../feature_login/ui/login_barrel.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key});
