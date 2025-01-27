@@ -19,7 +19,7 @@ class DetailsScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PageController _pageController = PageController();
-    final ValueNotifier<int> racketIndexNotifier = ValueNotifier<int>(0); // Notificador para el índice actual.
+    final ValueNotifier<int> racketIndexNotifier = ValueNotifier<int>(0); 
     final bool isRacketSelected = rackets.length == 1;
 
     return SingleChildScrollView(

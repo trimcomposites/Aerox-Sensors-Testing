@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/details_screen_view.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/with_menu_and_return_app_bar.dart';
@@ -18,29 +19,33 @@ class DetailsScreen extends StatelessWidget {
           appBar: WithMenuAndReturnAppBar(),
           body: Stack(
             children: [
-              BlocBuilder<RacketBloc, RacketState>(
-                builder: (context, state) {
-                  if( state.isLoading ){
+              BlocBuilder<DetailsScreenBloc, DetailsScreenState>(
+                builder: (context, detailsScreenState) {
+              return BlocBuilder<RacketBloc, RacketState>(
+                builder: (context, racketState) {
+                  if( detailsScreenState.isLoading ){
                     return Container(); //add loading screen
                   }
-                  else if( state.myRacket == null ){
+                  else if( racketState.myRacket == null ){
 
                     return DetailsScreenView(
-                      rackets: state.rackets,
+                      rackets: racketState.rackets,
                       isLoading: false,
                       onPressedSelectRacket: ( racket ) => racketBloc.add( OnSelectRacket(racket: racket) ),
                     );
 
-                  }else if( state.myRacket != null ){
+                  }else if( racketState.myRacket != null ){
                     return DetailsScreenView(
-                      rackets: [ state.myRacket! ],
+                      rackets: [ racketState.myRacket! ],
                       isLoading: false,
                       onPressedDeselectRacket: ()=> racketBloc.add( OnDeselectRacket( ),
                       )
                     );
                   }else return Text( 'Error' ); //add error screen
                 }
-              )
+              );
+              }
+            )
             ],
           )),
     );

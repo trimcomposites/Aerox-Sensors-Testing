@@ -17,5 +17,3 @@ class OnSelectRacket extends RacketEvent {
 }
 class OnDeselectRacket extends RacketEvent {}
 
-class OnStartRacketLoading extends RacketEvent{}
-class OnStopRacketLoading extends RacketEvent{}

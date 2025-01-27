@@ -4,12 +4,10 @@ class RacketState extends Equatable {
 
   final Racket? myRacket;
   final List<Racket> rackets;
-  final bool isLoading;
 
   RacketState({
     this.myRacket,
     this.rackets = const [],
-    this.isLoading = false
   });
 
   
@@ -21,11 +19,10 @@ class RacketState extends Equatable {
     return RacketState(
       myRacket: myRacket,
       rackets: rackets ?? this.rackets,
-      isLoading: isLoading ?? this.isLoading
     );
   }
 
 
   @override
-  List<Object?> get props => [rackets, myRacket, isLoading];
+  List<Object?> get props => [rackets, myRacket, ];
 }
