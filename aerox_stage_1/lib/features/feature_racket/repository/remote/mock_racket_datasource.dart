@@ -29,8 +29,9 @@ class MockRacketDatasource {
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   } 
   
-  EitherErr<Racket> getSelectedRacket(){
-    return EitherCatch.catchE<Racket, RacketErr>(() {
+  Future<EitherErr<Racket>> getSelectedRacket() async{
+    return EitherCatch.catchAsync<Racket, RacketErr>(() async{
+      selectedRacket = await sqLiteDB.getSelectedRacket();
       if(selectedRacket== null){
         throw Exception(); 
       }
@@ -40,6 +41,7 @@ class MockRacketDatasource {
   EitherErr<Racket> selectRacket( Racket racket ){
     return EitherCatch.catchE<Racket, RacketErr>(() {
       selectedRacket = racket;
+      sqLiteDB.selectRacket( selectedRacket!.id );
       return selectedRacket!;
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   }

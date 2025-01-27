@@ -52,7 +52,7 @@ void main() {
         
         //arrange
         when(() => datasource.getSelectedRacket()
-        ).thenReturn( Right( racket ) );
+        ).thenAnswer((_) async => Right( racket ) );
         //act
         final rackets = await repository.getSelectedRacket();
         //assert
@@ -62,7 +62,7 @@ void main() {
       test('failure get selected racke, must return [ RAcketErr]', ()async{
         //arrange
         when(() => datasource.getSelectedRacket()
-        ).thenReturn( Left( racketErr )  );
+        ).thenAnswer((_ ) async => Left( racketErr )  );
         //act
         final rackets = await repository.getSelectedRacket();
         //assert

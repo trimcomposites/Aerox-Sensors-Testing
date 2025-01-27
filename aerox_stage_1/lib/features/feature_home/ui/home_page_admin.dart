@@ -44,7 +44,7 @@ class HomePageAdmin extends StatelessWidget {
                         return Column(
                           children: [
                             Text(
-                              'raqueta seleccionada ${state.myRacket?.name}'
+                              'raqueta seleccionada ${state.myRacket?.name}    '
                               'raquetas ${racketBloc.state.rackets.length}',
                               style: TextStyle(color: Colors.white),
                             ),

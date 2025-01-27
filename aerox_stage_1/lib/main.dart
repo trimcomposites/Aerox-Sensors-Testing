@@ -43,8 +43,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() ) ;
+    SQLiteDB sqLiteDB  =sl();
+    sqLiteDB.addColumn();
+    //sqLiteDB.insertRacketList( mockRackets ); 
+    //final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() ) ;
     return MaterialApp(
       title: 'Aerox',
       home: SplashScreen()

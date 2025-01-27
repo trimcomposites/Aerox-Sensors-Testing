@@ -40,11 +40,13 @@ class SQLiteDB {
         length NUMERIC,
         weight NUMERIC,
         pattern TEXT,
-        balance NUMERIC
+        balance NUMERIC,
+        is_selected INTEGER DEFAULT 0 -- 0: No seleccionada, 1: Seleccionada
       )
     ''');
 
   }
+  
    Future<int> insertRacket(Racket racket) async {
     final db = await database;
     return await db.insert('rackets', racket.toMap());
@@ -57,6 +59,20 @@ class SQLiteDB {
     return List.generate(maps.length, (i) {
       return Racket.fromMap(maps[i]);
     });
+  }
+  Future<void> clearDatabase() async {
+    final db = await database;
+
+    // Limpia los datos de todas las tablas
+    await db.delete('rackets');
+  }
+  Future<void> addColumn() async {
+    final db = await database;
+
+    // Limpia los datos de todas las tablas
+    await db.execute('''
+      ALTER TABLE rackets ADD COLUMN is_selected INTEGER DEFAULT 0
+    ''');
   }
 
   Future<int> updateRacket(Racket racket) async {
@@ -88,5 +104,31 @@ class SQLiteDB {
       }
       await batch.commit(noResult: true); 
     });
+  }
+  Future<void> selectRacket(int racketId) async {
+    final db = await database;
+
+    await db.update('rackets', {'is_selected': 0});
+
+    await db.update(
+      'rackets',
+      {'is_selected': 1},
+      where: 'id = ?',
+      whereArgs: [racketId],
+    );
+  }
+  Future<Racket?> getSelectedRacket() async {
+    final db = await database;
+
+    final result = await db.query(
+      'rackets',
+      where: 'is_selected = ?',
+      whereArgs: [1],
+    );
+
+    if (result.isNotEmpty) {
+      return Racket.fromMap(result.first);
+    }
+    return null;
   }
 }
