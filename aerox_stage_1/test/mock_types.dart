@@ -4,8 +4,8 @@ import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
-import 'package:aerox_stage_1/features/feature_details/repository/remote/mock_racket_datasource.dart';
-import 'package:aerox_stage_1/features/feature_details/repository/remote/racket_repository.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';

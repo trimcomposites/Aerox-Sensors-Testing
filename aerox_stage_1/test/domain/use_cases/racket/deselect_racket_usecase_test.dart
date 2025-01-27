@@ -3,7 +3,7 @@ import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/deselect_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
-import 'package:aerox_stage_1/features/feature_details/repository/remote/racket_repository.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/racket_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

@@ -1,10 +1,10 @@
 import 'package:aerox_stage_1/common/services/injection_container.dart';
-import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
-import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
-import 'package:aerox_stage_1/features/feature_details/ui/details_screen.dart';
-import 'package:aerox_stage_1/features/feature_details/ui/error_details_screen.dart';
-import 'package:aerox_stage_1/features/feature_details/ui/loading_details_screen.dart';
-import 'package:aerox_stage_1/features/feature_details/ui/racket_select_screen.dart';
+import 'package:aerox_stage_1/features/feature_racket/feature_details/blocs/details_screen/details_screen_bloc.dart';
+import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
+import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/details_screen.dart';
+import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/error_details_screen.dart';
+import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/loading_details_screen.dart';
+import 'package:aerox_stage_1/features/feature_racket/feature_select/ui/racket_select_screen.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/top_notch_padding.dart';
 import 'package:flutter/material.dart';
