@@ -16,70 +16,66 @@ class DetailsScreenView extends StatelessWidget {
   final bool isLoading;
   final void Function( Racket )? onPressedSelectRacket;
   final void Function( )? onPressedDeselectRacket;
-
   @override
   Widget build(BuildContext context) {
     final PageController _pageController = PageController();
-    int racketIndex = 0;
+    final ValueNotifier<int> racketIndexNotifier = ValueNotifier<int>(0); // Notificador para el índice actual.
     final bool isRacketSelected = rackets.length == 1;
 
     return SingleChildScrollView(
-        child:  Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                      child: Text(
-                    isRacketSelected
-                    ? 'TU PALA AEROX'
-                    : 'SELECCIONA TU PALA',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  )),
-                  Container(
-                    height: 450,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemCount: isRacketSelected ? 1 : rackets.length,
-                      onPageChanged: (int index) {
-                        // Actualizar racketIndex cada vez que se cambie la página.
-                        racketIndex = index;
-                      },
-                      itemBuilder: (BuildContext context, int index) {
-                        return Image.network(
-                          isRacketSelected
-                              ? rackets[0].img
-                              : rackets[index].img,
-                          height: 450,
-                        );
-                      },
-                    ),
-                  ),
-                  Text(
-                    'AEROX Alpha ProShield',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 23,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                  AppButton(
-                    onPressed: (){   
-                        if(isRacketSelected){
-                          onPressedDeselectRacket!();
-                        }else{
-                          onPressedSelectRacket!( rackets[racketIndex] );
-                        }
-                    },
-                    text: !isRacketSelected
-                    ? 'Seleccionar raqueta'
-                    : 'Cancelar seleccion',
-                    backgroundColor: appYellowColor,
-                    showborder: false,
-                    fontColor: Colors.black,
-                  ),    
-                  ExpansionTile(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Text(
+                  isRacketSelected ? 'TU PALA AEROX' : 'SELECCIONA TU PALA',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+              Container(
+                height: 450,
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: isRacketSelected ? 1 : rackets.length,
+                  onPageChanged: (int index) {
+                    racketIndexNotifier.value = index; 
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    return Image.network(
+                      isRacketSelected ? rackets[0].img : rackets[index].img,
+                      height: 450,
+                    );
+                  },
+                ),
+              ),
+              Text(
+                'AEROX Alpha ProShield',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 23,
+                ),
+                textAlign: TextAlign.start,
+              ),
+              AppButton(
+                onPressed: () {
+                  if (isRacketSelected) {
+                    onPressedDeselectRacket?.call();
+                  } else {
+                    onPressedSelectRacket?.call(rackets[racketIndexNotifier.value]);
+                  }
+                },
+                text: !isRacketSelected ? 'Seleccionar raqueta' : 'Cancelar seleccion',
+                backgroundColor: appYellowColor,
+                showborder: false,
+                fontColor: Colors.black,
+              ),
+              ValueListenableBuilder<int>(
+                valueListenable: racketIndexNotifier,
+                builder: (context, racketIndex, child) {
+                  return ExpansionTile(
                     tilePadding: EdgeInsets.zero,
                     title: Text(
                       ' Datos tecnicos ',
@@ -92,22 +88,23 @@ class DetailsScreenView extends StatelessWidget {
                     trailing: SizedBox.shrink(),
                     children: [
                       SpecsDataText(
-                        data: ['Weight', '343,756g'],
+                        data: ['Weight', rackets[racketIndex].weight.toString()],
                       ),
                       SpecsDataText(
-                        data: ['Balance', '343,756g', 'HeadLight'],
+                        data: ['Balance', rackets[racketIndex].balance.toString()],
                       ),
                       SpecsDataText(
-                        data: ['Weight', '343,756g', '>Numero => Potencia'],
+                        data: ['Pattern', rackets[racketIndex].pattern],
                       ),
                     ],
-                  ),
-
-
-                ]),
+                  );
+                },
+              ),
+            ],
           ),
-        )
-      );
+        ),
+      ),
+    );
   }
 }
 
