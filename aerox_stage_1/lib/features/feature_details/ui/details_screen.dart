@@ -11,7 +11,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../feature_login/ui/login_barrel.dart';
 
 class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({super.key});
+  const DetailsScreen({
+    super.key, 
+    required this.onback
+  });
+  final void Function()? onback;
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +23,15 @@ class DetailsScreen extends StatelessWidget {
     return Container(
       child: Scaffold(
         backgroundColor: backgroundColor,
-        appBar: WithMenuAndReturnAppBar(),
+        appBar: WithMenuAndReturnAppBar(
+          onback: onback,
+        ),
         body: DetailsScreenView(
           rackets: [ racketBloc.state.myRacket! ],
           isLoading: false,
           onPressedDeselectRacket: (){
             racketBloc.add( OnDeselectRacket(),);
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePageAdmin()));
+            onback?.call();
           } 
         )    
       )

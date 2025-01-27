@@ -11,7 +11,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../feature_login/ui/login_barrel.dart';
 
 class RacketSelectScreen extends StatelessWidget {
-  const RacketSelectScreen({super.key});
+  const RacketSelectScreen({super.key, 
+  required this.onback
+  });
+
+  final void Function()? onback;
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +23,18 @@ class RacketSelectScreen extends StatelessWidget {
     return Container(
       child: Scaffold(
         backgroundColor: backgroundColor,
-        appBar: WithMenuAndReturnAppBar(),
+        appBar: WithMenuAndReturnAppBar(
+          onback: onback,
+        ),
         body: DetailsScreenView(
           rackets:   racketBloc.state.rackets,
           isLoading: false,
-          onPressedSelectRacket: ( racket ){ 
-            racketBloc.add( OnSelectRacket(racket: racket ),);
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePageAdmin())
-            );
-          }
-        )    
-      )
+          onPressedSelectRacket: (racket) {
+          racketBloc.add(OnSelectRacket(racket: racket));
+          onback?.call(); // Verifica que onback no sea nulo antes de llamarlo.
+        },
+      ),
+    )
     );
   }
 }

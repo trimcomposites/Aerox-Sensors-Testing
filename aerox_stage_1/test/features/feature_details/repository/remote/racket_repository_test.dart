@@ -95,6 +95,30 @@ void main() {
 
       });
     });
+    group('remote deselect racket', (){
+      test('success deselect racket, must return [ Racket ]', ()async{
+        
+        //arrange
+        when(() => datasource.deselectRacket()
+        ).thenReturn( Right( null ) );
+        //act
+        final rackets = await repository.deselectRacket();
+        //assert
+        expect(rackets, isA< Right<Err, void>>());
+
+      });
+      test('failure select racket, must return [ RAcketErr]', ()async{
+        //arrange
+        when(() => datasource.deselectRacket()
+        ).thenReturn( Left( racketErr )  );
+        //act
+        final rackets = await repository.deselectRacket();
+        //assert
+        expect(rackets, isA<Left<Err, void>>());
+
+
+      });
+    });
 
 
 }

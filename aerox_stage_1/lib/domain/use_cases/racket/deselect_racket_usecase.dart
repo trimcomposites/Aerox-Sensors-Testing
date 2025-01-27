@@ -3,12 +3,12 @@ import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
 import 'package:aerox_stage_1/features/feature_details/repository/remote/racket_repository.dart';
 
-class DeselectRacketUsecase extends AsyncUseCaseWithParams<void, Racket>{
+class DeselectRacketUsecase extends AsyncUseCaseWitoutParams<void>{
 
   final RacketRepository racketRepository;
   const DeselectRacketUsecase({ required this.racketRepository });
   @override
-  Future<EitherErr<Racket>> call( params ) async{
-    return await racketRepository.selectRacket( params );
+  Future<EitherErr<void>> call() async{
+    return await racketRepository.deselectRacket();
   }
 }

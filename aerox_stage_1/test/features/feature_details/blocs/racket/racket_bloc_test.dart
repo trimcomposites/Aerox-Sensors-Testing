@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/deselect_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
@@ -13,13 +14,15 @@ import '../../../../mock_types.dart';
 late RacketBloc racketBloc;
 late GetRacketsUsecase getRacketsUsecase;
 late SelectRacketUsecase selectRacketUsecase;
+late DeselectRacketUsecase deselectRacketUsecase;
 void main() {
 
   setUp((){
     getRacketsUsecase = MockGetRacketsUseCase();
     racketBloc = RacketBloc(
       getRacketsUsecase: getRacketsUsecase,
-      selectRacketUsecase: selectRacketUsecase
+      selectRacketUsecase: selectRacketUsecase,
+      deselectRacketUsecase: deselectRacketUsecase
       );
   });
 

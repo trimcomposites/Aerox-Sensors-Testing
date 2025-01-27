@@ -18,10 +18,15 @@ class HomePageAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final HomeScreenBloc homeScreenBloc = sl();
-    return BlocProvider(
-      create: (context) => HomeScreenBloc(getSelectedRacketUsecase: sl())..add( OnGetSelectedRacket() ),
-      child: TopNotchPadding(
+
+    final HomeScreenBloc homeScreenBloc = BlocProvider.of( context )..add( OnGetSelectedRacket() );
+
+    onback() {
+      Navigator.of(context).pop();
+      homeScreenBloc.add(OnGetSelectedRacket());
+    }
+
+      return TopNotchPadding(
         context: context,
         child: Scaffold(
             appBar: HomePageAppbar(),
@@ -48,13 +53,17 @@ class HomePageAdmin extends StatelessWidget {
                     AppButton(
                         text: 'TU PALA AEROX',
                         onPressed: () {
-                          Navigator.pushReplacement(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
                                       homeScreenBloc.state.myRacket != null
-                                          ? DetailsScreen()
-                                          : RacketSelectScreen()));
+                                          ? DetailsScreen(
+                                            onback: onback,
+                                          )
+                                          : RacketSelectScreen(
+                                            onback: onback,
+                                          )));
                         }),
                     const SizedBox(height: 30),
                     AppButton(text: 'TU JUEGO', onPressed: () {}),
@@ -82,7 +91,6 @@ class HomePageAdmin extends StatelessWidget {
                 ),
               ),
             )),
-      ),
-    );
+      );
   }
 }

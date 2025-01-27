@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 class WithMenuAndReturnAppBar extends StatelessWidget implements PreferredSizeWidget {
   const WithMenuAndReturnAppBar({
     super.key, 
+    required this.onback
   });
+
+  final void Function()? onback;
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -14,7 +17,7 @@ class WithMenuAndReturnAppBar extends StatelessWidget implements PreferredSizeWi
         children: [
           IconButton(
             icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),
-            onPressed: () =>Navigator.pop(context)
+            onPressed: onback
             )
         ],
       ),
