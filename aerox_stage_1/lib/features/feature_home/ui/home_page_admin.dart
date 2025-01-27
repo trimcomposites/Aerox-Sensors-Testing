@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/services/injection_container.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/details_screen.dart';
@@ -14,22 +15,21 @@ import 'home_page_barrel.dart';
 class HomePageAdmin extends StatelessWidget {
   const HomePageAdmin({super.key});
 
+
   @override
   Widget build(BuildContext context) {
-
-    final homeScreenBloc = BlocProvider.of<HomeScreenBloc>( context );
-    final racketBloc = BlocProvider.of<RacketBloc>( context );
-    homeScreenBloc.add( OnGetSelectedRacket() );
-
-    return TopNotchPadding(
-      context: context,
-      child: Scaffold(
-        appBar: HomePageAppbar(),
-        backgroundColor: backgroundColor,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.only( bottom: 40 ),
-            child: Column(
+    final HomeScreenBloc homeScreenBloc = sl();
+    return BlocProvider(
+      create: (context) => HomeScreenBloc(getSelectedRacketUsecase: sl())..add( OnGetSelectedRacket() ),
+      child: TopNotchPadding(
+        context: context,
+        child: Scaffold(
+            appBar: HomePageAppbar(),
+            backgroundColor: backgroundColor,
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -37,54 +37,52 @@ class HomePageAdmin extends StatelessWidget {
                       builder: (context, state) {
                         return Column(
                           children: [
-
-                            Text( 'raqueta seleccionada ${state.myRacket?.name}', style: TextStyle( color: Colors.white ), ),
+                            Text(
+                              'raqueta seleccionada ${state.myRacket?.name}',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ],
                         );
                       },
                     ),
-                    AppButton( 
-                      text: 'TU PALA AEROX', 
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) =>homeScreenBloc.state.myRacket != null
-                          ? DetailsScreen()
-                          : RacketSelectScreen()
-                          ));
+                    AppButton(
+                        text: 'TU PALA AEROX',
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      homeScreenBloc.state.myRacket != null
+                                          ? DetailsScreen()
+                                          : RacketSelectScreen()));
                         }),
-                      const SizedBox(height: 30),
-                      AppButton( text: 'TU JUEGO',
-                        onPressed:() {
-            
-                        }
-                      ),
-            
-                      const SizedBox(height: 30),
-            
-                      AppButton(
-                        text: 'JUGAR',
-                        backgroundColor: appYellowColor,
-                        showborder: false,
-                        fontColor: Colors.black,
-                        onPressed: (){
-                        },
-                      ),
-            
-                      const SizedBox(height: 30),
-            
-                      // AppButton(
-                      //   text: "SIGN OUT",
-                      //   onPressed: (){
-                      //     userBloc.add( OnGoogleSignOutUser() );
-                      //     userBloc.add( OnEmailSignOutUser() );
-                      //   } 
-                      // ),
-                    ],
+                    const SizedBox(height: 30),
+                    AppButton(text: 'TU JUEGO', onPressed: () {}),
+
+                    const SizedBox(height: 30),
+
+                    AppButton(
+                      text: 'JUGAR',
+                      backgroundColor: appYellowColor,
+                      showborder: false,
+                      fontColor: Colors.black,
+                      onPressed: () {},
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    // AppButton(
+                    //   text: "SIGN OUT",
+                    //   onPressed: (){
+                    //     userBloc.add( OnGoogleSignOutUser() );
+                    //     userBloc.add( OnEmailSignOutUser() );
+                    //   }
+                    // ),
+                  ],
                 ),
-          ),
-        )
-        ),
+              ),
+            )),
+      ),
     );
   }
 }

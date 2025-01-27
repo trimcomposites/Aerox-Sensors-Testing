@@ -39,6 +39,11 @@ class MockRacketDatasource {
       return selectedRacket!;
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   }
+  EitherErr<void> deselectRacket(){
+    return EitherCatch.catchE<Racket, RacketErr>(() {
+      return selectedRacket!;
+    }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
+  }
 
 
 

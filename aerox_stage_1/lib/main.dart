@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final racketBloc = BlocProvider.of<RacketBloc>(context);
     return MaterialApp(
       title: 'Aerox',
       home: SplashScreen()
