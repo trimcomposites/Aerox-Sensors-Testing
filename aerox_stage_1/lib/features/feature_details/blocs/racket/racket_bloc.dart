@@ -24,6 +24,9 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
     on<OnSelectRacket>((event, emit) {
       emit( state.copyWith( myRacket: event.racket ) );
     },);
+    on<OnDeselectRacket>((event, emit) {
+      emit( state.copyWith( myRacket: null) );
+    },);
   }
 
 }

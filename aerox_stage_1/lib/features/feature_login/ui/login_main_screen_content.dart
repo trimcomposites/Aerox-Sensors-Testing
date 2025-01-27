@@ -74,7 +74,7 @@ class LoginMainScreenContent extends StatelessWidget {
                 text: 'DEtalles previsualización',
                 backgroundColor: Colors.transparent,
                 onPressed: (){
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: ( context ) => DetailsScreen()
                     )

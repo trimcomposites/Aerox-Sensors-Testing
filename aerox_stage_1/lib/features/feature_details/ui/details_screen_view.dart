@@ -9,12 +9,13 @@ class DetailsScreenView extends StatelessWidget {
     super.key, 
     required this.rackets, 
     required this.isLoading,
-    this.onPressedSelectRacket
+    this.onPressedSelectRacket, this.onPressedDeselectRacket
     });
 
   final List<Racket> rackets;
   final bool isLoading;
   final void Function( Racket )? onPressedSelectRacket;
+  final void Function( )? onPressedDeselectRacket;
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +65,16 @@ class DetailsScreenView extends StatelessWidget {
                     textAlign: TextAlign.start,
                   ),
                   AppButton(
-                    onPressed: (){
-                      if( onPressedSelectRacket!= null ){
-                      onPressedSelectRacket!( rackets[racketIndex] );
-                      }
+                    onPressed: (){   
+                        if(isRacketSelected){
+                          onPressedDeselectRacket!();
+                        }else{
+                          onPressedSelectRacket!( rackets[racketIndex] );
+                        }
                     },
-                    text: 'Seleccionar raqueta',
+                    text: !isRacketSelected
+                    ? 'Seleccionar raqueta'
+                    : 'Cancelar seleccion',
                     backgroundColor: appYellowColor,
                     showborder: false,
                     fontColor: Colors.black,

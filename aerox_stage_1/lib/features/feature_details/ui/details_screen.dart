@@ -35,6 +35,8 @@ class DetailsScreen extends StatelessWidget {
                     return DetailsScreenView(
                       rackets: [ state.myRacket! ],
                       isLoading: false,
+                      onPressedDeselectRacket: ()=> racketBloc.add( OnDeselectRacket( ),
+                      )
                     );
                   }else return Text( 'Error' ); //add error screen
                 }

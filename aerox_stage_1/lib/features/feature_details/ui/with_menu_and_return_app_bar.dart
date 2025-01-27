@@ -14,10 +14,8 @@ class WithMenuAndReturnAppBar extends StatelessWidget implements PreferredSizeWi
         children: [
           IconButton(
             icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),
-            onPressed: () {
-            },
-            
-          ), 
+            onPressed: () =>Navigator.pop(context)
+            )
         ],
       ),
       title: Container(
