@@ -71,6 +71,30 @@ void main() {
 
       });
     });
+    group('remote select racket', (){
+      test('success select racket, must return [ Racket ]', ()async{
+        
+        //arrange
+        when(() => datasource.selectRacket( racket )
+        ).thenReturn( Right( racket ) );
+        //act
+        final rackets = await repository.selectRacket( racket );
+        //assert
+        expect(rackets, isA< Right<Err, Racket>>());
+
+      });
+      test('failure select racket, must return [ RAcketErr]', ()async{
+        //arrange
+        when(() => datasource.selectRacket( racket )
+        ).thenReturn( Left( racketErr )  );
+        //act
+        final rackets = await repository.selectRacket( racket );
+        //assert
+        expect(rackets, isA<Left<Err, Racket>>());
+
+
+      });
+    });
 
 
 }
