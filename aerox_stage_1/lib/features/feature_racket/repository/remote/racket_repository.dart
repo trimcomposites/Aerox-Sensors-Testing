@@ -12,11 +12,10 @@ class RacketRepository {
   RacketRepository({required this.datasource});
 
   Future<EitherErr<List<Racket>>> getRackets( {required bool remote} ) async {
-    datasource.remotegetRackets();
     if ( remote) {
       return datasource.remotegetRackets();
     }else{
-      return right([]);
+      return datasource.localGetRackets();
     }
   } 
   Future<EitherErr<Racket>> getSelectedRacket() async{

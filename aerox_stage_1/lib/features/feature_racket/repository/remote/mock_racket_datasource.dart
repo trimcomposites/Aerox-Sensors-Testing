@@ -4,11 +4,15 @@ import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/status_code.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
 
 class MockRacketDatasource {
 
   //futuras dependencias
-  MockRacketDatasource();
+  MockRacketDatasource({ 
+    required this.sqLiteDB
+  });
+  final SQLiteDB sqLiteDB;
   Racket? selectedRacket;
 
 
@@ -19,9 +23,9 @@ class MockRacketDatasource {
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   } 
   
-  EitherErr<List<Racket>>localGetRackets() {
-    return EitherCatch.catchE<List<Racket>, RacketErr>(() {
-      return  mockRackets;
+  Future<EitherErr<List<Racket>>>localGetRackets() {
+    return EitherCatch.catchAsync<List<Racket>, RacketErr>(() async {
+      return await sqLiteDB.getAllRackets();
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   } 
   

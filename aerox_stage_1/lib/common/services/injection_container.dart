@@ -9,6 +9,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket.usecas
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
@@ -72,6 +73,9 @@ Future<void> dependencyInjectionInitialize() async{
 
     //services//
 
+    //sqlite
+    ..registerLazySingleton(() => SQLiteDB())
+
     //login
     ..registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance)
     ..registerLazySingleton(() => EmailAuthService(firebaseAuth: sl()))
@@ -82,7 +86,9 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerLazySingleton(() => GoogleSignIn())
 
     //racket
-    ..registerLazySingleton(() => MockRacketDatasource()); 
+    ..registerLazySingleton(() => MockRacketDatasource(
+      sqLiteDB: sl()
+    )); 
 
 }
    

@@ -20,6 +20,7 @@ class HomePageAdmin extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final HomeScreenBloc homeScreenBloc = BlocProvider.of( context )..add( OnGetSelectedRacket() );
+    final RacketBloc racketBloc = BlocProvider.of( context );
 
     onback() {
       Navigator.of(context).pop();
@@ -43,7 +44,8 @@ class HomePageAdmin extends StatelessWidget {
                         return Column(
                           children: [
                             Text(
-                              'raqueta seleccionada ${state.myRacket?.name}',
+                              'raqueta seleccionada ${state.myRacket?.name}'
+                              'raquetas ${racketBloc.state.rackets.length}',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],

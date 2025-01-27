@@ -3,6 +3,8 @@ import 'package:aerox_stage_1/features/feature_racket/feature_details/blocs/deta
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_options.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
 import 'package:aerox_stage_1/features/feature_splash/ui/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,7 +43,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final racketBloc = BlocProvider.of<RacketBloc>(context);
+
+    final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() ) ;
     return MaterialApp(
       title: 'Aerox',
       home: SplashScreen()

@@ -78,4 +78,15 @@ class SQLiteDB {
     );
   }
 
+  Future<void> insertRacketList(List<Racket> rackets) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      final batch = txn.batch(); 
+      for (var racket in rackets) {
+        batch.insert('rackets', racket.toMap());
+      }
+      await batch.commit(noResult: true); 
+    });
+  }
 }
