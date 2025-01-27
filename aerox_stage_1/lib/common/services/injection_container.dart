@@ -5,6 +5,7 @@ import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket.usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/repository/remote/mock_racket_datasource.dart';
@@ -32,7 +33,8 @@ Future<void> dependencyInjectionInitialize() async{
       resetPasswordUsecase: sl()
     ))
     ..registerFactory(() => RacketBloc(
-      getRacketsUsecase: sl()
+      getRacketsUsecase: sl(),
+      selectRacketUsecase: sl()
     ))
     ..registerFactory(() => HomeScreenBloc(
       getSelectedRacketUsecase: sl()
@@ -49,6 +51,7 @@ Future<void> dependencyInjectionInitialize() async{
     //racket
     ..registerLazySingleton(() =>GetRacketsUsecase(racketRepository: sl()) )
     ..registerLazySingleton(() =>GetSelectedRacketUsecase(racketRepository: sl()) )
+    ..registerLazySingleton(() =>SelectRacketUsecase(racketRepository: sl()) )
 
     //repository
     ..registerLazySingleton(

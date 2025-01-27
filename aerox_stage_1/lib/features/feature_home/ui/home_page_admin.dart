@@ -19,7 +19,7 @@ class HomePageAdmin extends StatelessWidget {
 
     final homeScreenBloc = BlocProvider.of<HomeScreenBloc>( context );
     final racketBloc = BlocProvider.of<RacketBloc>( context );
-    
+    homeScreenBloc.add( OnGetSelectedRacket() );
 
     return TopNotchPadding(
       context: context,
@@ -37,6 +37,7 @@ class HomePageAdmin extends StatelessWidget {
                       builder: (context, state) {
                         return Column(
                           children: [
+
                             Text( 'raqueta seleccionada ${state.myRacket?.name}', style: TextStyle( color: Colors.white ), ),
                           ],
                         );
@@ -45,7 +46,7 @@ class HomePageAdmin extends StatelessWidget {
                     AppButton( 
                       text: 'TU PALA AEROX', 
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) =>homeScreenBloc.state.myRacket != null
                           ? DetailsScreen()

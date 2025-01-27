@@ -4,6 +4,7 @@ import 'package:aerox_stage_1/features/feature_details/ui/details_screen_view.da
 import 'package:aerox_stage_1/features/feature_details/ui/error_details_screen.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/loading_details_screen.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/with_menu_and_return_app_bar.dart';
+import 'package:aerox_stage_1/features/feature_home/ui/home_page_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +23,11 @@ class RacketSelectScreen extends StatelessWidget {
         body: DetailsScreenView(
           rackets:   racketBloc.state.rackets,
           isLoading: false,
-          onPressedDeselectRacket: ()=> racketBloc.add( OnDeselectRacket(),)
+          onPressedSelectRacket: ( racket ){ 
+            racketBloc.add( OnSelectRacket(racket: racket ),);
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePageAdmin())
+            );
+          }
         )    
       )
     );

@@ -22,4 +22,7 @@ class RacketRepository {
   Future<EitherErr<Racket>> getSelectedRacket() async{
     return datasource.getSelectedRacket();
   }
+  Future<EitherErr<Racket>> selectRacket( Racket racket ) async{
+    return datasource.selectRacket( racket );
+  }
 }
