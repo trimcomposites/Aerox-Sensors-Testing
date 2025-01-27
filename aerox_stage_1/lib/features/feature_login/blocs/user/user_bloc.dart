@@ -1,0 +1,97 @@
+import 'package:aerox_stage_1/domain/models/aerox_user.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/email_sign_in_type.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+part 'user_event.dart';
+part 'user_state.dart';
+
+class UserBloc extends Bloc<UserEvent, UserState> {
+
+
+
+  final SignOutUserUsecase signOutUseCase; 
+  final RegisterUserUsecase registerUseCase;
+  final SignInUserUsecase signInUsecase;
+  final CheckUserSignedInUsecase checkUserSignedInUsecase;
+  final ResetPasswordUsecase resetPasswordUsecase;
+
+
+  UserBloc({ 
+    required this.signInUsecase, 
+    required this.signOutUseCase, 
+    required this.registerUseCase , 
+    required this.checkUserSignedInUsecase , 
+    required this.resetPasswordUsecase
+  }) : super(UserState()) {
+
+    on<OnGoogleSignInUser>((event, emit) async{
+      // ignore: avoid_single_cascade_in_expression_statements
+      await signInUsecase( SignInUserUsecaseParams(signInType: EmailSignInType.google)  )..fold(
+      (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+      (r) => emit( state.copyWith( user: r  ) ));
+    });
+    on<OnGoogleSignOutUser>((event, emit) async {
+      // ignore: avoid_single_cascade_in_expression_statements
+      await signOutUseCase(  EmailSignInType.google )..fold(
+      (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+      (r) => emit( state.copyWith( user: null  ) ));
+    });
+    
+    on<OnEmailSignInUser>((event, emit) async {
+      final user = AeroxUser(name: 'name', email: event.email, password: event.password );
+      // ignore: avoid_single_cascade_in_expression_statements
+      await signInUsecase( SignInUserUsecaseParams(signInType: EmailSignInType.email, user: user) )..fold(
+      (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+      (r) => emit( state.copyWith( user: r, errorMessage: null  ) ));
+
+
+    });
+    on<OnEmailSignOutUser>((event, emit) async {
+      // ignore: avoid_single_cascade_in_expression_statements
+      await signOutUseCase(  EmailSignInType.email )..fold(
+      (l) => emit( state.copyWith( errorMessage: l.errMsg ) ),
+      (r) => emit( state.copyWith( user: null, errorMessage: null ) ));
+      print( state.user );
+    });
+    on<OnEmailRegisterUser>((event, emit) async {
+      final user = AeroxUser(name: 'name', email: event.email, password: event.password );
+      dynamic result = await registerUseCase(user);
+      if( result is AeroxUser ){
+        emit( state.copyWith( user: result, errorMessage: null ) );
+      }else if ( result is String ) {
+        emit( state.copyWith( errorMessage: result ) );
+      }
+    });
+
+    on<OnDeleteErrorMsg>((event, emit) {
+      emit( state.copyWith( errorMessage: null ) );
+      print( state.errorMessage );
+    },);
+
+    on<OnCheckUserIsSignedIn>((event, emit) async{
+      final res= await checkUserSignedInUsecase();
+      res.fold(
+        (l) => emit( state.copyWith( user: null, errorMessage: null ) ),
+        (r) => emit( state.copyWith( user: r ) ));
+
+    });
+    on<OnPasswordReset>((event, emit) async {
+      // ignore: avoid_single_cascade_in_expression_statements
+      await resetPasswordUsecase( event.email )..fold(
+        //TODO: show snackbar en cada caso
+        (l) => emit( state.copyWith(  errorMessage: l.errMsg ) ),
+        (r) => emit( state.copyWith( errorMessage: '¡Mensaje enviado! Compruebe su bandeja de entrada' )));
+
+    });
+
+
+
+  }
+
+}

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "293842013726",
+    "project_id": "aerox-1",
+    "storage_bucket": "aerox-1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293842013726:android:70ed409487b67204cc280f",
+        "android_client_info": {
+          "package_name": "com.labtend.aerox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "293842013726-tl96rs5t8k25ot5is38en5grqo1q613j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labtend.aerox",
+            "certificate_hash": "47b8a28b165233faf5fd77835779434b35d67b8b"
+          }
+        },
+        {
+          "client_id": "293842013726-8462akpn4bad018q7jr9bda419gnu6gf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoBZLTSwOeKDRA_TxVpOiqjjjut7J4PPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "293842013726-8462akpn4bad018q7jr9bda419gnu6gf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "293842013726-u5f5qkc2278es3t9riliafqv6150hl7v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.labtend.aerox"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

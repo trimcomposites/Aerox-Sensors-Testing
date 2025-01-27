@@ -1,6 +1,5 @@
-import 'package:aerox_stage_1/feature_splash/ui/background_gradient.dart';
-import 'package:aerox_stage_1/feature_splash/ui/resources.dart';
-import 'package:aerox_stage_1/feature_splash/ui/splash_background_image.dart';
+import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
+import 'package:aerox_stage_1/features/feature_splash/ui/splash_background_image.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,10 +18,10 @@ class _SplashScreenState extends State<SplashScreen> {
   _navigateToHome() async {
     await Future.delayed(Duration(seconds: 3));
 
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => HomePage()), 
-    // );
+    Navigator.pushReplacement(
+     context,
+     MaterialPageRoute(builder: (context) => UserCheckScreen()), 
+    );
   }
 
   @override
