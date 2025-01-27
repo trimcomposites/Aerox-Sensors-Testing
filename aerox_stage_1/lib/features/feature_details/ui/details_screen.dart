@@ -20,7 +20,7 @@ class DetailsScreen extends StatelessWidget {
         backgroundColor: backgroundColor,
         appBar: WithMenuAndReturnAppBar(),
         body: DetailsScreenView(
-          rackets: [ ],
+          rackets: [ racketBloc.state.myRacket! ],
           isLoading: false,
           onPressedDeselectRacket: ()=> racketBloc.add( OnDeselectRacket(),)
         )    

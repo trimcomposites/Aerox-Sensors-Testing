@@ -20,6 +20,7 @@ void main() {
   });
 
   const List<Racket> mockRackets = [];
+  final Racket racket = Racket(name: 'name', length: 1, weight: 1, img: '' , pattern: '', balance: 1);
   final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
 
     group('remote get rackets', (){
@@ -44,7 +45,31 @@ void main() {
         expect(rackets, isA< Left<Err, List<Racket>>>());
 
 
+      });
     });
+    group('remote get selected racket', (){
+      test('success get selected racket, must return [ Racket ]', ()async{
+        
+        //arrange
+        when(() => datasource.getSelectedRacket()
+        ).thenReturn( Right( racket ) );
+        //act
+        final rackets = await repository.getSelectedRacket();
+        //assert
+        expect(rackets, isA< Right<Err, Racket>>());
+
+      });
+      test('failure get selected racke, must return [ RAcketErr]', ()async{
+        //arrange
+        when(() => datasource.getSelectedRacket()
+        ).thenReturn( Left( racketErr )  );
+        //act
+        final rackets = await repository.getSelectedRacket();
+        //assert
+        expect(rackets, isA<Left<Err, Racket>>());
+
+
+      });
     });
 
 

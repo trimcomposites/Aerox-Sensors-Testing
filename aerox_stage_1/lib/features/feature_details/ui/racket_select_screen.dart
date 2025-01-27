@@ -20,7 +20,7 @@ class RacketSelectScreen extends StatelessWidget {
         backgroundColor: backgroundColor,
         appBar: WithMenuAndReturnAppBar(),
         body: DetailsScreenView(
-          rackets: [ ],
+          rackets:   racketBloc.state.rackets,
           isLoading: false,
           onPressedDeselectRacket: ()=> racketBloc.add( OnDeselectRacket(),)
         )    

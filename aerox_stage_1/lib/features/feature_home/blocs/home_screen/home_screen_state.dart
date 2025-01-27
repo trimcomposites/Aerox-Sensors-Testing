@@ -1,10 +1,18 @@
 part of 'home_screen_bloc.dart';
 
-sealed class HomeScreenState extends Equatable {
-  const HomeScreenState();
+class HomeScreenState extends Equatable {
+  final Racket? myRacket;
+  const HomeScreenState({
+    this.myRacket
+  });
+  
+  copyWith({
+    Racket? racket
+  }) => HomeScreenState(
+    myRacket: racket
+  );
   
   @override
   List<Object> get props => [];
 }
 
-final class HomeScreenInitial extends HomeScreenState {}

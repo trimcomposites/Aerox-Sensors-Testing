@@ -4,6 +4,7 @@ import 'package:aerox_stage_1/features/feature_details/ui/details_screen.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/error_details_screen.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/loading_details_screen.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/racket_select_screen.dart';
+import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/top_notch_padding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +17,8 @@ class HomePageAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final detailsScreenBloc = BlocProvider.of<DetailsScreenBloc>( context );
+    final homeScreenBloc = BlocProvider.of<HomeScreenBloc>( context );
+    final racketBloc = BlocProvider.of<RacketBloc>( context );
     
 
     return TopNotchPadding(
@@ -31,12 +33,11 @@ class HomePageAdmin extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    BlocBuilder<RacketBloc, RacketState>(
+                    BlocBuilder<HomeScreenBloc, HomeScreenState>(
                       builder: (context, state) {
                         return Column(
                           children: [
                             Text( 'raqueta seleccionada ${state.myRacket?.name}', style: TextStyle( color: Colors.white ), ),
-                            Text( 'catalogo actual seleccionada ${state.rackets?.length}', style: TextStyle( color: Colors.white ), ),
                           ],
                         );
                       },
@@ -46,20 +47,11 @@ class HomePageAdmin extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) {
-                          return BlocBuilder<DetailsScreenBloc, DetailsScreenState>(
-                            builder: (context, state) {
-                              state is LoadingDetailsScreenState
-                              
-                              ? DetailsScreen()
-                              : RacketSelectScreen();
-                              return ErrorDetailsScreen();
-                            },
-                          );
+                        MaterialPageRoute(builder: (context) =>homeScreenBloc.state.myRacket != null
+                          ? DetailsScreen()
+                          : RacketSelectScreen()
+                          ));
                         }),
-                       );
-                      },
-                      ),
                       const SizedBox(height: 30),
                       AppButton( text: 'TU JUEGO',
                         onPressed:() {
