@@ -28,7 +28,7 @@ void main() {
 
   final List<Racket> rackets = [];
   final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
-  final Racket racket = Racket(name: 'name', length: 1, weight: 1, img: 'img', pattern: 'pattern', balance: 1);
+  final Racket racket = Racket(id: 1, name: 'name', length: 1, weight: 1, img: 'img', pattern: 'pattern', balance: 1);
   group(' on get racket event ...', () {
     blocTest<RacketBloc, RacketState>('on get rackets success, emits [ rackets: [ List<Racket> ]', 
       build: () {

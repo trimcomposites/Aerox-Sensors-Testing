@@ -50,6 +50,7 @@ class MockRacketDatasource {
 }
 List<Racket> mockRackets = [
   Racket(
+    id: 1,
     name: 'PowerDrive 300',
     length: 68.0,
     weight: 320.0,
@@ -58,6 +59,7 @@ List<Racket> mockRackets = [
     balance: 305.0,
   ),
   Racket(
+    id: 2,
     name: 'SpeedMaster 270',
     length: 67.5,
     weight: 280.0,
@@ -66,6 +68,7 @@ List<Racket> mockRackets = [
     balance: 295.0,
   ),
   Racket(
+    id: 3,
     name: 'ControlPro 295',
     length: 69.0,
     weight: 295.0,
@@ -74,6 +77,7 @@ List<Racket> mockRackets = [
     balance: 300.0,
   ),
   Racket(
+    id: 4,
     name: 'SpinX 310',
     length: 68.5,
     weight: 310.0,
@@ -82,6 +86,7 @@ List<Racket> mockRackets = [
     balance: 310.0,
   ),
   Racket(
+    id: 5,
     name: 'PowerFusion 325',
     length: 70.0,
     weight: 325.0,
