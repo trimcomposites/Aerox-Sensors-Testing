@@ -11,6 +11,7 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final racketBloc = BlocProvider.of<RacketBloc>( context );
     return Container(
       child: Scaffold(
           backgroundColor: backgroundColor,
@@ -27,6 +28,7 @@ class DetailsScreen extends StatelessWidget {
                     return DetailsScreenView(
                       rackets: state.rackets,
                       isLoading: false,
+                      onPressedSelectRacket: ( racket ) => racketBloc.add( OnSelectRacket(racket: racket) ),
                     );
 
                   }else if( state.myRacket != null ){

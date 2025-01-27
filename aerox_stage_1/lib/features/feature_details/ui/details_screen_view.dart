@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
+import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,11 +8,13 @@ class DetailsScreenView extends StatelessWidget {
   const DetailsScreenView({
     super.key, 
     required this.rackets, 
-    required this.isLoading
+    required this.isLoading,
+    this.onPressedSelectRacket
     });
 
   final List<Racket> rackets;
   final bool isLoading;
+  final void Function( Racket )? onPressedSelectRacket;
 
   @override
   Widget build(BuildContext context) {
@@ -36,20 +39,22 @@ class DetailsScreenView extends StatelessWidget {
                   Container(
                     height: 450,
                     child: PageView.builder(
-                      itemCount: isRacketSelected
-                      ? 1
-                      : rackets.length,
-                      itemBuilder: (BuildContext context, int index) { 
-                      return Image.network(
-                        isRacketSelected
-                        ? rackets[0].img
-                        : rackets[index].img,
-                        height: 450,
-                      );
-                      },),
-                      
+                      controller: _pageController,
+                      itemCount: isRacketSelected ? 1 : rackets.length,
+                      onPageChanged: (int index) {
+                        // Actualizar racketIndex cada vez que se cambie la página.
+                        racketIndex = index;
+                      },
+                      itemBuilder: (BuildContext context, int index) {
+                        return Image.network(
+                          isRacketSelected
+                              ? rackets[0].img
+                              : rackets[index].img,
+                          height: 450,
+                        );
+                      },
+                    ),
                   ),
-
                   Text(
                     'AEROX Alpha ProShield',
                     style: TextStyle(
@@ -58,6 +63,17 @@ class DetailsScreenView extends StatelessWidget {
                     ),
                     textAlign: TextAlign.start,
                   ),
+                  AppButton(
+                    onPressed: (){
+                      if( onPressedSelectRacket!= null ){
+                      onPressedSelectRacket!( rackets[racketIndex] );
+                      }
+                    },
+                    text: 'Seleccionar raqueta',
+                    backgroundColor: appYellowColor,
+                    showborder: false,
+                    fontColor: Colors.black,
+                  ),    
                   ExpansionTile(
                     tilePadding: EdgeInsets.zero,
                     title: Text(
@@ -80,7 +96,9 @@ class DetailsScreenView extends StatelessWidget {
                         data: ['Weight', '343,756g', '>Numero => Potencia'],
                       ),
                     ],
-                  )
+                  ),
+
+
                 ]),
           ),
         )
