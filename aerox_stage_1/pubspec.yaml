@@ -44,6 +44,7 @@ dependencies:
   sign_in_with_apple: ^6.1.4
   dartz: ^0.10.1
   get_it: ^8.0.3
+  sqflite: ^2.4.1
 
 dev_dependencies:
   flutter_test:
