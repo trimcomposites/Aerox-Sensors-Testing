@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class LoadingDetailsScreenView extends StatelessWidget {
-  const LoadingDetailsScreenView({super.key});
+class ErrorDetailsScreen extends StatelessWidget {
+  const ErrorDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

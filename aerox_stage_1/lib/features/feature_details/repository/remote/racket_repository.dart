@@ -19,4 +19,7 @@ class RacketRepository {
       return right([]);
     }
   } 
+  Future<EitherErr<Racket>> getSelectedRacket() async{
+    return datasource.getSelectedRacket();
+  }
 }

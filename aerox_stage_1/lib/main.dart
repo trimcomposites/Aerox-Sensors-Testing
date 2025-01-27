@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/services/injection_container.dart';
+import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_options.dart';
 import 'package:aerox_stage_1/features/feature_splash/ui/splash_screen.dart';
@@ -20,6 +21,9 @@ void main() async{
         ),
         BlocProvider(
           create: ( context )=>sl<RacketBloc>()..add( OnGetRackets() ) 
+        ),
+        BlocProvider(
+          create: ( context )=>sl<DetailsScreenBloc>() 
         ),
     ],
     child: const MyApp())

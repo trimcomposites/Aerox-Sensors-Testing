@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/details_screen.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/widgets/login_with_button.dart';
@@ -17,7 +18,6 @@ class LoginMainScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final userBloc = BlocProvider.of<UserBloc>( context );
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -32,18 +32,6 @@ class LoginMainScreenContent extends StatelessWidget {
         Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
-              BlocBuilder<RacketBloc, RacketState>(
-                builder: (context, state) {
-                  return Column(
-                    children: [
-                      Text( 'raqueta seleccionada ${state.myRacket?.name}', style: TextStyle( color: Colors.white ), ),
-                      Text( 'catalogo actual seleccionada ${state.rackets?.length}', style: TextStyle( color: Colors.white ), ),
-                    ],
-                  );
-                },
-              ),
-
               AppButton(
                 backgroundColor: appYellowColor,
                   text: 'Crear una Cuenta',
@@ -70,19 +58,6 @@ class LoginMainScreenContent extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
-              AppButton(  //temp
-                text: 'DEtalles previsualización',
-                backgroundColor: Colors.transparent,
-                onPressed: (){
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: ( context ) => DetailsScreen()
-                    )
-                  )
-                ;}   
-              ),
-              const SizedBox(height: 30),
-
               Text(
                 "OR LOG IN WITH",
                 style: GoogleFonts.plusJakartaSans(
@@ -101,6 +76,7 @@ class LoginMainScreenContent extends StatelessWidget {
                   
                   if( Platform.isIOS )
                   LoginWithButton( asset: 'assets/apple_logo.png', ),
+
                 ],
               ),
 

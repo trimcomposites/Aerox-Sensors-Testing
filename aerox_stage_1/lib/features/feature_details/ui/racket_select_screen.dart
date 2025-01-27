@@ -9,8 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../feature_login/ui/login_barrel.dart';
 
-class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({super.key});
+class RacketSelectScreen extends StatelessWidget {
+  const RacketSelectScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

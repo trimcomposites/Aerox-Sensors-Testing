@@ -7,8 +7,3 @@ sealed class DetailsScreenEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class OnStartDetailsScreenLoading extends DetailsScreenEvent{}
-class OnStopDetailsScreenLoading extends DetailsScreenEvent{}
-
-class OnStartDetailsScreenError extends DetailsScreenEvent{}
-class OnStopDetailsScreenError extends DetailsScreenEvent{}

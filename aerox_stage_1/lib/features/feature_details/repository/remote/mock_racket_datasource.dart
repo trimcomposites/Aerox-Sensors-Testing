@@ -8,7 +8,8 @@ import 'package:aerox_stage_1/domain/models/racket.dart';
 class MockRacketDatasource {
 
   //futuras dependencias
-  const MockRacketDatasource();
+  MockRacketDatasource();
+  Racket? selectedRacket;
 
 
   Future<EitherErr<List<Racket>>>remotegetRackets() async {
@@ -24,6 +25,14 @@ class MockRacketDatasource {
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   } 
   
+  EitherErr<Racket> getSelectedRacket(){
+    return EitherCatch.catchE<Racket, RacketErr>(() {
+      if(selectedRacket== null){
+        throw Exception(); 
+      }
+      return selectedRacket!;
+    }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
+  }
 
 
 

@@ -1,25 +1,15 @@
 part of 'details_screen_bloc.dart';
 
-class DetailsScreenState extends Equatable {
-  final bool isLoading;
-  final bool isError;
+sealed class DetailsScreenState extends Equatable {
 
-  const DetailsScreenState({
-    required this.isLoading, 
-    required this.isError
-  });
-
-  copyWith({
-    bool? isLoading,
-    bool? isError
-  }) => DetailsScreenState(
-    isLoading: isLoading ?? this.isLoading,
-    isError: isError ?? this.isError
-  );
-
-  
+  const DetailsScreenState(); 
   @override
   List<Object> get props => [];
 }
+class IdleDetailsScreenState extends DetailsScreenState{}
+class LoadingDetailsScreenState extends DetailsScreenState{}
+class RacketDetailsScreenState extends DetailsScreenState{}
+class RacketSelectScreenState extends DetailsScreenState{}
+class ErrorDetailsScreenState extends DetailsScreenState{}
 
 
