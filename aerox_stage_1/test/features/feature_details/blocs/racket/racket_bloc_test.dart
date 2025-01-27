@@ -37,7 +37,7 @@ void main() {
         RacketState( rackets: rackets ),
       ],
     );
-    blocTest<RacketBloc, RacketState>('on get rackets success, emits [ rackets: [ List<Racket> ]', 
+    blocTest<RacketBloc, RacketState>('on get rackets failure, emits [ rackets: [ List<Racket>.empty ]', 
       build: () {
         when(() => getRacketsUsecase( true))
         .thenAnswer( ( _ ) async => Left(  racketErr ) );
@@ -46,13 +46,13 @@ void main() {
       act: (bloc) => bloc.add( OnGetRackets() ),
       
       expect: () => [
-        RacketState( rackets: null ),
+        RacketState( rackets: [] ),
       ],
     );
   });
   
   group(('on select racket event'), (){
-    blocTest<RacketBloc, RacketState>('on get rackets success, emits [ myRacket: [ Racket ]', 
+    blocTest<RacketBloc, RacketState>('on select rackets success, emits [ myRacket: [ Racket ]', 
       build: () => racketBloc,
       
       act: (bloc) => bloc.add( OnSelectRacket( racket: racket ) ),
