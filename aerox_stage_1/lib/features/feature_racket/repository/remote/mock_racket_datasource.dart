@@ -47,6 +47,7 @@ class MockRacketDatasource {
   }
   EitherErr<void> deselectRacket(){
     return EitherCatch.catchE<void, RacketErr>(() {
+      sqLiteDB.deselectAllRackets();
       selectedRacket = null;
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   }

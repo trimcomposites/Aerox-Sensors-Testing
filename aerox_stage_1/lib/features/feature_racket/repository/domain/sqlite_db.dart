@@ -117,6 +117,14 @@ class SQLiteDB {
       whereArgs: [racketId],
     );
   }
+  Future<void> deselectAllRackets() async {
+  final db = await database;
+
+  await db.update(
+    'rackets',
+    {'is_selected': 0}, // Establece is_selected en 0
+  );
+  }
   Future<Racket?> getSelectedRacket() async {
     final db = await database;
 
