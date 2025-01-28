@@ -19,12 +19,12 @@ class HomePageAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final HomeScreenBloc homeScreenBloc = BlocProvider.of( context )..add( OnGetSelectedRacket() );
+    final HomeScreenBloc homeScreenBloc = BlocProvider.of( context )..add( OnGetSelectedRacketHome() );
     final RacketBloc racketBloc = BlocProvider.of( context );
 
     onback() {
       Navigator.of(context).pop();
-      homeScreenBloc.add(OnGetSelectedRacket());
+      homeScreenBloc.add(OnGetSelectedRacketHome());
     }
 
       return TopNotchPadding(

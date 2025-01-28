@@ -13,7 +13,7 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     required this.getSelectedRacketUsecase,
 
   }) : super(HomeScreenState()) {
-    on<OnGetSelectedRacket>((event, emit) async {
+    on<OnGetSelectedRacketHome>((event, emit) async {
       // ignore: avoid_single_cascade_in_expression_statements
       await getSelectedRacketUsecase()..fold(
         (l) => ( emit(state.copyWith( racket: null )) ),

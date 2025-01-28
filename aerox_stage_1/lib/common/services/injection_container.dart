@@ -37,7 +37,8 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerFactory(() => RacketBloc(
       getRacketsUsecase: sl(),
       selectRacketUsecase: sl(),
-      deselectRacketUsecase: sl()
+      deselectRacketUsecase: sl(),
+      getSelectedRacketUsecase: sl()
     ))
     ..registerFactory(() => HomeScreenBloc(
       getSelectedRacketUsecase: sl()

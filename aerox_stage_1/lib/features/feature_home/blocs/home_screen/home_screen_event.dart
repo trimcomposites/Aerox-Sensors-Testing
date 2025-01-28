@@ -6,4 +6,4 @@ sealed class HomeScreenEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
-class OnGetSelectedRacket extends HomeScreenEvent{}
+class OnGetSelectedRacketHome extends HomeScreenEvent{}

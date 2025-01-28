@@ -1,6 +1,7 @@
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/deselect_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket.usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,11 +14,13 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
   final GetRacketsUsecase getRacketsUsecase;
   final SelectRacketUsecase selectRacketUsecase;
   final DeselectRacketUsecase deselectRacketUsecase;
+  final GetSelectedRacketUsecase getSelectedRacketUsecase;
 
   RacketBloc({
     required this.getRacketsUsecase,
     required this.selectRacketUsecase,
-    required this.deselectRacketUsecase
+    required this.deselectRacketUsecase,
+    required this.getSelectedRacketUsecase
   }) : super(RacketState()){
     on<OnGetRackets>((event, emit) async{
       // ignore: avoid_single_cascade_in_expression_statements
@@ -42,6 +45,13 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
       (r) => emit( state.copyWith( myRacket: null ) )
       );
     },);
+  
+  on<OnGetSelectedRacket>((event, emit) async {
+    // ignore: avoid_single_cascade_in_expression_statements
+    await getSelectedRacketUsecase()..fold(
+      (l) => ( emit(state.copyWith( myRacket: null )) ),
+      (r) => ( emit( state.copyWith( myRacket: r ) ) )
+    );
+  });
   }
-
 }
