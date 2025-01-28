@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:aerox_stage_1/domain/models/racket.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -44,6 +45,7 @@ class SQLiteDB {
         is_selected INTEGER DEFAULT 0 -- 0: No seleccionada, 1: Seleccionada
       )
     ''');
+    await insertRacketList( mockRackets, dbInstance: db  ); //temp
 
   }
   
@@ -94,8 +96,8 @@ class SQLiteDB {
     );
   }
 
-  Future<void> insertRacketList(List<Racket> rackets) async {
-    final db = await database;
+  Future<void> insertRacketList(List<Racket> rackets, {Database? dbInstance  }) async {
+    final db = dbInstance  ?? await database;
 
     await db.transaction((txn) async {
       final batch = txn.batch(); 
