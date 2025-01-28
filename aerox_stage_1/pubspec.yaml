@@ -45,6 +45,7 @@ dependencies:
   dartz: ^0.10.1
   get_it: ^8.0.3
   sqflite: ^2.4.1
+  sqlite_viewer: ^1.0.5
 
 dev_dependencies:
   flutter_test:

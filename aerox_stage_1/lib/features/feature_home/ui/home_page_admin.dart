@@ -9,6 +9,7 @@ import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_scree
 import 'package:aerox_stage_1/features/feature_home/ui/top_notch_padding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sqlite_viewer/sqlite_viewer.dart';
 
 import 'home_page_barrel.dart';
 
@@ -23,8 +24,10 @@ class HomePageAdmin extends StatelessWidget {
     final RacketBloc racketBloc = BlocProvider.of( context );
 
     onback() {
-      Navigator.of(context).pop();
       homeScreenBloc.add(OnGetSelectedRacketHome());
+      Navigator.of(context).pop();
+      //Navigator.push(context, MaterialPageRoute(builder: (_) => DatabaseList()));
+
     }
 
       return TopNotchPadding(

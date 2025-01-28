@@ -13,7 +13,7 @@ class MockRacketDatasource {
     required this.sqLiteDB
   });
   final SQLiteDB sqLiteDB;
-  Racket? selectedRacket;
+
 
 
   Future<EitherErr<List<Racket>>>remotegetRackets() async {
@@ -31,24 +31,24 @@ class MockRacketDatasource {
   
   Future<EitherErr<Racket>> getSelectedRacket() async{
     return EitherCatch.catchAsync<Racket, RacketErr>(() async{
-      selectedRacket = await sqLiteDB.getSelectedRacket();
-      if(selectedRacket== null){
+      final result= await sqLiteDB.getSelectedRacket();
+      if(result== null){
         throw Exception(); 
       }
-      return selectedRacket!;
+      return result;
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   }
-  EitherErr<Racket> selectRacket( Racket racket ){
-    return EitherCatch.catchE<Racket, RacketErr>(() {
-      selectedRacket = racket;
-      sqLiteDB.selectRacket( selectedRacket!.id );
-      return selectedRacket!;
+  Future<EitherErr<Racket>> selectRacket( Racket racket ) async{
+    return EitherCatch.catchAsync<Racket, RacketErr>(() async{     
+      await sqLiteDB.selectRacket( racket.id );
+  
+      return racket;
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   }
-  EitherErr<void> deselectRacket(){
-    return EitherCatch.catchE<void, RacketErr>(() {
-      sqLiteDB.deselectAllRackets();
-      selectedRacket = null;
+  Future<EitherErr<void>> deselectRacket() async{
+    return EitherCatch.catchAsync<void, RacketErr>(() async {
+      await sqLiteDB.deselectAllRackets();
+    
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   }
 
