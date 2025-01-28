@@ -9,7 +9,7 @@ class AppButton extends StatelessWidget {
     this.backgroundColor = Colors.transparent, 
     this.fontColor = Colors.white, 
     this.showborder = true, 
-    this.width = 325, 
+    this.width = 300, 
     this.height = 75,
   });
   final void Function() onPressed;
@@ -35,9 +35,6 @@ class AppButton extends StatelessWidget {
             width: 2.0,
           )
           : null,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero
-          )
         ),
         onPressed: onPressed,
         child: Text(
