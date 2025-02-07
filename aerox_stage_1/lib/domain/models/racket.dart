@@ -1,53 +1,80 @@
-import 'package:equatable/equatable.dart';
+class Racket {
+    int id;
+    String golpeo;
+    String pala;
+    String nombrePala;
+    String color;
+    String weightNumber;
+    String weightName;
+    String weightType;
+    String balance;
+    String headType;
+    String swingWeight;
+    String potenciaType;
+    String acor;
+    String acorType;
+    String manejabilidad;
+    String manejabilidadType;
+    String imagen;
+    bool isSelected;
 
-class Racket extends Equatable{
-  final int id;
-  final String name;
-  final String img;
-  final num length;
-  final num weight;
-  final String pattern;
-  final num balance;
-  
+    Racket({
+        required this.id,
+        required this.golpeo,
+        required this.pala,
+        required this.nombrePala,
+        required this.color,
+        required this.weightNumber,
+        required this.weightName,
+        required this.weightType,
+        required this.balance,
+        required this.headType,
+        required this.swingWeight,
+        required this.potenciaType,
+        required this.acor,
+        required this.acorType,
+        required this.manejabilidad,
+        required this.manejabilidadType,
+        required this.imagen,
+        this.isSelected = false
+    });
 
-  const Racket({
-    required this.id,
-    required this.name,
-    required this.length,
-    required this.weight,
-    required this.img,
-    required this.pattern,
-    required this.balance,
-
-  });
-
-  
-  @override
-  List<Object?> get props => [ name, length, weight, pattern, balance, img ];
-
-    // Convertir un mapa de la base de datos a un objeto Racket
-  factory Racket.fromMap(Map<String, dynamic> map) {
-    return Racket(
-      id: map['id'],
-      name: map['name'],
-      img: map['img'],
-      length: map['length'],
-      weight: map['weight'],
-      pattern: map['pattern'],
-      balance: map['balance'],
-    );
-  }
-
-  // Convertir un objeto Racket a un mapa para la base de datos
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'img': img,
-      'length': length,
-      'weight': weight,
-      'pattern': pattern,
-      'balance': balance,
-    };
-  }
+    Racket copyWith({
+        int? id,
+        String? golpeo,
+        String? pala,
+        String? nombrePala,
+        String? color,
+        String? weightNumber,
+        String? weightName,
+        String? weightType,
+        String? balance,
+        String? headType,
+        String? swingWeight,
+        String? potenciaType,
+        String? acor,
+        String? acorType,
+        String? manejabilidad,
+        String? manejabilidadType,
+        String? imagen,
+    }) => 
+        Racket(
+            id: id ?? this.id,
+            golpeo: golpeo ?? this.golpeo,
+            pala: pala ?? this.pala,
+            nombrePala: nombrePala ?? this.nombrePala,
+            color: color ?? this.color,
+            weightNumber: weightNumber ?? this.weightNumber,
+            weightName: weightName ?? this.weightName,
+            weightType: weightType ?? this.weightType,
+            balance: balance ?? this.balance,
+            headType: headType ?? this.headType,
+            swingWeight: swingWeight ?? this.swingWeight,
+            potenciaType: potenciaType ?? this.potenciaType,
+            acor: acor ?? this.acor,
+            acorType: acorType ?? this.acorType,
+            manejabilidad: manejabilidad ?? this.manejabilidad,
+            manejabilidadType: manejabilidadType ?? this.manejabilidadType,
+            imagen: imagen ?? this.imagen,
+        );
 }

@@ -18,7 +18,7 @@ class MockRacketDatasource {
 
   Future<EitherErr<List<Racket>>>remotegetRackets() async {
     return EitherCatch.catchAsync<List<Racket>, RacketErr>(() async {
-      return [];//TODO:
+      return []; //TODO:
 
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   } 

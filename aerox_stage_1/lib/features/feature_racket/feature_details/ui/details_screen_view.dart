@@ -45,7 +45,7 @@ class DetailsScreenView extends StatelessWidget {
                   },
                   itemBuilder: (BuildContext context, int index) {
                     return Image.network(
-                      isRacketSelected ? rackets[0].img : rackets[index].img,
+                      isRacketSelected ? rackets[0].imagen : rackets[index].imagen,
                       height: 450,
                     );
                   },
@@ -88,13 +88,13 @@ class DetailsScreenView extends StatelessWidget {
                     trailing: SizedBox.shrink(),
                     children: [
                       SpecsDataText(
-                        data: ['Weight', rackets[racketIndex].weight.toString()],
+                        data: ['Weight', rackets[racketIndex].weightName.toString()],
                       ),
                       SpecsDataText(
                         data: ['Balance', rackets[racketIndex].balance.toString()],
                       ),
                       SpecsDataText(
-                        data: ['Pattern', rackets[racketIndex].pattern],
+                        data: ['Pattern', rackets[racketIndex].color],
                       ),
                     ],
                   );

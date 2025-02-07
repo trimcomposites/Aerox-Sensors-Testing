@@ -41,8 +41,11 @@ void main() async{
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
   @override
   Widget build(BuildContext context) {
+      //final SQLiteDB db = sl();
+      //db.clearDatabase();
     SQLiteDB sqLiteDB  =sl();
     final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() )..add( OnGetSelectedRacket() ) ;
     return MaterialApp(
