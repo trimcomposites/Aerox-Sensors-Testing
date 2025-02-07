@@ -5,20 +5,23 @@ import 'package:aerox_stage_1/common/utils/error/err/status_code.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
 
-class MockRacketDatasource {
+class RacketDatasource {
 
   //futuras dependencias
-  MockRacketDatasource({ 
+  RacketDatasource({ 
     required this.sqLiteDB
   });
   final SQLiteDB sqLiteDB;
-
+  final RemoteGetRackets remoteGetRackets = RemoteGetRackets();
 
 
   Future<EitherErr<List<Racket>>>remotegetRackets() async {
     return EitherCatch.catchAsync<List<Racket>, RacketErr>(() async {
-      return []; //TODO:
+      final racketList = await remoteGetRackets.fetchData();
+      return racketList;
+
 
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   } 

@@ -4,12 +4,12 @@ import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:aerox_stage_1/domain/models/racket_serializer.dart'; // Importar el serializer
+import 'package:aerox_stage_1/domain/models/racket_serializer.dart';
 
 class SQLiteDB {
   static final SQLiteDB _instance = SQLiteDB._internal();
   static Database? _database;
-  final RacketSerializer racketSerializer = RacketSerializer(); // Instanciar el serializer
+
 
   factory SQLiteDB() {
     return _instance;
@@ -63,7 +63,7 @@ class SQLiteDB {
   // Insertar una raqueta
   Future<int> insertRacket(Racket racket) async {
     final db = await database;
-    return await db.insert('rackets', racketSerializer.toJsonRacket(racket)); // Usar el serializer
+    return await db.insert('rackets', RacketSerializer.toJsonRacket(racket)); 
   }
 
   // Obtener todas las raquetas
@@ -72,7 +72,7 @@ class SQLiteDB {
     final List<Map<String, dynamic>> maps = await db.query('rackets');
 
     return List.generate(maps.length, (i) {
-      return racketSerializer.fromJsonRacket(maps[i]); // Usar el serializer
+      return RacketSerializer.fromJsonRacket(maps[i]);
     });
   }
 
@@ -95,7 +95,7 @@ class SQLiteDB {
     final db = await database;
     return await db.update(
       'rackets',
-      racketSerializer.toJsonRacket(racket), // Usar el serializer
+      RacketSerializer.toJsonRacket(racket), 
       where: 'id = ?',
       whereArgs: [racket.id],
     );
@@ -111,14 +111,14 @@ class SQLiteDB {
     );
   }
 
-  // Insertar una lista de raquetas
+
   Future<void> insertRacketList(List<Racket> rackets, {Database? dbInstance}) async {
     final db = dbInstance ?? await database;
 
     await db.transaction((txn) async {
       final batch = txn.batch();
       for (var racket in rackets) {
-        batch.insert('rackets', racketSerializer.toJsonRacket(racket)); // Usar el serializer
+        batch.insert('rackets', RacketSerializer.toJsonRacket(racket)); 
       }
       await batch.commit(noResult: true);
     });
@@ -138,17 +138,16 @@ class SQLiteDB {
     );
   }
 
-  // Deseleccionar todas las raquetas
+
   Future<void> deselectAllRackets() async {
     final db = await database;
 
     await db.update(
       'rackets',
-      {'isSelected': 0}, // Establece isSelected en 0
+      {'isSelected': 0}, 
     );
   }
 
-  // Obtener la raqueta seleccionada
   Future<Racket?> getSelectedRacket() async {
     final db = await database;
 
@@ -159,7 +158,7 @@ class SQLiteDB {
     );
 
     if (result.isNotEmpty) {
-      return racketSerializer.fromJsonRacket(result.first); // Usar el serializer
+      return RacketSerializer.fromJsonRacket(result.first); 
     }
     return null;
   }

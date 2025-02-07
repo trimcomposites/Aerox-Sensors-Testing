@@ -2,11 +2,11 @@ import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'dart:convert';
 
 class RacketSerializer {
-  List<Racket> racketFromJson(String str) => List<Racket>.from(json.decode(str).map((x) => fromJsonRacket(x)));
+  static List<Racket> racketFromJson(String str) => List<Racket>.from(json.decode(str).map((x) => fromJsonRacket(x)));
 
-  String racketToJson(List<Racket> data) => json.encode(List<dynamic>.from(data.map((x) => toJsonRacket( x ))));
+  static String racketToJson(List<Racket> data) => json.encode(List<dynamic>.from(data.map((x) => toJsonRacket( x ))));
 
-  Racket fromJsonRacket(Map<String, dynamic> json) => Racket(
+  static Racket fromJsonRacket(Map<String, dynamic> json) => Racket(
         id: json["id"],
         golpeo: json["golpeo"],
         pala: json["pala"],
@@ -26,7 +26,7 @@ class RacketSerializer {
         imagen: json["imagen"],
     );
 
-    Map<String, dynamic> toJsonRacket( Racket racket ) => {
+    static Map<String, dynamic> toJsonRacket( Racket racket ) => {
         "id": racket.id,
         "golpeo": racket.golpeo,
         "pala": racket.pala,
@@ -45,4 +45,10 @@ class RacketSerializer {
         "manejabilidadType": racket.manejabilidadType,
         "imagen": racket.imagen,
     };
+
+  static List<Racket> racketListFromJson(String str) =>
+    List<Racket>.from(json.decode(str).map((x) => fromJsonRacket(x)));
+
+  static String racketListToJson(List<Racket> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => toJsonRacket(x))));
 }

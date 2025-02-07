@@ -11,6 +11,7 @@ import 'package:aerox_stage_1/features/feature_racket/feature_details/blocs/deta
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/racket_datasource.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
@@ -88,6 +89,9 @@ Future<void> dependencyInjectionInitialize() async{
 
     //racket
     ..registerLazySingleton(() => MockRacketDatasource(
+      sqLiteDB: sl()
+    ))
+    ..registerLazySingleton(() => RacketDatasource(
       sqLiteDB: sl()
     )); 
 
