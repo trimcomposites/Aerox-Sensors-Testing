@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
+import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:dartz/dartz.dart';
 
 extension EitherCatch on Either {
@@ -29,5 +30,15 @@ extension EitherCatch on Either {
       return Left(errorBlock(e));  
     }
  
+  }
+}
+extension FutureEitherExtensions<L, R> on Future<EitherErr<R>> {
+  Future<EitherErr<T>> flatMap<T>(
+      Future<EitherErr<T>> Function(R value) f) async {
+    final either = await this;
+    return either.fold(
+      (l) => Left(l),
+      (r) async => await f(r),
+    );
   }
 }
