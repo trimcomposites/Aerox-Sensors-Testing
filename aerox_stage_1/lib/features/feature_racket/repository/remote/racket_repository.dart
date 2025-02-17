@@ -13,30 +13,30 @@ class RacketRepository {
   final SQLiteDB sqLiteDB;
 
   RacketRepository({required this.datasource, required this.sqLiteDB, });
-Future<EitherErr<List<Racket>>> getRackets() async {
-  var localRackets = await datasource.localGetRackets();
 
-  return localRackets.fold(
-    (l) async {
-      var remoteRackets = await datasource.remotegetRackets();
+  Future<EitherErr<List<Racket>>> getRackets() async {
+    var localRackets = await datasource.localGetRackets();
+    return localRackets.fold(
+      (l) async {
+        var remoteRackets = await datasource.remotegetRackets();
 
-      return remoteRackets.fold(
-        (l) {
-          print( 'error' );
-          return Left( RacketErr( errMsg: '', statusCode: 1 ) );
-        },
-        (r) async {
-          print( 'local save' );
-          sqLiteDB.insertRacketList( r );
-          return datasource.localGetRackets();  
-        },
-      );
-    },
-    (r) {
-      return Right(r);
-    },
-  );
-}
+        return remoteRackets.fold(
+          (l) {
+            print( 'error' );
+            return Left( RacketErr( errMsg: '', statusCode: 1 ) );
+          },
+          (r) async {
+            print( 'local save' );
+            sqLiteDB.insertRacketList( r );
+            return datasource.localGetRackets();  
+          },
+        );
+      },
+      (r) {
+        return Right(r);
+      },
+    );
+  }
 
   Future<EitherErr<Racket>> getSelectedRacket() async{
     return datasource.getSelectedRacket();

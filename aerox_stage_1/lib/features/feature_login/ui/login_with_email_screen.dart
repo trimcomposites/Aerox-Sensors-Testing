@@ -15,7 +15,7 @@ class LoginWithEmailScreen extends StatelessWidget {
       },
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: BackButtonAppBar(),
+        appBar: BackButtonAppBar( () => Navigator.pop( context ) ),
         backgroundColor: backgroundColor,
         body: Stack(
           children: [

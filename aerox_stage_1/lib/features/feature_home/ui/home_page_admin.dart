@@ -31,10 +31,11 @@ class HomePageAdmin extends StatelessWidget {
     }
 
       return TopNotchPadding(
+        color: Colors.white,
         context: context,
         child: Scaffold(
             appBar: HomePageAppbar(),
-            backgroundColor: backgroundColor,
+            backgroundColor: Colors.white,
             body: Center(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 40),
@@ -49,7 +50,7 @@ class HomePageAdmin extends StatelessWidget {
                             Text(
                               'raqueta seleccionada ${state.myRacket?.nombrePala}    '
                               'raquetas ${racketBloc.state.rackets.length}',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.black),
                             ),
                           ],
                         );
@@ -57,6 +58,9 @@ class HomePageAdmin extends StatelessWidget {
                     ),
                     AppButton(
                         text: 'TU PALA AEROX',
+                        fontColor: Colors.black,
+                        backgroundColor: appYellowColor,
+                        showborder: false,
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -70,28 +74,6 @@ class HomePageAdmin extends StatelessWidget {
                                             onback: onback,
                                           )));
                         }),
-                    const SizedBox(height: 30),
-                    AppButton(text: 'TU JUEGO', onPressed: () {}),
-
-                    const SizedBox(height: 30),
-
-                    AppButton(
-                      text: 'JUGAR',
-                      backgroundColor: appYellowColor,
-                      showborder: false,
-                      fontColor: Colors.black,
-                      onPressed: () {},
-                    ),
-
-                    const SizedBox(height: 30),
-                    
-                    AppButton(
-                       text: "SIGN OUT",
-                       onPressed: (){
-                        userBloc.add( OnGoogleSignOutUser() );
-                        userBloc.add( OnEmailSignOutUser() );
-                       }
-                    ),
                   ],
                 ),
               ),

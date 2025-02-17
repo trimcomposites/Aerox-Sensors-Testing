@@ -1,3 +1,5 @@
+import 'package:aerox_stage_1/features/feature_login/ui/login_message_text.dart';
+import 'package:aerox_stage_1/features/feature_login/ui/with_services_login_buttons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'login_barrel.dart';
@@ -12,20 +14,11 @@ class LoginWithEmailContent extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 100.0,
-                  right: 100,
-                  top: 200,
-                  bottom: 100), // Adding padding around the image
-              child: Image.asset(
-                  'assets/Logotipo-Aerox-Blanco.png'), // Displaying an asset image
-            ),
-          ),
+          SizedBox( height: 200, ),
+           LoginMessageText( text: 'Bienvenido',  ) ,
           // segunda seccion
           BlocListener<UserBloc, UserState>(
             listener: (context, state) {
@@ -43,14 +36,12 @@ class LoginWithEmailContent extends StatelessWidget {
                 //const SizedBox(height: 30,),
                 DataContainer(
                     child: UserDataTextField(
-                  'Email',
                   controller: emailController,
                   text: 'E-mail',
                 )),
                 const SizedBox(height: 30),
                 DataContainer(
                     child: UserDataTextField(
-                  "Password",
                   controller: passwordController,
                   obscureText: true,
                   text: 'Contraseña',
@@ -59,26 +50,16 @@ class LoginWithEmailContent extends StatelessWidget {
                 //TODO:
                 AppButton(
                   text: 'Iniciar Sesión',
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: appYellowColor,
+                  fontColor: Colors.black,
+                  showborder: false,
                   onPressed: () => {
                     userBloc.add(OnEmailSignInUser(
                         email: emailController.text,
                         password: passwordController.text))
                   },
                 ),
-                const SizedBox(height: 30),
 
-                TextWithUnderLinedFunct(
-                  text: '¿Olvidaste tu contraseña?',
-                  underlineText: 'Cambiala aquí.',
-                  onTap: (){
-                    userBloc.add( OnDeleteErrorMsg() );
-                    Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => ResetPasswordScreen()),
-                  );
-                    
-                  },
-                ),
 
                 const SizedBox( height: 30, ),
 
@@ -87,11 +68,18 @@ class LoginWithEmailContent extends StatelessWidget {
                     return state.errorMessage != null
                     ? Padding(
                       padding: const EdgeInsets.symmetric( horizontal: 40 ),
-                      child: Text( state.errorMessage! ,style: TextStyle( color: Colors.white ),  ),
+                      child: Column(
+                        children: [
+                          Text( state.errorMessage! ,style: TextStyle( color: Colors.white ),  ),
+                          SizedBox( height: 10, ),
+                        ],
+                      ),
                     )
                     : Container();
                   },
-                )
+                ),
+
+                WithServicesLoginButtons()
               ],
             ),
           )

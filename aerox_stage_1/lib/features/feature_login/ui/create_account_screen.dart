@@ -36,7 +36,7 @@ class CreateAccountScreen extends StatelessWidget {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           backgroundColor: backgroundColor,
-          appBar: BackButtonAppBar(),
+          appBar: BackButtonAppBar( () => Navigator.pop( context ) ),
           body: Stack(
             children: [
               BackgroundGradient(),

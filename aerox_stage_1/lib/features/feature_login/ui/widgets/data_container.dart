@@ -7,8 +7,8 @@ class DataContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300,
-      height: 75,
+      width: 325,
+      height: 100,
       child: child,
     );
   }

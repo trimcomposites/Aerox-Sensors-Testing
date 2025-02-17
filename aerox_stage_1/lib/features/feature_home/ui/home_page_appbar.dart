@@ -8,7 +8,8 @@ class HomePageAppbar extends StatelessWidget implements PreferredSizeWidget {
 
     return Container(
       height: 20,
-      child: Image.asset( 'assets/Logotipo-Aerox-Blanco.png', 
+      color: Colors.transparent,
+      child: Image.asset( 'assets/Logotipo-Aerox-Negro.jpg', 
      ));
   }
   

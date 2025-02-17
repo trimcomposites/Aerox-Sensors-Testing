@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aerox_stage_1/features/feature_login/ui/with_services_login_buttons.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/details_screen.dart';
@@ -60,28 +61,8 @@ class LoginMainScreenContent extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
-              Text(
-                "CONECTA",
-                style: GoogleFonts.plusJakartaSans(
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  LoginWithButton( asset: 'assets/google_logo.png', ),
-                  
-                  if( Platform.isIOS )
-                  LoginWithButton( asset: 'assets/apple_logo.png', ),
-
-                ],
-              ),
-
+              WithServicesLoginButtons(),
+              
             ],
           )
       ],

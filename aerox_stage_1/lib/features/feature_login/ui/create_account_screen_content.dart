@@ -1,5 +1,6 @@
 
 import 'package:aerox_stage_1/features/feature_login/blocs/user/user_bloc.dart';
+import 'package:aerox_stage_1/features/feature_login/ui/login_message_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'login_barrel.dart';
@@ -36,64 +37,44 @@ class CreateAccountScreenContent extends StatelessWidget {
       child: Form(
         key: formKey,
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-              child: Padding(
-              padding: const EdgeInsets.only(
-                left: 100.0, 
-                right: 100,
-                top: 150,
-                bottom: 30
-              ), // Adding padding around the image
-              child: Image.asset('assets/Logotipo-Aerox-Blanco.png'), // Displaying an asset image
-                ),
-              ),
-              const SizedBox(height: 30,),
+              SizedBox(height: 200,),
+              LoginMessageText(text: 'Crear Cuenta'),
               // segunda seccion
               SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    DataContainer(
-                      child: UserDataTextField( 'Email', text: 'E-mail', controller: emailController, validator: null, )
-                    ),
-      
-                    const SizedBox(height: 30),
-      
-                    DataContainer(
-                      child: UserDataTextField("Name", text: 'Nombre', controller: nameController, validator: null, )
-                    ),
-      
-                    const SizedBox(height: 30),
-      
-                    DataContainer(
-                      child: UserDataTextField("Password", text: 'Contraseña', controller: passwordController, validator: null, obscureText: true)
-                    ),
-      
-                    const SizedBox(height: 30),
-      
-      
-                    DataContainer(
-                      child: UserDataTextField( "Confirm Password", 
-                        text: 'Confirmar contraseña',
-                        controller: confirmPasswordController, 
-                        validator:( value ) => validateConfirmPassword(value),
-                        obscureText: true
-                      ),
-                    ),
                     
-                    //const SizedBox(height: 15),
-                    SizedBox(
-                      width: 300,
-                      height: 75,
-                      child:  ConditionsCheckBox()          
+                    DataContainer(
+                      child: UserDataTextField(text: 'Nombre Completo', controller: nameController, validator: null, )
                     ),
+
+                    const SizedBox(height: 30),
+
+                    DataContainer(
+                      child: UserDataTextField(  text: 'E-mail', controller: emailController, validator: null, )
+                    ),
+      
+                    const SizedBox(height: 30),
+      
+                    DataContainer(
+                      child: UserDataTextField( text: 'Contraseña', controller: passwordController, validator: null, obscureText: true)
+                    ),
+      
+                    const SizedBox(height: 30),
+                    //const SizedBox(height: 15),
+                    // SizedBox(
+                    //   width: 300,
+                    //   height: 75,
+                    //   child:  ConditionsCheckBox()          
+                    // ),
                     AppButton(
                       backgroundColor: appYellowColor,
-                      text: 'Crear una Cuenta',
+                      text: 'REGISTRAR',
                       fontColor: Colors.black,
                       showborder: false,
                       onPressed: (){

@@ -42,7 +42,6 @@ class ResetPasswordScreenContent extends StatelessWidget {
                 //const SizedBox(height: 30,),
                 DataContainer(
                     child: UserDataTextField(
-                  'Email',
                   controller: emailController,
                   text: 'E-mail',
                 )),

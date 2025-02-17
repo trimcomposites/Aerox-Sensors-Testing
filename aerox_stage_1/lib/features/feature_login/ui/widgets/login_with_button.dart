@@ -17,7 +17,7 @@ class LoginWithButton extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.transparent,
-        border: Border.all( // ✅ Agrega un borde blanco
+        border: Border.all(
           color: Colors.white,
           width: 2.0,
         ),
@@ -25,12 +25,12 @@ class LoginWithButton extends StatelessWidget {
       child: Container(
         height: 50,
         width: 50,
-        decoration: BoxDecoration( // ✅ Asegura que el fondo del botón respete el borde
+        decoration: BoxDecoration( 
           shape: BoxShape.circle,
           color: Colors.transparent, 
         ),
         child: IconButton(
-          icon: Image.asset(asset), // Icono personalizado
+          icon: Image.asset(asset), 
           onPressed: () {
             userBloc.add(OnGoogleSignInUser());
           },
