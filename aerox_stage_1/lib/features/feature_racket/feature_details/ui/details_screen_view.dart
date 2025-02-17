@@ -1,6 +1,7 @@
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
+import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/racket_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,11 +45,8 @@ class DetailsScreenView extends StatelessWidget {
                     racketIndexNotifier.value = index; 
                   },
                   itemBuilder: (BuildContext context, int index) {
-                    return Image.network(
-                      isRacketSelected ? rackets[0].imagen : rackets[index].imagen,
-                      height: 450,
-                    );
-                  },
+                  return RacketImage(isRacketSelected: isRacketSelected, racket: rackets[index]);
+                  }
                 ),
               ),
               Text(
