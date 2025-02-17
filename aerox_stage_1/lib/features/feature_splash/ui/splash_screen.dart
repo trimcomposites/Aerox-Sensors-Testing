@@ -27,14 +27,16 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
-          SplashBackGroundImage(),
           BackgroundGradient(),
           Center(child: Padding(
-            padding: const EdgeInsets.symmetric( horizontal: 80.0),
-            child: Image.asset( 'assets/Logotipo-Aerox-Blanco.png' ),
+            padding: const EdgeInsets.symmetric( horizontal: 60.0),
+            child: Container(
+              height: 30,
+              child: Image.asset( 'assets/Logotipo-Aerox-Blanco.png',  fit: BoxFit.fill, )
+            ),
           ))
         ],
       )
