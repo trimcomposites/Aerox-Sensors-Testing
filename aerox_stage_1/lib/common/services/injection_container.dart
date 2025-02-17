@@ -70,6 +70,7 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerLazySingleton(
       () => RacketRepository(
         datasource: sl(),
+        sqLiteDB: sl()
       )
     )
 

@@ -28,7 +28,9 @@ class RacketDatasource {
   
   Future<EitherErr<List<Racket>>>localGetRackets() {
     return EitherCatch.catchAsync<List<Racket>, RacketErr>(() async {
-      return await sqLiteDB.getAllRackets();
+      final localRackets =  await sqLiteDB.getAllRackets();
+      if( localRackets.isEmpty ) throw Exception();
+      return localRackets;
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   } 
   

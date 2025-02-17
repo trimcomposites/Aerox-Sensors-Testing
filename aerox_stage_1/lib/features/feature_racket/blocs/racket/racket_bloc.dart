@@ -24,7 +24,7 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
   }) : super(RacketState()){
     on<OnGetRackets>((event, emit) async{
       // ignore: avoid_single_cascade_in_expression_statements
-      await getRacketsUsecase( true )..fold(
+      await getRacketsUsecase()..fold(
         (l)=>  emit(state.copyWith( rackets: null )) , 
         (r)=> emit( state.copyWith( rackets: r ) )
       );
