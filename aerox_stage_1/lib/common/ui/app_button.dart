@@ -20,38 +20,36 @@ class AppButton extends StatelessWidget {
   final double width;
   final double height;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
+@override
+Widget build(BuildContext context) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(15), // Asegura que el fondo respete los bordes
+    child: Container(
       width: width,
       height: height,
-      color: backgroundColor,
+      color: backgroundColor, 
       child: TextButton(
-        style: OutlinedButton.styleFrom(
-          side: 
-          showborder
-          ? const BorderSide( 
-            color: Colors.white,
-            width: 2.0,
-          )
-          : null,
+        style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero
-          )
+            borderRadius: BorderRadius.circular(15),
+          ),
+          side: showborder
+              ? const BorderSide(color: Colors.white, width: 2.0)
+              : BorderSide.none,
         ),
         onPressed: onPressed,
         child: Text(
-          
           text,
           style: GoogleFonts.plusJakartaSans(
-          textStyle: TextStyle(
-          color: fontColor,
-          fontSize: 18.0,
-          fontWeight: FontWeight.bold
-          ),
+            textStyle: TextStyle(
+              color: fontColor,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
