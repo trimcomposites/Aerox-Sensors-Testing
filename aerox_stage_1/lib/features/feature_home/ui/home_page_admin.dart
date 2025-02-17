@@ -22,7 +22,7 @@ class HomePageAdmin extends StatelessWidget {
 
     final HomeScreenBloc homeScreenBloc = BlocProvider.of( context )..add( OnGetSelectedRacketHome() );
     final RacketBloc racketBloc = BlocProvider.of( context );
-
+    final userBloc = BlocProvider.of<UserBloc>( context );
     onback() {
       homeScreenBloc.add(OnGetSelectedRacketHome());
       Navigator.of(context).pop();
@@ -84,14 +84,14 @@ class HomePageAdmin extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 30),
-
-                    // AppButton(
-                    //   text: "SIGN OUT",
-                    //   onPressed: (){
-                    //     userBloc.add( OnGoogleSignOutUser() );
-                    //     userBloc.add( OnEmailSignOutUser() );
-                    //   }
-                    // ),
+                    
+                    AppButton(
+                       text: "SIGN OUT",
+                       onPressed: (){
+                        userBloc.add( OnGoogleSignOutUser() );
+                        userBloc.add( OnEmailSignOutUser() );
+                       }
+                    ),
                   ],
                 ),
               ),
