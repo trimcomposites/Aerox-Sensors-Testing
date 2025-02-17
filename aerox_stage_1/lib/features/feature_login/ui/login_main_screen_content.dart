@@ -23,18 +23,20 @@ class LoginMainScreenContent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        SizedBox( height: 150, ),
          Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100.0, vertical: 50), // Adding padding around the image
+              padding: const EdgeInsets.symmetric(horizontal: 120.0, vertical: 50), // Adding padding around the image
               child: Image.asset('assets/Logotipo-Aerox-Blanco.png'), // Displaying an asset image
             ),
           ),
+         SizedBox(height: 20,), 
         Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AppButton(
                 backgroundColor: appYellowColor,
-                  text: 'Crear una Cuenta',
+                  text: 'REGíSTRATE',
                   fontColor: Colors.black,
                   showborder: false,
                   onPressed: (){
@@ -48,7 +50,7 @@ class LoginMainScreenContent extends StatelessWidget {
               const SizedBox(height: 30),
 
               AppButton( 
-                text: 'Iniciar Sesión',
+                text: 'LOG IN',
                 backgroundColor: Colors.transparent,
                 onPressed: (){
                   Navigator.push(
@@ -59,7 +61,7 @@ class LoginMainScreenContent extends StatelessWidget {
               const SizedBox(height: 30),
 
               Text(
-                "OR LOG IN WITH",
+                "CONECTA",
                 style: GoogleFonts.plusJakartaSans(
                   textStyle: const TextStyle(
                     color: Colors.white,

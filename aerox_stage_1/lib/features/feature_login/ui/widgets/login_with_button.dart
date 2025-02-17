@@ -8,26 +8,32 @@ class LoginWithButton extends StatelessWidget {
   });
   final String asset;
 
-  @override
+ @override
   Widget build(BuildContext context) {
-
-      final UserBloc userBloc = BlocProvider.of<UserBloc>( context );
+    final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
 
     return Container(
-      padding: EdgeInsets.symmetric( horizontal: 10 ),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.white, // Background color of the button
+        color: Colors.transparent,
+        border: Border.all( // ✅ Agrega un borde blanco
+          color: Colors.white,
+          width: 2.0,
+        ),
       ),
       child: Container(
         height: 50,
         width: 50,
-        child: IconButton( 
-          icon: Image.asset( asset ), // Replace with your desired icon
-          //color: Colors.black, // Icon color
-          onPressed: (){
-            userBloc.add( OnGoogleSignInUser() );
-          }
+        decoration: BoxDecoration( // ✅ Asegura que el fondo del botón respete el borde
+          shape: BoxShape.circle,
+          color: Colors.transparent, 
+        ),
+        child: IconButton(
+          icon: Image.asset(asset), // Icono personalizado
+          onPressed: () {
+            userBloc.add(OnGoogleSignInUser());
+          },
         ),
       ),
     );
