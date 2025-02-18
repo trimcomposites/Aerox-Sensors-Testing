@@ -94,5 +94,7 @@
     <true></true>
     <key>GOOGLE_APP_ID</key>
     <string>1:293842013726:ios:590434cad3c4f67ecc280f</string>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
 </dict>
 </plist>

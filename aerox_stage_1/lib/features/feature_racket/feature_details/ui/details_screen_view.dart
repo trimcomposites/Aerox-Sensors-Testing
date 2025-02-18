@@ -4,6 +4,7 @@ import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/common/ui/selected_racket_widget.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
+import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/add_comment_button.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/racket_image.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/racket_specs.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/upper_info_text.dart';
@@ -96,21 +97,7 @@ class DetailsScreenView extends StatelessWidget {
                             fontSize: 30
                           ),
                         ),
-                        Container(
-                          width: 110,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            border: Border.all( color: Colors.black, width: 1 ),
-                            borderRadius: BorderRadius.circular(30)
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text('ADD'),
-                              Icon( Icons.comment )
-                            ],
-                          ),
-                        )
+                        AddCommentButton()
                       ],
                     )
                   ],

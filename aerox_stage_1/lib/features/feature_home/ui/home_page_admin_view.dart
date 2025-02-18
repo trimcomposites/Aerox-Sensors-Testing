@@ -48,10 +48,8 @@ class HomePageAdminView extends StatelessWidget {
                   },
                 ),
               ),
-              Positioned(
-                child: BluetoothConnectButton()
-                )
-            ],
+              BluetoothConnectButton()
+            ]
           );
           },
         ),
