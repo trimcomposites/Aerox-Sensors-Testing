@@ -7,7 +7,7 @@ class HomePageAppbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      height: 20,
+      height: 10,
       color: Colors.transparent,
       child: Image.asset( 'assets/Logotipo-Aerox-Negro.jpg', 
      ));

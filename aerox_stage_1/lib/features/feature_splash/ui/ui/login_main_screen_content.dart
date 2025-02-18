@@ -1,5 +1,5 @@
+import 'package:aerox_stage_1/common/ui/resources.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginMainScreenContent extends StatelessWidget {

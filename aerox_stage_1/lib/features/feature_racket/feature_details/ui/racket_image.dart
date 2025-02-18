@@ -5,17 +5,18 @@ class RacketImage extends StatelessWidget {
   const RacketImage({
     super.key,
     required this.isRacketSelected,
-    required this.racket,
+    required this.racket, required this.height,
   });
 
   final bool isRacketSelected;
   final Racket racket;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return Image.network(
       isRacketSelected ? racket.imagen : racket.imagen,
-      height: 450,
+      height: height,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) return child; 
         return Center(
@@ -29,8 +30,8 @@ class RacketImage extends StatelessWidget {
       errorBuilder: (context, error, stackTrace) {
         return Image.asset(
           'assets/Pala-Catalogo.png', 
-          height: 450,
-          fit: BoxFit.cover,
+          height: height,
+          fit: BoxFit.contain,
         );
       },
     );

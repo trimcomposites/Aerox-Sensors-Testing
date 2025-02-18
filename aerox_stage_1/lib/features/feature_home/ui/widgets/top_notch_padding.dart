@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/ui/resources.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 
 class TopNotchPadding extends StatelessWidget {

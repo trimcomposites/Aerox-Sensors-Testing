@@ -13,7 +13,7 @@ export 'package:aerox_stage_1/features/feature_login/blocs/user/user_bloc.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/widgets/data_container.dart';
 export 'package:aerox_stage_1/common/ui/background_image.dart';
 export 'package:aerox_stage_1/features/feature_splash/ui/background_gradient.dart';
-export 'package:aerox_stage_1/features/feature_splash/ui/resources.dart';
+export 'package:aerox_stage_1/common/ui/resources.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/create_account_screen_content.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/login_main_screen_content.dart';
 export 'package:aerox_stage_1/features/feature_login/ui/login_with_email_content.dart';
