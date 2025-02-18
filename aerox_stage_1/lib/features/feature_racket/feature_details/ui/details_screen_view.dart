@@ -80,7 +80,44 @@ class DetailsScreenView extends StatelessWidget {
               RacketSpecs(
                 racketIndexNotifier: racketIndexNotifier,
                 rackets: rackets,
+                showAdvancedSpecs: isRacketSelected ? false : true,
               ),
+              isRacketSelected
+
+              ? Container(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Notas',
+                          style: TextStyle(
+                            fontSize: 30
+                          ),
+                        ),
+                        Container(
+                          width: 110,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border.all( color: Colors.black, width: 1 ),
+                            borderRadius: BorderRadius.circular(30)
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text('ADD'),
+                              Icon( Icons.comment )
+                            ],
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              )
+
+              : Container()
             ],
           ),
         ),

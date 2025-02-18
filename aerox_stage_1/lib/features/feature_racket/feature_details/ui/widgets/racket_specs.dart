@@ -7,12 +7,13 @@ import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets
 class RacketSpecs extends StatelessWidget {
   const RacketSpecs({
     super.key,
-    required this.racketIndexNotifier, required this.rackets,
+    required this.racketIndexNotifier, required this.rackets, required this.showAdvancedSpecs,
   });
 
   final ValueNotifier<int> racketIndexNotifier;
   final List<Racket> rackets;
-
+  final bool showAdvancedSpecs;
+  
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
@@ -22,8 +23,8 @@ class RacketSpecs extends StatelessWidget {
           children: [
             TechnicalSpecsSheet(rackets: rackets, racketIndex: racketIndex,),
             SizedBox( height: 25, ),
-            ExpansionSpecData( racket: rackets[racketIndex], text: 'Características del prodcuto', ),
-            ExpansionSpecData( racket: rackets[racketIndex], text: 'Datos en bruto', )
+            if(showAdvancedSpecs) ExpansionSpecData( racket: rackets[racketIndex], text: 'Características del prodcuto', ),
+            if(showAdvancedSpecs) ExpansionSpecData( racket: rackets[racketIndex], text: 'Datos en bruto', )
         ],
       );
       }
