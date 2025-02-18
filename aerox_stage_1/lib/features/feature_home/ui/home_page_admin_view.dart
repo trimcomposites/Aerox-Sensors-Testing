@@ -30,7 +30,7 @@ class HomePageAdminView extends StatelessWidget {
                 SelectedRacketWidget(racket: state.myRacket!),
     
               Positioned(
-                bottom: 80, 
+                bottom: 180, 
                 child: AppButton(
                   text: 'CONFIGURA TU PALA',
                   fontColor: Colors.black,
@@ -48,7 +48,9 @@ class HomePageAdminView extends StatelessWidget {
                   },
                 ),
               ),
-              BluetoothConnectButton()
+              Positioned(
+                child: BluetoothConnectButton()
+                )
             ],
           );
           },
