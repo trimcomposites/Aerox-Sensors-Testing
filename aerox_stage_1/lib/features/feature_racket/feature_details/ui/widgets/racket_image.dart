@@ -31,7 +31,7 @@ class RacketImage extends StatelessWidget {
         return Image.asset(
           'assets/Pala-Catalogo.png', 
           height: height,
-          fit: BoxFit.contain,
+          
         );
       },
     );
