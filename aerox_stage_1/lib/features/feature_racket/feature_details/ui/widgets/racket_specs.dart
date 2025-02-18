@@ -22,7 +22,8 @@ class RacketSpecs extends StatelessWidget {
           children: [
             TechnicalSpecsSheet(rackets: rackets, racketIndex: racketIndex,),
             SizedBox( height: 25, ),
-            ExpansionSpecData( racket: rackets[racketIndex], )
+            ExpansionSpecData( racket: rackets[racketIndex], text: 'Características del prodcuto', ),
+            ExpansionSpecData( racket: rackets[racketIndex], text: 'Datos en bruto', )
         ],
       );
       }

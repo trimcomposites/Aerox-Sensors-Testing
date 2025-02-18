@@ -1,3 +1,5 @@
+import 'package:aerox_stage_1/domain/models/spec.dart';
+
 class Racket {
     int id;
     String golpeo;

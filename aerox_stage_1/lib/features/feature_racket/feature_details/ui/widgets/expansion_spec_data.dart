@@ -1,12 +1,14 @@
 import 'package:aerox_stage_1/domain/models/racket.dart';
+import 'package:aerox_stage_1/domain/models/racket_extension.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/technical_specs_text.dart';
 
 import 'package:flutter/material.dart';
 
 class ExpansionSpecData extends StatefulWidget {
-  const ExpansionSpecData({super.key, required this.racket});
+  const ExpansionSpecData({super.key, required this.racket, required this.text});
   final Racket racket;
+  final String text;
   @override
   _ExpansionSpecDataState createState() => _ExpansionSpecDataState();
 }
@@ -16,6 +18,7 @@ class _ExpansionSpecDataState extends State<ExpansionSpecData> {
 
   @override
   Widget build(BuildContext context) {
+    final specs = widget.racket.getSpecs();
     return Container(
       decoration: BoxDecoration(
         border: Border.symmetric(
@@ -26,7 +29,7 @@ class _ExpansionSpecDataState extends State<ExpansionSpecData> {
         ),
       ),
       child: ExpansionTile(
-        title: Text('Características del producto', maxLines: 1, textAlign: TextAlign.start, style: TextStyle( fontSize: 14 ),),
+        title: Text(widget.text, maxLines: 1, textAlign: TextAlign.start, style: TextStyle( fontSize: 14 ),),
         onExpansionChanged: (bool expanded) {
           setState(() {
             _isExpanded = expanded; 
@@ -57,9 +60,10 @@ class _ExpansionSpecDataState extends State<ExpansionSpecData> {
                 mainAxisSpacing: 20,
                 childAspectRatio: 3,
               ),
-              itemCount: 8,
+              itemCount: specs.length,
               itemBuilder: (context, index) {
-                return TechnicalSpecsText( title: 'Marco', value: widget.racket.pala, );
+                
+                return TechnicalSpecsText( title: specs[index].key, value: specs[index].value, );
               },
               ),
           ),
