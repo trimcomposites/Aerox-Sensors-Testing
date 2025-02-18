@@ -21,6 +21,7 @@ class RacketImage extends StatelessWidget {
       child: ModelViewer(
         src: 'assets/3d/adidas_padel_2023.glb',
         autoRotate: true,
+        interactionPrompt: InteractionPrompt.none,
         ),
       
     );
