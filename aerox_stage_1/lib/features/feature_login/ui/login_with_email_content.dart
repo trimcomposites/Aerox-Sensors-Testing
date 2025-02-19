@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/features/feature_login/ui/widgets/login_error_message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'login_barrel.dart';
@@ -82,16 +83,7 @@ class LoginWithEmailContent extends StatelessWidget {
 
                 const SizedBox( height: 30, ),
 
-                BlocBuilder<UserBloc, UserState>(
-                  builder: (context, state) {
-                    return state.errorMessage != null
-                    ? Padding(
-                      padding: const EdgeInsets.symmetric( horizontal: 40 ),
-                      child: Text( state.errorMessage! ,style: TextStyle( color: Colors.white ),  ),
-                    )
-                    : Container();
-                  },
-                )
+                LoginErrorMessage()
               ],
             ),
           )

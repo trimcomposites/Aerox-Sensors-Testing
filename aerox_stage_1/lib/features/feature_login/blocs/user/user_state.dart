@@ -1,28 +1,24 @@
 part of 'user_bloc.dart';
 
 class UserState extends Equatable {
-
   final AeroxUser? user;
-   final String? errorMessage;
+  final UIState uiState;
 
-  UserState({
-    this.user, 
-    this.errorMessage
+  const UserState({
+    this.user,
+    required this.uiState,
   });
 
-  
   UserState copyWith({
     AeroxUser? user,
-    bool? isLoading,
-    String? errorMessage,
+    UIState? uiState,
   }) {
     return UserState(
-      user: user,
-      errorMessage: errorMessage
+      user: user ?? this.user,
+      uiState: uiState ?? this.uiState,
     );
   }
 
-
   @override
-  List<Object?> get props => [user, errorMessage];
+  List<Object?> get props => [user, uiState];
 }
