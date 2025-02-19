@@ -18,7 +18,7 @@ class AddCommentButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text('ADD'),
-          Icon( Icons.comment )
+          Icon( Icons.comment ),
         ],
       ),
     );

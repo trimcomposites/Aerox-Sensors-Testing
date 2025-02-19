@@ -4,7 +4,8 @@ import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/common/ui/selected_racket_widget.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/add_comment_button.dart';
+import 'package:aerox_stage_1/features/feature_racket/feature_comments/ui/add_comment_button.dart';
+import 'package:aerox_stage_1/features/feature_racket/feature_comments/ui/comment_section.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/racket_image.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/racket_specs.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/upper_info_text.dart';
@@ -85,24 +86,7 @@ class DetailsScreenView extends StatelessWidget {
               ),
               isRacketSelected
 
-              ? Container(
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Notas',
-                          style: TextStyle(
-                            fontSize: 30
-                          ),
-                        ),
-                        AddCommentButton()
-                      ],
-                    )
-                  ],
-                ),
-              )
+              ? CommentSection()
 
               : Container()
             ],
