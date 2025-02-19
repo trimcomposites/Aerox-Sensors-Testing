@@ -9,13 +9,12 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecas
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/remote/racket_datasource.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
@@ -68,7 +67,7 @@ Future<void> dependencyInjectionInitialize() async{
     )
     ..registerLazySingleton(
       () => RacketRepository(
-        datasource: sl(),
+        remoteGetRackets: sl(),
         sqLiteDB: sl()
       )
     )
@@ -88,11 +87,7 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerLazySingleton(() => GoogleSignIn())
 
     //racket
-    ..registerLazySingleton(() => MockRacketDatasource(
-      sqLiteDB: sl()
-    ))
-    ..registerLazySingleton(() => RacketDatasource(
-      sqLiteDB: sl()
+    ..registerLazySingleton(() => RemoteGetRackets(
     )); 
 
 }
