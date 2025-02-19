@@ -100,6 +100,7 @@ class CreateAccountScreenContent extends StatelessWidget {
                       showborder: false,
                       onPressed: (){
 
+                        //userBloc.add( OnStartLoadingUser() );
                         userBloc.add( OnEmailRegisterUser(email: emailController.text, password: passwordController.text ) );
 
                       }

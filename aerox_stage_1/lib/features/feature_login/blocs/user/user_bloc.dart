@@ -71,6 +71,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     on<OnEmailRegisterUser>((event, emit) async {
       add(OnStartLoadingUser());
+      await Future.delayed(Duration(seconds: 3));
       final user = AeroxUser(name: 'name', email: event.email, password: event.password);
       final result = await registerUseCase(user);
       result.fold(
