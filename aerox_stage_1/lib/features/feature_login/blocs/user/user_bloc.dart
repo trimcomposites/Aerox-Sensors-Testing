@@ -61,12 +61,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
     on<OnEmailRegisterUser>((event, emit) async {
       final user = AeroxUser(name: 'name', email: event.email, password: event.password );
-      dynamic result = await registerUseCase(user);
-      if( result is AeroxUser ){
-        emit( state.copyWith( user: result, errorMessage: null ) );
-      }else if ( result is String ) {
-        emit( state.copyWith( errorMessage: result ) );
-      }
+       // ignore: avoid_single_cascade_in_expression_statements
+       await registerUseCase(user)..fold(
+        (l) =>  emit( state.copyWith( errorMessage: l.errMsg ) ), 
+        (r) =>emit( state.copyWith( user: r, errorMessage: null ) ));
+      
+
     });
 
     on<OnDeleteErrorMsg>((event, emit) {

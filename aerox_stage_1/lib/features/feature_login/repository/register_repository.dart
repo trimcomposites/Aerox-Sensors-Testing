@@ -1,4 +1,5 @@
 
+import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/email_auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,10 +10,8 @@ class RegisterRepository {
 
   RegisterRepository({required this.emailAuthService});
 
-  registerWithEmail( AeroxUser aeroxUser ) async{
-    final user = await emailAuthService.createUserWithEmail( aeroxUser: aeroxUser );
-    return user;
+  Future<EitherErr<AeroxUser>> registerWithEmail(AeroxUser aeroxUser) async {
+    final result = await emailAuthService.createUserWithEmail(aeroxUser: aeroxUser);
+    return result;
   }
-
-
 }
