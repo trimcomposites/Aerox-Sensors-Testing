@@ -20,7 +20,7 @@ class Racket3dModel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  IgnorePointer(
-      ignoring: true,
+      ignoring: ignorePointer,
       child: Container(
         height: 600,
         width: 400,
@@ -28,7 +28,8 @@ class Racket3dModel extends StatelessWidget {
           src: 'assets/3d/adidas_padel_2023.glb',
           autoRotate: true,
           interactionPrompt: InteractionPrompt.none,
-          rotationPerSecond: "${rotateSpeed}seg",
+          rotationPerSecond: "${rotateSpeed}deg",
+          loading: Loading.eager,
           ),
         
       ),

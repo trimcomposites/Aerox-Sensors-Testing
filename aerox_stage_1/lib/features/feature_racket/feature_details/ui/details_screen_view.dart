@@ -57,7 +57,7 @@ class DetailsScreenView extends StatelessWidget {
                       itemBuilder: (BuildContext context, int index) {
                         return SelectedRacketWidget(
                           ignorePointer: true,
-                          rotateSpeed: 45,
+                          rotateSpeed: 100,
                           racket: rackets[index],
                           textPosition: -20,
                           height: 600,
