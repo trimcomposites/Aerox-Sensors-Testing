@@ -1,4 +1,3 @@
-import 'package:aerox_stage_1/common/utils/exceptions/exception.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class Err extends Equatable{

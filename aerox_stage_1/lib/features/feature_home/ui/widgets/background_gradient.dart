@@ -14,9 +14,9 @@ class BackgroundGradient extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.black.withOpacity(0.5), // Semi-transparent black
-            Colors.black.withOpacity(0.5), // Semi-transparent black (same color to extend)
-            const Color.fromARGB(255, 66, 64, 64).withOpacity(0.5), // Semi-transparent white
+          Colors.black.withAlpha(127), 
+          Colors.black.withAlpha(127), 
+          const Color.fromARGB(255, 66, 64, 64).withAlpha(127), 
           ],
           stops: const [0.0, 0.5, 1.0], // Adjust the stops for the gradient
         ),
