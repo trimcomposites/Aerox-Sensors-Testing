@@ -64,6 +64,12 @@ dev_dependencies:
   bloc_test: ^10.0.0
   google_sign_in_mocks: ^0.3.0
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/Aerox-icon-x1.png"
+  adaptive_icon_background: "transparent" # Fondo transparente
+  adaptive_icon_foreground: "assets/Aerox-icon-x1.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
