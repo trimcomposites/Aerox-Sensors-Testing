@@ -19,11 +19,11 @@ import '../../../../mock_types.dart';
 void main(){
 
   late UserBloc userBloc;
-  late SignInUserUsecase signInUserUsecase;
-  late SignOutUserUsecase signOutUserUsecase;
-  late RegisterUserUsecase registerUserUsecase;
-  late CheckUserSignedInUsecase checkUserSignedInUsecase;
-  late ResetPasswordUsecase resetPasswordUsecase;
+  late SignInUserUseCase signInUserUsecase;
+  late SignOutUserUseCase signOutUserUsecase;
+  late RegisterUserUseCase registerUserUsecase;
+  late CheckUserSignedInUseCase checkUserSignedInUsecase;
+  late ResetPasswordUseCase resetPasswordUsecase;
   final user = AeroxUser(name: 'name', email: 'email');
   setUp((){
     signInUserUsecase = MockSignInUserUseCase();

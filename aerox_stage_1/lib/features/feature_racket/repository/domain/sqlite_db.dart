@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -38,23 +37,23 @@ class SQLiteDB {
   FutureOr<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE rackets (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        golpeo TEXT NOT NULL,
-        pala TEXT NOT NULL,
-        nombrePala TEXT NOT NULL,
+        id INTEGER PRIMARY KEY,
+        hit TEXT NOT NULL,
+        racket TEXT NOT NULL,
+        racketName TEXT NOT NULL,
         color TEXT NOT NULL,
         weightNumber TEXT NOT NULL,
-        weightName TEXT NOT NULL,
+        weightUnit TEXT NOT NULL,
         weightType TEXT NOT NULL,
         balance TEXT NOT NULL,
         headType TEXT NOT NULL,
         swingWeight TEXT NOT NULL,
-        potenciaType TEXT NOT NULL,
+        powerType TEXT NOT NULL,
         acor TEXT NOT NULL,
         acorType TEXT NOT NULL,
-        manejabilidad TEXT NOT NULL,
-        manejabilidadType TEXT NOT NULL,
-        imagen TEXT NOT NULL,
+        maneuverability TEXT NOT NULL,
+        maneuverabilityType TEXT NOT NULL,
+        image TEXT NOT NULL,
         isSelected INTEGER DEFAULT 0 
       )
     ''');
@@ -112,18 +111,52 @@ class SQLiteDB {
     );
   }
 
+Future<void> insertRacketList(List<Racket> rackets, {Database? dbInstance}) async {
+  final db = dbInstance ?? await database;
+  await checkTableStructure();
 
-  Future<void> insertRacketList(List<Racket> rackets, {Database? dbInstance}) async {
-    final db = dbInstance ?? await database;
-    await checkTableStructure();
-    await db.transaction((txn) async {
-      final batch = txn.batch();
-      for (var racket in rackets) {
-        batch.insert('rackets', RacketSerializer.toJsonRacket(racket)); 
-      }
-      await batch.commit(noResult: true);
-    });
+  await db.transaction((txn) async {
+    final batch = txn.batch();
+
+    for (var racket in rackets) {
+      await upsertRacket(racket, txn, batch);
+    }
+
+    await batch.commit(noResult: true);
+  });
+}
+
+Future<void> upsertRacket(Racket racket, Transaction txn, Batch batch) async {
+  final existingRacket = await checkRacketExistence(racket.id, txn);
+
+  if (existingRacket.isEmpty) {
+    insertMyRacket(racket, batch);
+  } else {
+    updateMyRacket(racket, txn, batch);
   }
+}
+
+Future<List<Map<String, dynamic>>> checkRacketExistence(int id, Transaction txn) async {
+  return await txn.query(
+    'rackets',
+    where: 'id = ?',
+    whereArgs: [id],
+  );
+}
+
+void insertMyRacket(Racket racket, Batch batch) {
+  batch.insert('rackets', RacketSerializer.toJsonRacket(racket));
+}
+
+void updateMyRacket(Racket racket, Transaction txn, Batch batch) {
+  batch.update(
+    'rackets',
+    RacketSerializer.toJsonRacket(racket),
+    where: 'id = ?',
+    whereArgs: [racket.id],
+  );
+}
+
 
   // Seleccionar una raqueta
   Future<void> selectRacket(int racketId) async {
@@ -174,6 +207,8 @@ class SQLiteDB {
   Future<void> checkAndDeleteDB() async {
     final storage = FlutterSecureStorage();
     final firstRun = await storage.read(key: "db_deleted");
+    final db = await database;
+    await db.execute('DROP TABLE IF EXISTS rackets');
 
     if (firstRun == null) {
       final databasesPath = await getDatabasesPath();

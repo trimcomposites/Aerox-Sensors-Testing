@@ -4,7 +4,6 @@ import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.d
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_options.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
 import 'package:aerox_stage_1/features/feature_splash/ui/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +22,7 @@ void main() async{
           create: ( context )=>sl<UserBloc>()..add( OnCheckUserIsSignedIn() ) 
         ),
         BlocProvider(
-          create: ( context )=>sl<RacketBloc>()..add( OnGetRackets() ) 
+          create: ( context )=>sl<RacketBloc>()
         ),
         BlocProvider(
           create: ( context )=>sl<DetailsScreenBloc>() 
@@ -47,6 +46,7 @@ class MyApp extends StatelessWidget {
       //final SQLiteDB db = sl();
       //db.checkAndDeleteDB();
       //db.clearDatabase();
+      //db.checkAndDeleteDB();
     SQLiteDB sqLiteDB  =sl();
     final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() )..add( OnGetSelectedRacket() ) ;
     return MaterialApp(

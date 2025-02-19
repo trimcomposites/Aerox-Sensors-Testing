@@ -5,7 +5,7 @@ import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
-import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,7 +13,7 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../../mock_types.dart';
 
-late RegisterUserUsecase usecase;
+late RegisterUserUseCase usecase;
 late LoginRepository loginRepo;
 //late User mockUser;
 late FirebaseAuth auth;
@@ -24,7 +24,7 @@ Future<void> main() async {
 
   setUp((){
     loginRepo = MockLoginRepo();
-    usecase = RegisterUserUsecase(loginRepo: loginRepo);
+    usecase = RegisterUserUseCase(loginRepo: loginRepo);
     //mockUser = MockFirebaseUser();
   });
 

@@ -2,9 +2,9 @@ import 'package:aerox_stage_1/domain/models/spec.dart';
 
 class Racket {
     int id;
-    String golpeo;
-    String pala;
-    String nombrePala;
+    String hit;
+    String racket;
+    String racketName;
     String color;
     String weightNumber;
     String weightName;
@@ -12,19 +12,19 @@ class Racket {
     String balance;
     String headType;
     String swingWeight;
-    String potenciaType;
+    String powerType;
     String acor;
     String acorType;
-    String manejabilidad;
-    String manejabilidadType;
-    String imagen;
+    String maneuverability;
+    String maneuverabilityType;
+    String image;
     bool isSelected;
 
     Racket({
         required this.id,
-        required this.golpeo,
-        required this.pala,
-        required this.nombrePala,
+        required this.hit,
+        required this.racket,
+        required this.racketName,
         required this.color,
         required this.weightNumber,
         required this.weightName,
@@ -32,20 +32,19 @@ class Racket {
         required this.balance,
         required this.headType,
         required this.swingWeight,
-        required this.potenciaType,
+        required this.powerType,
         required this.acor,
         required this.acorType,
-        required this.manejabilidad,
-        required this.manejabilidadType,
-        required this.imagen,
+        required this.maneuverability,
+        required this.maneuverabilityType,
+        required this.image,
         this.isSelected = false
     });
-
     Racket copyWith({
         int? id,
-        String? golpeo,
-        String? pala,
-        String? nombrePala,
+        String? hit,
+        String? racket,
+        String? racketName,
         String? color,
         String? weightNumber,
         String? weightName,
@@ -53,18 +52,19 @@ class Racket {
         String? balance,
         String? headType,
         String? swingWeight,
-        String? potenciaType,
+        String? powerType,
         String? acor,
         String? acorType,
-        String? manejabilidad,
-        String? manejabilidadType,
-        String? imagen,
+        String? maneuverability,
+        String? maneuverabilityType,
+        String? image,
+        bool? isSelected,
     }) => 
         Racket(
             id: id ?? this.id,
-            golpeo: golpeo ?? this.golpeo,
-            pala: pala ?? this.pala,
-            nombrePala: nombrePala ?? this.nombrePala,
+            hit: hit ?? this.hit,
+            racket: racket ?? this.racket,
+            racketName: racketName ?? this.racketName,
             color: color ?? this.color,
             weightNumber: weightNumber ?? this.weightNumber,
             weightName: weightName ?? this.weightName,
@@ -72,11 +72,13 @@ class Racket {
             balance: balance ?? this.balance,
             headType: headType ?? this.headType,
             swingWeight: swingWeight ?? this.swingWeight,
-            potenciaType: potenciaType ?? this.potenciaType,
+            powerType: powerType ?? this.powerType,
             acor: acor ?? this.acor,
             acorType: acorType ?? this.acorType,
-            manejabilidad: manejabilidad ?? this.manejabilidad,
-            manejabilidadType: manejabilidadType ?? this.manejabilidadType,
-            imagen: imagen ?? this.imagen,
+            maneuverability: maneuverability ?? this.maneuverability,
+            maneuverabilityType: maneuverabilityType ?? this.maneuverabilityType,
+            image: image ?? this.image,
+            isSelected: isSelected ?? this.isSelected,
         );
+
 }

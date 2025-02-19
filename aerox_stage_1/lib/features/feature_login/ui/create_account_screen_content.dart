@@ -1,6 +1,8 @@
 
+import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/features/feature_login/blocs/user/user_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_message_text.dart';
+import 'package:aerox_stage_1/features/feature_login/ui/widgets/login_error_message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'login_barrel.dart';
@@ -79,6 +81,7 @@ class CreateAccountScreenContent extends StatelessWidget {
                       showborder: false,
                       onPressed: (){
 
+                        //userBloc.add( OnStartLoadingUser() );
                         userBloc.add( OnEmailRegisterUser(email: emailController.text, password: passwordController.text ) );
 
                       }
@@ -86,16 +89,7 @@ class CreateAccountScreenContent extends StatelessWidget {
 
                     SizedBox( height: 15, ),
 
-                    BlocBuilder<UserBloc, UserState>(
-                      builder: (context, state) {
-                        return state.errorMessage != null
-                        ? Padding(
-                          padding: const EdgeInsets.symmetric( horizontal: 40 ),
-                          child: Text( state.errorMessage! ,style: TextStyle( color: Colors.white ),  ),
-                        )
-                        : Container();
-                        },
-                      )
+                    LoginErrorMessage()
                   ],
                 )
               ),

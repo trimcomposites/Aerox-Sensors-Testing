@@ -4,14 +4,14 @@ import 'package:aerox_stage_1/domain/models/spec.dart';
 extension RacketExtension on Racket{
   List<Spec>getSpecs(){
     return [
-      Spec(key: 'Marco', value: this.pala),
-      Spec(key: 'Golpeo', value: this.golpeo),
-      Spec(key: 'Marco Reforzado', value: this.nombrePala),
-      Spec(key: 'Rugosidad', value: this.pala),
+      Spec(key: 'Marco', value: this.racket),
+      Spec(key: 'Golpeo', value: this.hit),
+      Spec(key: 'Marco Reforzado', value: this.racketName),
+      Spec(key: 'Rugosidad', value: this.racket),
       Spec(key: 'Foam', value: this.acor),
-      Spec(key: 'Nucleo', value: this.nombrePala),
+      Spec(key: 'Nucleo', value: this.racketName),
       Spec(key: 'Carbon Fibre', value: this.color),
-      Spec(key: 'Tacto', value: this.potenciaType),
+      Spec(key: 'Tacto', value: this.powerType),
 
     ];
   }

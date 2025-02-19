@@ -36,7 +36,7 @@ class TechnicalSpecsSheet extends StatelessWidget {
             SpecsDataText( text: 'Balance', value: rackets[racketIndex].balance, ),
             SpecsDataText( text: 'Swing Weight',  value: rackets[racketIndex].swingWeight, ),
             SpecsDataText( text: 'ACOR',  value: rackets[racketIndex].acor, ),
-            SpecsDataText( text: 'Manejabilidad',  value: rackets[racketIndex].manejabilidad, ),
+            SpecsDataText( text: 'Manejabilidad',  value: rackets[racketIndex].maneuverability, ),
           ],
         ),
       ),

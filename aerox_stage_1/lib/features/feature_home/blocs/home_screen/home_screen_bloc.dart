@@ -1,5 +1,6 @@
+import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket.usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -8,11 +9,11 @@ part 'home_screen_state.dart';
 
 
 class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
-  final GetSelectedRacketUsecase getSelectedRacketUsecase;
+  final GetSelectedRacketUseCase getSelectedRacketUsecase;
   HomeScreenBloc({
     required this.getSelectedRacketUsecase,
 
-  }) : super(HomeScreenState()) {
+  }) : super(HomeScreenState( uiState: UIState(status: UIStatus.success) )) {
     on<OnGetSelectedRacketHome>((event, emit) async {
       // ignore: avoid_single_cascade_in_expression_statements
       await getSelectedRacketUsecase()..fold(
@@ -20,5 +21,27 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
         (r) => ( emit( state.copyWith( racket: r ) ) )
       );
     });
+    on<OnStartLoadingHome>((event, emit) async {
+      emit( state.copyWith( uiState: UIState.loading() ) );
+
+    });
+    on<OnStopLoadingHome>((event, emit) async {
+      emit(state.copyWith(uiState: UIState.success()));
+    });
+
+    on<OnOperationSuccessHome>((event, emit) async {
+      emit(state.copyWith(uiState: UIState.success()));
+    });
+
+    on<OnStartErrorHome>((event, emit) async {
+      emit(state.copyWith(uiState: UIState.error(event.errorMessage)));
+    });
+
+    on<OnStopErrorHome>((event, emit) async {
+      emit(state.copyWith(uiState: UIState.success()));
+    });
   }
+  
+
+  
 }

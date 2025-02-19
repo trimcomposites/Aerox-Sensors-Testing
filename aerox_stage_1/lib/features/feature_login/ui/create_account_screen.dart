@@ -1,3 +1,5 @@
+import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
+import 'package:aerox_stage_1/features/feature_login/ui/widgets/loading_indicator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/user/user_bloc.dart';
@@ -16,21 +18,20 @@ class CreateAccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final userBloc = BlocProvider.of<UserBloc>( context );
+    final userBloc = BlocProvider.of<UserBloc>(context);
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-      userBloc.add( OnDeleteErrorMsg() );
+        userBloc.add(OnDeleteErrorMsg());
       },
       child: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
-          if( userBloc.state.user != null ){
+          if (userBloc.state.user != null) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => UserCheckScreen()),
-              );
-            }
+            );
+          }
         },
       
         child: Scaffold(

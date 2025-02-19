@@ -1,6 +1,6 @@
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
-import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import '../../../mock_types.dart';
 
 
-  late SignInUserUsecase usecase;
+  late SignInUserUseCase usecase;
   late LoginRepository repository;
   //late User mockUser;
 
@@ -18,7 +18,7 @@ void main() {
 
   setUp((){
     repository = MockLoginRepo();
-    usecase = SignInUserUsecase(loginRepo: repository);
+    usecase = SignInUserUseCase(loginRepo: repository);
     //mockUser = MockFirebaseUser();
   });
     final user = AeroxUser(name: 'name', email: 'email');

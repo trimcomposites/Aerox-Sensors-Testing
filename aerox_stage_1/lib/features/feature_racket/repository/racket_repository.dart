@@ -6,15 +6,16 @@ import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
+import 'package:dartz/dartz.dart';
 
-class RacketDatasource {
+class RacketRepository {
 
   //futuras dependencias
-  RacketDatasource({ 
-    required this.sqLiteDB
+  RacketRepository( { 
+    required this.sqLiteDB, required this.remoteGetRackets,
   });
   final SQLiteDB sqLiteDB;
-  final RemoteGetRackets remoteGetRackets = RemoteGetRackets();
+  final RemoteGetRackets remoteGetRackets;
 
 
   Future<EitherErr<List<Racket>>>remotegetRackets() async {
@@ -56,6 +57,28 @@ class RacketDatasource {
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   }
 
+  Future<EitherErr<List<Racket>>> getRackets() {
+
+      return localGetRackets().flatMap((localRackets) {
+
+
+        if (localRackets.isEmpty) {
+          //si no hay rquetas llamamos al remoto para que obtenga raquetas de la api
+          return remotegetRackets().flatMap((remoteRackets) async {
+
+            //si es right inserta remoterackets en local
+            await sqLiteDB.insertRacketList(remoteRackets);
+
+              return localGetRackets();
+            });
+          
+        } else {
+
+          return Future.value(Right(localRackets));
+        }
+      });
+    }
 
 
 }
+

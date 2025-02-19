@@ -40,3 +40,16 @@ class OnPasswordReset extends UserEvent{
   OnPasswordReset({required this.email});
 
 }
+class OnStartLoadingUser extends UserEvent {}
+
+class OnStopLoadingUser extends UserEvent {}
+
+class OnOperationSuccessUser extends UserEvent {}
+
+class OnStartErrorUser extends UserEvent {
+  final String errorMessage;
+
+  const OnStartErrorUser({required this.errorMessage});
+}
+
+class OnStopErrorUser extends UserEvent {}

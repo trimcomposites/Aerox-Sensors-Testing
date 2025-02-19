@@ -25,7 +25,7 @@ class SelectedRacketWidget extends StatelessWidget {
           child: Container(
             width: 300,
             child: Text(
-              racket.nombrePala,
+              racket.racketName,
               style: const TextStyle(
                 fontSize: 60,
                 fontWeight: FontWeight.w500

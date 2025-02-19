@@ -1,7 +1,7 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
-import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,13 +10,13 @@ import 'package:mocktail/mocktail.dart';
 import '../../../mock_types.dart';
 
 
-late SignOutUserUsecase usecase;
+late SignOutUserUseCase usecase;
 late LoginRepository loginRepository;
 void main() {
 
   setUp((){
     loginRepository = MockLoginRepo();
-    usecase = SignOutUserUsecase(loginRepo: loginRepository );
+    usecase = SignOutUserUseCase(loginRepo: loginRepository );
 
   });
   

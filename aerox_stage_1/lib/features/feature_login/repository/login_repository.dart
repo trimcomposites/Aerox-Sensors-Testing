@@ -6,7 +6,7 @@ import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'remote_barrel.dart';
+import 'remote/remote_barrel.dart';
 
 class LoginRepository{
 

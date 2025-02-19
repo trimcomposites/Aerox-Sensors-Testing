@@ -14,10 +14,6 @@ class EmailAuthService {
 
   EmailAuthService({required this.firebaseAuth});
 
-  User? get currentUser => firebaseAuth.currentUser;
-
-  Stream<User?> get authStateChanges => firebaseAuth.authStateChanges();
-
   Future<EitherErr<AeroxUser>> signInWithEmail({
     required AeroxUser aeroxUser,
   }) async {

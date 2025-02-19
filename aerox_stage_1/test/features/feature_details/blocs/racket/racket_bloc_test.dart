@@ -1,8 +1,8 @@
 import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/domain/use_cases/racket/deselect_racket_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket.usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -13,10 +13,10 @@ import 'package:mocktail/mocktail.dart';
 import '../../../../mock_types.dart';
 
 late RacketBloc racketBloc;
-late GetRacketsUsecase getRacketsUsecase;
-late SelectRacketUsecase selectRacketUsecase;
-late DeselectRacketUsecase deselectRacketUsecase;
-late GetSelectedRacketUsecase getSelectedRacketUsecase;
+late GetRacketsUseCase getRacketsUsecase;
+late SelectRacketUseCase selectRacketUsecase;
+late UnSelectRacketUseCase deselectRacketUsecase;
+late GetSelectedRacketUseCase getSelectedRacketUsecase;
 void main() {
 
   setUp((){
