@@ -1,6 +1,6 @@
 import 'package:aerox_stage_1/common/ui/resources.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/racket_image.dart';
+import 'package:aerox_stage_1/common/ui/racket_3d_model.dart';
 import 'package:flutter/material.dart';
 
 class SelectedRacketWidget extends StatelessWidget {
@@ -8,12 +8,14 @@ class SelectedRacketWidget extends StatelessWidget {
     super.key,
     required this.racket,
     this.textPosition = -30,
-    this.height = homePageRacketImgSize
+    this.height = homePageRacketImgSize, required this.ignorePointer, required this.rotateSpeed
   });
 
   final Racket racket;
   double textPosition;
   final double height;
+  final bool ignorePointer;
+  final int rotateSpeed;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -37,10 +39,12 @@ class SelectedRacketWidget extends StatelessWidget {
         ),
         Positioned(
           top: 30,
-          child: RacketImage(
+          child: Racket3dModel(
             isRacketSelected: true,
             racket: racket,
             height: height,
+            rotateSpeed: rotateSpeed,
+            ignorePointer: ignorePointer,
           ),
         ),
       ],

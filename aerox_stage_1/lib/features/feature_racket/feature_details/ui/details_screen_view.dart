@@ -6,7 +6,7 @@ import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.d
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_comments/ui/add_comment_button.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_comments/ui/comment_section.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/racket_image.dart';
+import 'package:aerox_stage_1/common/ui/racket_3d_model.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/racket_specs.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/upper_info_text.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +56,8 @@ class DetailsScreenView extends StatelessWidget {
                       },
                       itemBuilder: (BuildContext context, int index) {
                         return SelectedRacketWidget(
+                          ignorePointer: true,
+                          rotateSpeed: 45,
                           racket: rackets[index],
                           textPosition: -20,
                           height: 600,

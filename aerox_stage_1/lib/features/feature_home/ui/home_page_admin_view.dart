@@ -27,7 +27,11 @@ class HomePageAdminView extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               if (state.myRacket != null)
-                SelectedRacketWidget(racket: state.myRacket!),
+                SelectedRacketWidget(
+                  racket: state.myRacket!,
+                  ignorePointer: false,
+                  rotateSpeed: 25,
+                  ),
     
               Positioned(
                 bottom: 180, 
