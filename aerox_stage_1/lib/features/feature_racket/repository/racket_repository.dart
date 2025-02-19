@@ -17,27 +17,6 @@ class RacketRepository {
   final SQLiteDB sqLiteDB;
   final RemoteGetRackets remoteGetRackets;
 
-  Future<EitherErr<List<Racket>>> getRackets() {
-
-      return localGetRackets().flatMap((localRackets) {
-
-
-        if (localRackets.isEmpty) {
-          //si no hay rquetas llamamos al remoto para que obtenga raquetas de la api
-          return remotegetRackets().flatMap((remoteRackets) {
-
-            //si es right inserta remoterackets en local
-            sqLiteDB.insertRacketList(remoteRackets);
-
-              return localGetRackets();
-            });
-          
-        } else {
-
-          return Future.value(Right(localRackets));
-        }
-      });
-    }
 
   Future<EitherErr<List<Racket>>>remotegetRackets() async {
     return EitherCatch.catchAsync<List<Racket>, RacketErr>(() async {
@@ -78,6 +57,27 @@ class RacketRepository {
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   }
 
+  Future<EitherErr<List<Racket>>> getRackets() {
+
+      return localGetRackets().flatMap((localRackets) {
+
+
+        if (localRackets.isEmpty) {
+          //si no hay rquetas llamamos al remoto para que obtenga raquetas de la api
+          return remotegetRackets().flatMap((remoteRackets) async {
+
+            //si es right inserta remoterackets en local
+            await sqLiteDB.insertRacketList(remoteRackets);
+
+              return localGetRackets();
+            });
+          
+        } else {
+
+          return Future.value(Right(localRackets));
+        }
+      });
+    }
 
 
 }

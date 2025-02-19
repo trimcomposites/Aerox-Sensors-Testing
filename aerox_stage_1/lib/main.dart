@@ -22,7 +22,7 @@ void main() async{
           create: ( context )=>sl<UserBloc>()..add( OnCheckUserIsSignedIn() ) 
         ),
         BlocProvider(
-          create: ( context )=>sl<RacketBloc>()..add( OnGetRackets() ) 
+          create: ( context )=>sl<RacketBloc>()
         ),
         BlocProvider(
           create: ( context )=>sl<DetailsScreenBloc>() 
@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
       //final SQLiteDB db = sl();
       //db.clearDatabase();
+      //db.checkAndDeleteDB();
     SQLiteDB sqLiteDB  =sl();
     final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() )..add( OnGetSelectedRacket() ) ;
     return MaterialApp(

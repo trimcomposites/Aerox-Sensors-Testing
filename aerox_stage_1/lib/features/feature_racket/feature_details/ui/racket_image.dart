@@ -14,7 +14,7 @@ class RacketImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.network(
-      isRacketSelected ? racket.imagen : racket.imagen,
+      isRacketSelected ? racket.image : racket.image,
       height: 450,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) return child; 
