@@ -3,9 +3,9 @@ import 'package:aerox_stage_1/domain/use_cases/login/email_sign_in_type.dart';
 import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
 
-class ResetPasswordUsecase extends AsyncUseCaseWithParams<void, String>{
+class ResetPasswordUseCase extends AsyncUseCaseWithParams<void, String>{
 
-  const ResetPasswordUsecase({ required this.loginRepo  });
+  const ResetPasswordUseCase({ required this.loginRepo  });
 
   final LoginRepository loginRepo;
 

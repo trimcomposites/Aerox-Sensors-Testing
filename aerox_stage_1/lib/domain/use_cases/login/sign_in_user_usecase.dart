@@ -7,9 +7,9 @@ import 'package:aerox_stage_1/features/feature_login/repository/login_repository
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class SignInUserUsecase extends AsyncUseCaseWithParams<AeroxUser, SignInUserUsecaseParams>{
+class SignInUserUseCase extends AsyncUseCaseWithParams<AeroxUser, SignInUserUsecaseParams>{
 
-  const SignInUserUsecase({ required this.loginRepo });
+  const SignInUserUseCase({ required this.loginRepo });
 
   final LoginRepository loginRepo;
 

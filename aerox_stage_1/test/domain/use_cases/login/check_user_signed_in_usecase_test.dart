@@ -10,14 +10,14 @@ import 'package:mocktail/mocktail.dart';
 import '../../../mock_types.dart';
 
 late LoginRepository loginRepository;
-late CheckUserSignedInUsecase checkUserSignedInUsecase;
+late CheckUserSignedInUseCase checkUserSignedInUsecase;
 late User mockUser;
 final user = AeroxUser(name: 'name', email: 'email');
 void main() {
   setUp((){
     loginRepository = MockLoginRepo();
     mockUser = MockFirebaseUser();
-    checkUserSignedInUsecase = CheckUserSignedInUsecase(loginRepo: loginRepository);
+    checkUserSignedInUsecase = CheckUserSignedInUseCase(loginRepo: loginRepository);
   });
   group('check user signed in usecase ...', () {
     test('user is already signed in, return [ User ]', ()async {

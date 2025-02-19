@@ -10,12 +10,12 @@ import 'package:mocktail/mocktail.dart';
 import '../../../mock_types.dart';
 
 late RacketRepository repository;
-late GetRacketsUsecase getRacketsUsecase;
+late GetRacketsUseCase getRacketsUsecase;
 void main() {
 
   setUp((){
     repository = MockRacketRepository();
-    getRacketsUsecase = GetRacketsUsecase(racketRepository: repository );
+    getRacketsUsecase = GetRacketsUseCase(racketRepository: repository );
   });
 
   final List<Racket> racketList = [];

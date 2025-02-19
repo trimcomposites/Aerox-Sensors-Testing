@@ -10,13 +10,13 @@ import 'package:mocktail/mocktail.dart';
 import '../../../mock_types.dart';
 
 
-late SignOutUserUsecase usecase;
+late SignOutUserUseCase usecase;
 late LoginRepository loginRepository;
 void main() {
 
   setUp((){
     loginRepository = MockLoginRepo();
-    usecase = SignOutUserUsecase(loginRepo: loginRepository );
+    usecase = SignOutUserUseCase(loginRepo: loginRepository );
 
   });
   

@@ -1,7 +1,7 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/domain/use_cases/racket/deselect_racket_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -11,12 +11,12 @@ import 'package:mocktail/mocktail.dart';
 import '../../../mock_types.dart';
 
 late RacketRepository repository;
-late DeselectRacketUsecase deselectRacketUsecase;
+late UnSelectRacketUseCase deselectRacketUsecase;
 void main() {
 
   setUp((){
     repository = MockRacketRepository();
-    deselectRacketUsecase = DeselectRacketUsecase(racketRepository: repository );
+    deselectRacketUsecase = UnSelectRacketUseCase(racketRepository: repository );
   });
 
   final Racket racket = Racket(id: 1, name: 'name', length: 1, weight: 1, img: '' , pattern: '', balance: 1);

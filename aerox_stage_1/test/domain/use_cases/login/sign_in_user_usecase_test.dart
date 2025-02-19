@@ -10,7 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import '../../../mock_types.dart';
 
 
-  late SignInUserUsecase usecase;
+  late SignInUserUseCase usecase;
   late LoginRepository repository;
   //late User mockUser;
 
@@ -18,7 +18,7 @@ void main() {
 
   setUp((){
     repository = MockLoginRepo();
-    usecase = SignInUserUsecase(loginRepo: repository);
+    usecase = SignInUserUseCase(loginRepo: repository);
     //mockUser = MockFirebaseUser();
   });
     final user = AeroxUser(name: 'name', email: 'email');

@@ -10,13 +10,13 @@ import 'package:mocktail/mocktail.dart';
 import '../../../mock_types.dart';
 
 late LoginRepository loginRepository;
-late ResetPasswordUsecase resetPasswordUsecase;
+late ResetPasswordUseCase resetPasswordUsecase;
 final String email = 'roberto@gmail.com';
 void main() {
 
   setUp((){
     loginRepository = MockLoginRepo();
-    resetPasswordUsecase = ResetPasswordUsecase(loginRepo: loginRepository);
+    resetPasswordUsecase = ResetPasswordUseCase(loginRepo: loginRepository);
   });
   group('reset password usecase ...', (){
     test('email sent success, must return [ void ]', () async {

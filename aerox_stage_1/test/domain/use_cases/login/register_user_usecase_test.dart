@@ -13,7 +13,7 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../../mock_types.dart';
 
-late RegisterUserUsecase usecase;
+late RegisterUserUseCase usecase;
 late LoginRepository loginRepo;
 //late User mockUser;
 late FirebaseAuth auth;
@@ -24,7 +24,7 @@ Future<void> main() async {
 
   setUp((){
     loginRepo = MockLoginRepo();
-    usecase = RegisterUserUsecase(loginRepo: loginRepo);
+    usecase = RegisterUserUseCase(loginRepo: loginRepo);
     //mockUser = MockFirebaseUser();
   });
 

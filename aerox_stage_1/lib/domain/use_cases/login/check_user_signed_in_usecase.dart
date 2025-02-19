@@ -7,10 +7,10 @@ import 'package:aerox_stage_1/features/feature_login/repository/login_repository
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class CheckUserSignedInUsecase extends AsyncUseCaseWitoutParams<AeroxUser>{
+class CheckUserSignedInUseCase extends AsyncUseCaseWithoutParams<AeroxUser>{
 
   final LoginRepository loginRepo;
-  const CheckUserSignedInUsecase({ required this.loginRepo });
+  const CheckUserSignedInUseCase({ required this.loginRepo });
   @override
   Future<EitherErr<AeroxUser>> call() async{
     return loginRepo.checkUserSignedIn();

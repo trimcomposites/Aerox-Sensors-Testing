@@ -1,7 +1,7 @@
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/domain/use_cases/racket/deselect_racket_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket.usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,10 +11,10 @@ part 'racket_state.dart';
 class RacketBloc extends Bloc<RacketEvent, RacketState> {
 
 
-  final GetRacketsUsecase getRacketsUsecase;
-  final SelectRacketUsecase selectRacketUsecase;
-  final DeselectRacketUsecase deselectRacketUsecase;
-  final GetSelectedRacketUsecase getSelectedRacketUsecase;
+  final GetRacketsUseCase getRacketsUsecase;
+  final SelectRacketUseCase selectRacketUsecase;
+  final UnSelectRacketUseCase deselectRacketUsecase;
+  final GetSelectedRacketUseCase getSelectedRacketUsecase;
 
   RacketBloc({
     required this.getRacketsUsecase,

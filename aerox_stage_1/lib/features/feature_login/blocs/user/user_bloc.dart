@@ -15,11 +15,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
 
 
-  final SignOutUserUsecase signOutUseCase; 
-  final RegisterUserUsecase registerUseCase;
-  final SignInUserUsecase signInUsecase;
-  final CheckUserSignedInUsecase checkUserSignedInUsecase;
-  final ResetPasswordUsecase resetPasswordUsecase;
+  final SignOutUserUseCase signOutUseCase; 
+  final RegisterUserUseCase registerUseCase;
+  final SignInUserUseCase signInUsecase;
+  final CheckUserSignedInUseCase checkUserSignedInUsecase;
+  final ResetPasswordUseCase resetPasswordUsecase;
 
 
   UserBloc({ 

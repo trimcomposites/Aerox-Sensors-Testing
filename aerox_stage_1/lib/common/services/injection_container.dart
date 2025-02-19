@@ -3,9 +3,9 @@ import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart'
 import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/racket/deselect_racket_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket.usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
@@ -46,17 +46,17 @@ Future<void> dependencyInjectionInitialize() async{
     //use cases//
 
     //login
-    ..registerLazySingleton(() => RegisterUserUsecase(loginRepo: sl()) )
-    ..registerLazySingleton(() => SignInUserUsecase(loginRepo: sl()) )
-    ..registerLazySingleton(() => SignOutUserUsecase(loginRepo: sl()) )
-    ..registerLazySingleton(() => CheckUserSignedInUsecase(loginRepo: sl()) )
-    ..registerLazySingleton(() => ResetPasswordUsecase( loginRepo: sl() ) )
+    ..registerLazySingleton(() => RegisterUserUseCase(loginRepo: sl()) )
+    ..registerLazySingleton(() => SignInUserUseCase(loginRepo: sl()) )
+    ..registerLazySingleton(() => SignOutUserUseCase(loginRepo: sl()) )
+    ..registerLazySingleton(() => CheckUserSignedInUseCase(loginRepo: sl()) )
+    ..registerLazySingleton(() => ResetPasswordUseCase( loginRepo: sl() ) )
 
     //racket
-    ..registerLazySingleton(() =>GetRacketsUsecase(racketRepository: sl()) )
-    ..registerLazySingleton(() =>GetSelectedRacketUsecase(racketRepository: sl()) )
-    ..registerLazySingleton(() =>SelectRacketUsecase(racketRepository: sl()) )
-    ..registerLazySingleton(() =>DeselectRacketUsecase(racketRepository: sl()) )
+    ..registerLazySingleton(() =>GetRacketsUseCase(racketRepository: sl()) )
+    ..registerLazySingleton(() =>GetSelectedRacketUseCase(racketRepository: sl()) )
+    ..registerLazySingleton(() =>SelectRacketUseCase(racketRepository: sl()) )
+    ..registerLazySingleton(() =>UnSelectRacketUseCase(racketRepository: sl()) )
 
     //repository
     ..registerLazySingleton(

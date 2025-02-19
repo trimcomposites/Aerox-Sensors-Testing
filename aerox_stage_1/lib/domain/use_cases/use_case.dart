@@ -10,9 +10,9 @@ abstract class AsyncUseCaseWithParams<Type, Params> {
   const AsyncUseCaseWithParams();
   Future<EitherErr<Type>> call( Params params );
 }
-abstract class AsyncUseCaseWitoutParams<Type> {
+abstract class AsyncUseCaseWithoutParams<Type> {
 
-  const AsyncUseCaseWitoutParams();
+  const AsyncUseCaseWithoutParams();
   Future<EitherErr<Type>> call();
 }
 abstract class UseCaseWithoutParams<Type> {
