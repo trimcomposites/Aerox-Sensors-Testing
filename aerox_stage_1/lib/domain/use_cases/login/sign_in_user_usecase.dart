@@ -3,7 +3,7 @@ import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/email_sign_in_type.dart';
 import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
-import 'package:aerox_stage_1/features/feature_login/repository/remote/login_repository.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
