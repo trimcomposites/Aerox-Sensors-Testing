@@ -30,6 +30,10 @@ class Racket3dModel extends StatelessWidget {
           interactionPrompt: InteractionPrompt.none,
           rotationPerSecond: "${rotateSpeed}deg",
           loading: Loading.eager,
+          disableZoom: true,
+          disablePan: true,
+          disableTap: true,
+          
           ),
         
       ),
