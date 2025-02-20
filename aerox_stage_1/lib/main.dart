@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/services/injection_container.dart';
+import 'package:aerox_stage_1/common/services/router.dart';
 import 'package:aerox_stage_1/features/feature_racket/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
@@ -51,7 +52,8 @@ class MyApp extends StatelessWidget {
     final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() )..add( OnGetSelectedRacket() ) ;
     return MaterialApp(
       title: 'Aerox',
-      home: SplashScreen()
+      routes: appRoutes,
+      initialRoute: '/splash',
     );
   }
 }

@@ -22,8 +22,8 @@ class RacketSelectScreen extends StatelessWidget {
 
     return BlocListener<RacketBloc, RacketState>(
       listener: (context, state) {
-        if(state.myRacket!= null){
-          onback?.call();
+        if( state.uiState.next!=null ){
+          Navigator.pushReplacementNamed(context, state.uiState.next!);
         }
       },
       child: Container(

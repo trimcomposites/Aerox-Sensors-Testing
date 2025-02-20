@@ -24,28 +24,23 @@ class CreateAccountScreen extends StatelessWidget {
       onPopInvokedWithResult: (didPop, result) {
         userBloc.add(OnDeleteErrorMsg());
       },
-      child: BlocListener<UserBloc, UserState>(
-        listener: (context, state) {
-          if (userBloc.state.user != null) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => UserCheckScreen()),
+      child:  BlocBuilder<UserBloc, UserState>(
+          builder: (context, state) {
+            return Scaffold(
+              extendBodyBehindAppBar: true,
+              backgroundColor: backgroundColor,
+              appBar:BackButtonAppBar( () => Navigator.pop( context ) ),
+              body: Stack(
+                children: [
+                  BackgroundGradient(),
+                  CreateAccountScreenContent(),
+                  if( state.uiState.status== UIStatus.loading ) LoadingIndicator()
+
+                ],
+              ),
             );
-          }
-        },
-      
-        child: Scaffold(
-          extendBodyBehindAppBar: true,
-          backgroundColor: backgroundColor,
-          appBar: BackButtonAppBar( () => Navigator.pop( context ) ),
-          body: Stack(
-            children: [
-              BackgroundGradient(),
-              CreateAccountScreenContent(),
-            ],
-          ),
+          },
         ),
-      ),
     );
   }
 }

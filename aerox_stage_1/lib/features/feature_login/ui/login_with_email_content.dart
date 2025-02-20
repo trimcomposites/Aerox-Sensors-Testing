@@ -20,16 +20,9 @@ class LoginWithEmailContent extends StatelessWidget {
           SizedBox( height: 200, ),
            LoginMessageText( text: 'Bienvenido',  ) ,
           // segunda seccion
-          BlocListener<UserBloc, UserState>(
-            listener: (context, state) {
-              if( userBloc.state.user != null ){
-                Navigator.pushReplacement(
-                 context,
-                  MaterialPageRoute(builder: (context) => UserCheckScreen()),
-                );
-              }
-            },
-            child: Column(
+
+            
+             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -66,7 +59,7 @@ class LoginWithEmailContent extends StatelessWidget {
                 LoginErrorMessage()
               ],
             ),
-          )
+          
         ],
       ),
     );

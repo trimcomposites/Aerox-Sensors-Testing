@@ -8,30 +8,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../feature_login/ui/login_barrel.dart';
 
 class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({
-    super.key, 
-    required this.onback
-  });
+  const DetailsScreen({super.key, required this.onback});
   final void Function()? onback;
 
   @override
   Widget build(BuildContext context) {
-    final racketBloc = BlocProvider.of<RacketBloc>( context );
-    return Container(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: WithMenuAndReturnAppBar(
-          onback: onback,
-        ),
-        body: DetailsScreenView(
-          rackets: [ racketBloc.state.myRacket! ],
-          isLoading: false,
-          onPressedDeselectRacket: (){
-            racketBloc.add( OnDeselectRacket(),);
-            onback?.call();
-          } 
-        )    
-      )
+    final racketBloc = BlocProvider.of<RacketBloc>(context);
+    return BlocListener<RacketBloc, RacketState>(
+      listener: (context, state) {
+        if( state.uiState.next!=null ){
+          Navigator.pushReplacementNamed(context, state.uiState.next!);
+        }
+      },
+      child: Container(
+          child: Scaffold(
+              backgroundColor: Colors.white,
+              appBar: WithMenuAndReturnAppBar(
+                onback: onback,
+              ),
+              body: DetailsScreenView(
+                  rackets: [racketBloc.state.myRacket!],
+                  isLoading: false,
+                  onPressedDeselectRacket: () {
+                    racketBloc.add(
+                      OnDeselectRacket(),
+                    );
+                    //onback?.call();
+                  }))),
     );
   }
 }
