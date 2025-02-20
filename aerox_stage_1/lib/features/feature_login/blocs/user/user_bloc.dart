@@ -25,7 +25,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     required this.registerUseCase, 
     required this.checkUserSignedInUsecase, 
     required this.resetPasswordUsecase,
-  }) : super(UserState(uiState: UIState.loading())) {
+  }) : super(UserState(uiState: UIState.idle())) {
     on<OnGoogleSignInUser>((event, emit) async {
       emit( state.copyWith( uiState: UIState.loading() ) );
       final result = await signInUsecase(SignInUserUsecaseParams(signInType: EmailSignInType.google));
@@ -103,7 +103,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit( state.copyWith( uiState: UIState.error( l.errMsg) ) );
         },
         (r) {
-          emit(state.copyWith(uiState: UIState.success()));
+          emit(state.copyWith(uiState: UIState.idle()));
         },
       );
     });
