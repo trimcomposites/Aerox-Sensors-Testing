@@ -15,10 +15,11 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
 
   }) : super(HomeScreenState( uiState: UIState(status: UIStatus.success) )) {
     on<OnGetSelectedRacketHome>((event, emit) async {
+      emit( state.copyWith( uiState: UIState.loading() ) );
       // ignore: avoid_single_cascade_in_expression_statements
       await getSelectedRacketUsecase()..fold(
         (l) => ( emit(state.copyWith( racket: null )) ),
-        (r) => ( emit( state.copyWith( racket: r ) ) )
+        (r) => ( emit( state.copyWith( racket: r, uiState: UIState.success() ) ) )
       );
     });
   }

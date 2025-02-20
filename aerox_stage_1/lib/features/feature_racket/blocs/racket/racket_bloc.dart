@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
@@ -21,12 +22,13 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
     required this.selectRacketUsecase,
     required this.deselectRacketUsecase,
     required this.getSelectedRacketUsecase
-  }) : super(RacketState()){
+  }) : super(RacketState( uiState: UIState.idle() )){
     on<OnGetRackets>((event, emit) async{
+      emit( state.copyWith( uiState: UIState.loading() ) );
       // ignore: avoid_single_cascade_in_expression_statements
       await getRacketsUsecase()..fold(
         (l)=>  emit(state.copyWith( rackets: null )) , 
-        (r)=> emit( state.copyWith( rackets: r ) )
+        (r)=> emit( state.copyWith( rackets: r, uiState: UIState.idle() ) )
       );
     },);
 
@@ -34,7 +36,7 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
       // ignore: avoid_single_cascade_in_expression_statements
       await selectRacketUsecase( event.racket )..fold(
         (l) => emit( state.copyWith( myRacket: null )),
-        (r) => emit( state.copyWith( myRacket: r ))
+        (r) => emit( state.copyWith( myRacket: r, uiState: UIState.success( next: '/home' ) ))
       );
       emit( state.copyWith( myRacket: event.racket ) );
     },);
@@ -42,7 +44,7 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
       // ignore: avoid_single_cascade_in_expression_statements
       await deselectRacketUsecase()..fold(
       (l) => emit( state.copyWith( myRacket: null) ),
-      (r) => emit( state.copyWith( myRacket: null ) )
+      (r) => emit( state.copyWith( myRacket: null, uiState: UIState.success( next: '/home' ) ) )
       );
     },);
   
@@ -50,7 +52,7 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
     // ignore: avoid_single_cascade_in_expression_statements
     await getSelectedRacketUsecase()..fold(
       (l) => ( emit(state.copyWith( myRacket: null )) ),
-      (r) => ( emit( state.copyWith( myRacket: r ) ) )
+      (r) => ( emit( state.copyWith( myRacket: r, uiState: UIState.idle() ) ) )
     );
   });
   }

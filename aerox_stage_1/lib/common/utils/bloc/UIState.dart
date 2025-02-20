@@ -26,6 +26,10 @@ class UIState extends Equatable {
     errorMessage: errorMessage,
     next: null
   );
+  factory UIState.idle() => UIState(
+    status: UIStatus.idle,
+    next: null
+  );
 
   @override
   List<Object?> get props => [status, errorMessage, next];
