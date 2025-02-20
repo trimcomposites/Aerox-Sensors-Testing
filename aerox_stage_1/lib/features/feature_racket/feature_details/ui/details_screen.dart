@@ -17,7 +17,7 @@ class DetailsScreen extends StatelessWidget {
     return BlocListener<RacketBloc, RacketState>(
       listener: (context, state) {
         if( state.uiState.next!=null ){
-          Navigator.pushReplacementNamed(context, state.uiState.next!);
+          //Navigator.pushReplacementNamed(context, state.uiState.next!);
         }
       },
       child: Container(
@@ -32,8 +32,9 @@ class DetailsScreen extends StatelessWidget {
                   onPressedDeselectRacket: () {
                     racketBloc.add(
                       OnDeselectRacket(),
+                      
                     );
-                    //onback?.call();
+                    onback?.call();
                   }))),
     );
   }
