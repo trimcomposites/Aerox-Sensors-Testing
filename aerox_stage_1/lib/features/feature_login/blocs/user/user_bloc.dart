@@ -26,38 +26,36 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     required this.checkUserSignedInUsecase, 
     required this.resetPasswordUsecase,
   }) : super(UserState(uiState: UIState.loading())) {
-       on<OnGoogleSignInUser>((event, emit) async {
+    on<OnGoogleSignInUser>((event, emit) async {
       emit( state.copyWith( uiState: UIState.loading() ) );
       final result = await signInUsecase(SignInUserUsecaseParams(signInType: EmailSignInType.google));
       result.fold(
         (l) {
-          //add(OnStartErrorUser(errorMessage: l.errMsg));
+          emit( state.copyWith( uiState: UIState.error( l.errMsg) ) );
         },
         (r) {
-          emit(state.copyWith(user: r, uiState: UIState.success(  )));
+          emit(state.copyWith(user: r, uiState: UIState.success( next: '/home' )));
         },
       );
     });
 
     on<OnGoogleSignOutUser>((event, emit) async {
-      //add(OnStartLoadingUser());
+      emit( state.copyWith( uiState: UIState.loading() ) );
       await signOutUseCase(EmailSignInType.google);
-      emit(state.copyWith(user: null, uiState: UIState.success()));
-      //add(OnStopLoadingUser());
+      emit(state.copyWith(user: null, uiState: UIState.success( next: '/' )));
     });
 
     on<OnEmailSignInUser>((event, emit) async {
-      //add(OnStartLoadingUser());
+      emit( state.copyWith( uiState: UIState.loading() ) );
       //await Future.delayed( Duration( seconds: 3 ) );
       final user = AeroxUser(name: 'name', email: event.email, password: event.password);
       final result = await signInUsecase(SignInUserUsecaseParams(signInType: EmailSignInType.email, user: user));
       result.fold(
         (l) {
-          //add(OnStartErrorUser(errorMessage: l.errMsg));
+          emit( state.copyWith( uiState: UIState.error( l.errMsg) ) );
         },
         (r) {
-          emit(state.copyWith(user: r, uiState: UIState.success( next: null )));
-          //add(OnStopLoadingUser());
+          emit(state.copyWith(user: r, uiState: UIState.success( next: '/home' )));
         },
       );
     });
@@ -65,51 +63,47 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<OnEmailSignOutUser>((event, emit) async {
       //add(OnStartLoadingUser());
       await signOutUseCase(EmailSignInType.email);
-      emit(state.copyWith(user: null, uiState: UIState.success( next: 'login_main' )));
+      emit(state.copyWith(user: null, uiState: UIState.success( next: '/' )));
       //add(OnStopLoadingUser());
     });
 
     on<OnEmailRegisterUser>((event, emit) async {
-      //add(OnStartLoadingUser());
+      emit( state.copyWith( uiState: UIState.loading() ) );
       //await Future.delayed(Duration(seconds: 3));
       final user = AeroxUser(name: 'name', email: event.email, password: event.password);
       final result = await registerUseCase(user);
       result.fold(
         (l) {
-          //add(OnStartErrorUser(errorMessage: l.errMsg));
+          emit( state.copyWith( uiState: UIState.error( l.errMsg) ) );
         },
         (r) {
-          emit(state.copyWith(user: r, uiState: UIState.success()));
-          //add(OnStopLoadingUser());
+          emit(state.copyWith(user: r, uiState: UIState.success( next: '/home' )));
         },
       );
     });
 
     on<OnCheckUserIsSignedIn>((event, emit) async {
-      //add(OnStartLoadingUser());
+      emit( state.copyWith( uiState: UIState.loading() ) );
       final result = await checkUserSignedInUsecase();
       result.fold(
         (l) {
           emit(state.copyWith(user: null, uiState: UIState.success()));
-          //add(OnStopLoadingUser());
         },
         (r) {
-          emit(state.copyWith(user: r, uiState: UIState.success()));
-          //add(OnStopLoadingUser());
+          emit(state.copyWith(user: r, uiState: UIState.success( next: '/home' )));
         },
       );
     });
 
     on<OnPasswordReset>((event, emit) async {
-      //add(OnStartLoadingUser());
+      emit( state.copyWith( uiState: UIState.loading() ) );
       final result = await resetPasswordUsecase(event.email);
       result.fold(
         (l) {
-          //add(OnStartErrorUser(errorMessage: l.errMsg));
+          emit( state.copyWith( uiState: UIState.error( l.errMsg) ) );
         },
         (r) {
           emit(state.copyWith(uiState: UIState.success()));
-          //add(OnStopLoadingUser());
         },
       );
     });

@@ -10,18 +10,28 @@ class UserCheckScreen extends StatelessWidget {
   const UserCheckScreen({
     super.key,
   });
-
-
   @override
   Widget build(BuildContext context) {
-  final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-  print('usuario $userBloc.state.user');
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) {
-        return userBloc.state.user==null
-        ? LoginMainScreen()
-        : HomePageAdmin();
+    return BlocListener<UserBloc, UserState>(
+      listener: (context, state) {
+        if(state.uiState.next!= null){
+          Navigator.pushReplacementNamed(context, state.uiState.next!);
+        }
       },
+      child: LoginMainScreen(),
     );
   }
 }
+//   @override
+//   Widget build(BuildContext context) {
+//   final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+//   print('usuario $userBloc.state.user');
+//     return BlocBuilder<UserBloc, UserState>(
+//       builder: (context, state) {
+//         return userBloc.state.user==null
+//         ? LoginMainScreen()
+//         : HomePageAdmin();
+//       },
+//     );
+//   }
+// }

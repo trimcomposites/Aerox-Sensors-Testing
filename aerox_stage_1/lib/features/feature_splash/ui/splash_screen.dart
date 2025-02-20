@@ -13,20 +13,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
+
   }
 
   _navigateToHome() async {
     await Future.delayed(Duration(seconds: 3));
-
-    Navigator.pushReplacement(
+    if(mounted){
+      Navigator.pushReplacement(
      context,
      MaterialPageRoute(builder: (context) => UserCheckScreen()), 
     );
+    }
+    
+    //dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+        _navigateToHome();
     return Scaffold(
       backgroundColor: backgroundColor,
       body: Stack(
