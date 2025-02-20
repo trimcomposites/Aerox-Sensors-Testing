@@ -28,5 +28,5 @@ class UIState extends Equatable {
   );
 
   @override
-  List<Object?> get props => [status, errorMessage];
+  List<Object?> get props => [status, errorMessage, next];
 }

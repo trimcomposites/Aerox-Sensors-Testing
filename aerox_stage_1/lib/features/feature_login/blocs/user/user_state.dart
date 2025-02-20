@@ -14,7 +14,7 @@ class UserState extends Equatable {
     UIState? uiState,
   }) {
     return UserState(
-      user: user ?? this.user,
+      user: user,
       uiState: uiState ?? this.uiState,
     );
   }

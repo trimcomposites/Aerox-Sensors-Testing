@@ -34,8 +34,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           //add(OnStartErrorUser(errorMessage: l.errMsg));
         },
         (r) {
-          emit(state.copyWith(user: r, uiState: UIState.success()));
-          emit( state.copyWith( uiState: UIState.success( next: '/' ) ) );
+          emit(state.copyWith(user: r, uiState: UIState.success(  )));
         },
       );
     });
