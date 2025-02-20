@@ -21,25 +21,6 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
         (r) => ( emit( state.copyWith( racket: r ) ) )
       );
     });
-    on<OnStartLoadingHome>((event, emit) async {
-      emit( state.copyWith( uiState: UIState.loading() ) );
-
-    });
-    on<OnStopLoadingHome>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.success()));
-    });
-
-    on<OnOperationSuccessHome>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.success()));
-    });
-
-    on<OnStartErrorHome>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.error(event.errorMessage)));
-    });
-
-    on<OnStopErrorHome>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.success()));
-    });
   }
   
 
