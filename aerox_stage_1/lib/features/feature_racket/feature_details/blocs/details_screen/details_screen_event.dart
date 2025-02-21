@@ -7,3 +7,5 @@ sealed class DetailsScreenEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class OnGetSelectedRacketDetails  extends DetailsScreenEvent{}
+class OnUnSelectRacketDetails  extends DetailsScreenEvent{}

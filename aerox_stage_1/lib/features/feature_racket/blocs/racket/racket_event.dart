@@ -15,6 +15,6 @@ class OnSelectRacket extends RacketEvent {
 
   OnSelectRacket({required this.racket});
 }
-class OnDeselectRacket extends RacketEvent {}
+class OnUnSelectRacket extends RacketEvent {}
 
 class OnGetSelectedRacket extends RacketEvent{}

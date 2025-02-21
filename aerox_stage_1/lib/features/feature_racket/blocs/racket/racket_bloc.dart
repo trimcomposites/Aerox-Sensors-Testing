@@ -40,7 +40,7 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
       );
       //emit( state.copyWith( myRacket: event.racket ) );
     },);
-    on<OnDeselectRacket>((event, emit)async{
+    on<OnUnSelectRacket>((event, emit)async{
       // ignore: avoid_single_cascade_in_expression_statements
       await deselectRacketUsecase()..fold(
       (l) => emit( state.copyWith( myRacket: null) ),

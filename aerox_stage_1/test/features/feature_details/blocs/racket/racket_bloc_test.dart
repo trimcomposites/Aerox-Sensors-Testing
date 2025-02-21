@@ -72,7 +72,7 @@ void main() {
     blocTest<RacketBloc, RacketState>('on Deselect rackets success, emits [ myRacket: [ Racket ]', 
       build: () => racketBloc,
       
-      act: (bloc) => bloc.add( OnDeselectRacket() ),
+      act: (bloc) => bloc.add( OnUnSelectRacket() ),
       
       expect: () => [
         RacketState( myRacket: null ),
