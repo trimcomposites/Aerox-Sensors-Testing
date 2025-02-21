@@ -20,14 +20,15 @@ final UnSelectRacketUseCase unSelectRacketUseCase;
       emit( state.copyWith( uiState: UIState.loading() ) );
       // ignore: avoid_single_cascade_in_expression_statements
       await getSelectedRacketUsecase()..fold(
-        (l) => ( emit(state.copyWith( racket: null )) ),
+        (l) => ( emit(state.copyWith( racket: null, uiState: UIState.error( l.errMsg ) )) ),
         (r) => ( emit( state.copyWith( racket: r, uiState: UIState.success() ) ) )
       );
     });
     on<OnUnSelectRacketDetails>((event, emit)async{
+       emit( state.copyWith( uiState: UIState.loading() ) );
       // ignore: avoid_single_cascade_in_expression_statements
       await unSelectRacketUseCase()..fold(
-      (l) => emit( state.copyWith( racket: null) ),
+      (l) => ( emit(state.copyWith( racket: null, uiState: UIState.error( l.errMsg ) )) ),
       (r) => emit( state.copyWith( racket: null, uiState: UIState.success( next: '/home' ) ) )
       );
     },);

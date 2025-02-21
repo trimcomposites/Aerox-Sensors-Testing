@@ -13,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../mock_types.dart';
+import '../racket/racket_bloc_test.dart';
 
 late DetailsScreenBloc detailsScreenBloc;
 late GetSelectedRacketUseCase getSelectedRacketUsecase;
@@ -27,10 +28,11 @@ void main() {
       unSelectRacketUseCase: unSelectRacketUseCase
       );
   });
-
+  tearDown( () => detailsScreenBloc.close() );
   final List<Racket> rackets = [];
+
   final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
-  final Racket racket = any( named: 'racket' );
+  final Racket racket = Racket(id: 1, hit: '', racket: '', racketName: '', color: '', weightNumber: '', weightName: '', weightType: '', balance: '', headType: '', swingWeight: '', powerType: '', acor: '', acorType: '', maneuverability: '', maneuverabilityType: '', image: ''  );
 
   group(('on get selected racket event'), (){
       blocTest<DetailsScreenBloc, DetailsScreenState>('on get selected racket success, emits [ myRacket: [ Racket ]', 
@@ -42,7 +44,8 @@ void main() {
         act: (bloc) => bloc.add( OnGetSelectedRacketDetails() ),
         
         expect: () => [
-          RacketState( myRacket: null, uiState: UIState.success() ),
+          DetailsScreenState( racket: null, uiState: UIState.loading() ),
+          DetailsScreenState( racket: racket, uiState: UIState.success() ),
         ],
       );
       blocTest<DetailsScreenBloc, DetailsScreenState>('on get selected racket failure, emits [ myRacket: [ null ]', 
@@ -54,16 +57,21 @@ void main() {
         act: (bloc) => bloc.add( OnGetSelectedRacketDetails() ),
         
         expect: () => [
-          RacketState( myRacket: null, uiState: UIState.error( any() ) ),
+          DetailsScreenState( racket: null, uiState: UIState.loading()),
+          DetailsScreenState( racket: null, uiState: UIState.error( 'errMsg' )),
         ],
       );
-          blocTest<DetailsScreenBloc, DetailsScreenState>('on Deselect rackets success, emits [ myRacket: [ Racket ]', 
-      build: () => detailsScreenBloc,
-      
+    blocTest<DetailsScreenBloc, DetailsScreenState>('on Deselect rackets success, emits [ myRacket: [ Racket ]', 
+        build: () {
+          when(() => unSelectRacketUseCase( ))
+          .thenAnswer( ( _ ) async => Right(  null ) );
+          return detailsScreenBloc;
+        },
       act: (bloc) => bloc.add( OnUnSelectRacketDetails() ),
       
       expect: () => [
-        RacketState( myRacket: null,uiState: UIState.success() ),
+        DetailsScreenState( racket: null,uiState: UIState.loading() ),
+        DetailsScreenState( racket: null,uiState: UIState.success( next: '/home' ) ),
       ],
     );
 
