@@ -34,24 +34,31 @@ class Racket3dModel extends StatelessWidget {
             builder: (context, state) {
               return state.uiState.status == UIStatus.error
               ? CircularProgressIndicator()
-              : Flutter3DViewer(
-                activeGestureInterceptor: true,
-                progressBarColor: Colors.orange,
-                enableTouch: true,
-
-                onProgress: (double progressValue) {
-                  model3dBloc.add( OnStartLoadingModel3d() );
-                  debugPrint('model loading progress : $progressValue');
-                },
-                onLoad: (String modelAddress) {
-                  model3dBloc.add( OnStopLoadingModel3d() );
-                  debugPrint('model loaded : $modelAddress');
-                },
-                onError: (String error) {
-                  model3dBloc.add( OnStartErrorModel3d() );
-                  debugPrint('model failed to load : $error');
-                },
-                src: 'assets/3d/adidas_padel_2023.glb',
+              : Stack(
+                alignment: Alignment.center,
+                children: [
+                  Flutter3DViewer(
+                    activeGestureInterceptor: true,
+                    progressBarColor: Colors.orange,
+                    enableTouch: true,
+                  
+                    onProgress: (double progressValue) {
+                      model3dBloc.add( OnStartLoadingModel3d() );
+                      debugPrint('model loading progress : $progressValue');
+                    },
+                    onLoad: (String modelAddress) {
+                      model3dBloc.add( OnStopLoadingModel3d() );
+                      debugPrint('model loaded : $modelAddress');
+                    },
+                    onError: (String error) {
+                      model3dBloc.add( OnStartErrorModel3d() );
+                      debugPrint('model failed to load : $error');
+                    },
+                    src: 'assets/3d/adidas_padel_2023.glb',
+                  ),
+                  if (state.uiState.status == UIStatus.loading)
+                  CircularProgressIndicator()
+                ],
               );
             },
           )),
