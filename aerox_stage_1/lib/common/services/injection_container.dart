@@ -7,6 +7,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.da
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
+import 'package:aerox_stage_1/features/feature/3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
@@ -41,6 +42,8 @@ Future<void> dependencyInjectionInitialize() async{
     ))
     ..registerFactory(() => HomeScreenBloc(
       getSelectedRacketUsecase: sl()
+    ))
+    ..registerFactory(() => Model3DBloc(
     ))
     //use cases//
 

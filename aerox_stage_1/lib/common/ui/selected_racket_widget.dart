@@ -1,6 +1,6 @@
 import 'package:aerox_stage_1/common/ui/resources.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/common/ui/racket_3d_model.dart';
+import 'package:aerox_stage_1/features/feature/3d/ui/racket_3d_model.dart';
 import 'package:flutter/material.dart';
 
 class SelectedRacketWidget extends StatelessWidget {
