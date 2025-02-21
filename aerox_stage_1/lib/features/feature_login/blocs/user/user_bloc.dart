@@ -41,8 +41,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     on<OnGoogleSignOutUser>((event, emit) async {
       emit( state.copyWith( uiState: UIState.loading() ) );
-      await signOutUseCase(EmailSignInType.google);
-      emit(state.copyWith(user: null, uiState: UIState.success( next: '/' )));
+      final result  = await signOutUseCase(EmailSignInType.google);
+      result.fold(
+        (l) {
+          emit( state.copyWith( uiState: UIState.error( l.errMsg) ) );
+        },
+        (r) {
+          emit(state.copyWith(user: null, uiState: UIState.success( next: '/' )));
+        });
     });
 
     on<OnEmailSignInUser>((event, emit) async {
@@ -61,10 +67,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
 
     on<OnEmailSignOutUser>((event, emit) async {
-      //add(OnStartLoadingUser());
-      await signOutUseCase(EmailSignInType.email);
-      emit(state.copyWith(user: null, uiState: UIState.success( next: '/' )));
-      //add(OnStopLoadingUser());
+       emit( state.copyWith( uiState: UIState.loading() ) );
+      final result  = await signOutUseCase(EmailSignInType.email);
+      result.fold(
+        (l) {
+          emit( state.copyWith( uiState: UIState.error( l.errMsg) ) );
+        },
+        (r) {
+          emit(state.copyWith(user: null, uiState: UIState.success( next: '/' )));
+        });
     });
 
     on<OnEmailRegisterUser>((event, emit) async {

@@ -19,7 +19,7 @@ void main() {
     deselectRacketUsecase = UnSelectRacketUseCase(racketRepository: repository );
   });
 
-  final Racket racket = Racket(id: 1, name: 'name', length: 1, weight: 1, img: '' , pattern: '', balance: 1);
+  final Racket racket = any( named: 'racket' );
   final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
   group(' select racket usecase ...', ()  {
     test(' select racket success, must return a [ Racket ]', () async{

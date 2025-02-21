@@ -1,8 +1,10 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -15,12 +17,12 @@ void main() {
   late RacketRepository repository;
   setUp((){
     datasource = MockMockRacketDataSource();
-    repository = RacketRepository(datasource: datasource);
+    repository = RacketRepository( sqLiteDB: SQLiteDB(), remoteGetRackets: RemoteGetRackets());
     
   });
 
   const List<Racket> mockRackets = [];
-  final Racket racket = Racket(id: 1, name: 'name', length: 1, weight: 1, img: '' , pattern: '', balance: 1);
+  final Racket racket = any( named: 'racket' );
   final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
 
     group('remote get rackets', (){
@@ -30,7 +32,7 @@ void main() {
         when(() => datasource.remotegetRackets()
         ).thenAnswer( ( _ ) async => Right( mockRackets ) );
         //act
-        final rackets = await repository.getRackets( remote: true );
+        final rackets = await repository.getRackets();
         //assert
         expect(rackets, isA< Right<Err, List<Racket>>>());
 
@@ -40,7 +42,7 @@ void main() {
         when(() => datasource.remotegetRackets()
         ).thenAnswer( ( _ ) async => Left( racketErr )  );
         //act
-        final rackets = await repository.getRackets( remote: true );
+        final rackets = await repository.getRackets();
         //assert
         expect(rackets, isA< Left<Err, List<Racket>>>());
 
