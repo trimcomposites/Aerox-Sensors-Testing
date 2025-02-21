@@ -23,20 +23,20 @@ void main() {
   group('get rackets usecase ...', ()  {
     test('get Rackets success, must return a [ List<Racket> ]', () async{
       when(()
-        => repository.getRackets(remote: any( named: 'remote' ))
+        => repository.getRackets()
       ).thenAnswer( ( _ ) async => Right( racketList ) );
 
-      final result = await getRacketsUsecase( true );
+      final result = await getRacketsUsecase( );
 
       expect(result, isA<Right<Err, List<Racket>>>());
     });
   });
     test('get Rackets failure, must return a [ RacketErr ]', () async{
       when(()
-        => repository.getRackets(remote: any( named: 'remote' ))
+        => repository.getRackets()
       ).thenAnswer( ( _ ) async => Left( racketErr ) );
 
-      final result = await getRacketsUsecase( true );
+      final result = await getRacketsUsecase(  );
 
       expect(result, isA<Left<Err, List<Racket>>>());
   });

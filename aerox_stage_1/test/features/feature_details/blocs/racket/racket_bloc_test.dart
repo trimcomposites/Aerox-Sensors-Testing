@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
@@ -31,30 +32,30 @@ void main() {
 
   final List<Racket> rackets = [];
   final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
-  final Racket racket = Racket(id: 1, name: 'name', length: 1, weight: 1, img: 'img', pattern: 'pattern', balance: 1);
+  final Racket racket = any( named: 'racket' );
   group(' on get racket event ...', () {
     blocTest<RacketBloc, RacketState>('on get rackets success, emits [ rackets: [ List<Racket> ]', 
       build: () {
-        when(() => getRacketsUsecase( true))
+        when(() => getRacketsUsecase())
         .thenAnswer( ( _ ) async => Right(  rackets ) );
         return racketBloc;
       },
       act: (bloc) => bloc.add( OnGetRackets() ),
       
       expect: () => [
-        RacketState( rackets: rackets ),
+        RacketState( rackets: rackets, uiState: UIState.success() ),
       ],
     );
     blocTest<RacketBloc, RacketState>('on get rackets failure, emits [ rackets: [ List<Racket>.empty ]', 
       build: () {
-        when(() => getRacketsUsecase( true))
+        when(() => getRacketsUsecase())
         .thenAnswer( ( _ ) async => Left(  racketErr ) );
         return racketBloc;
       },
       act: (bloc) => bloc.add( OnGetRackets() ),
       
       expect: () => [
-        RacketState( rackets: [] ),
+        RacketState( rackets: [], uiState: UIState.error( any()) ),
       ],
     );
   });
@@ -66,7 +67,7 @@ void main() {
       act: (bloc) => bloc.add( OnSelectRacket( racket: racket ) ),
       
       expect: () => [
-        RacketState( myRacket: racket ),
+        RacketState( myRacket: racket, uiState: UIState.success() ),
       ],
     );
     blocTest<RacketBloc, RacketState>('on Deselect rackets success, emits [ myRacket: [ Racket ]', 
@@ -75,7 +76,7 @@ void main() {
       act: (bloc) => bloc.add( OnDeselectRacket() ),
       
       expect: () => [
-        RacketState( myRacket: null ),
+        RacketState( myRacket: null,uiState: UIState.success() ),
       ],
     );
 
@@ -89,7 +90,7 @@ void main() {
       act: (bloc) => bloc.add( OnGetSelectedRacket() ),
       
       expect: () => [
-        RacketState( myRacket: racket ),
+        RacketState( myRacket: racket, uiState: UIState.success() ),
       ],
     );
     blocTest<RacketBloc, RacketState>('on get selected racket failure, emits [ myRacket: [ null ]', 
@@ -101,7 +102,7 @@ void main() {
       act: (bloc) => bloc.add( OnGetSelectedRacket() ),
       
       expect: () => [
-        RacketState( myRacket: null ),
+        RacketState( myRacket: null, uiState: UIState.error( any() ) ),
       ],
     );
   });

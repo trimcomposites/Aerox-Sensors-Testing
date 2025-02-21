@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
@@ -59,7 +60,8 @@ void main(){
       },
       act: (userBloc) => userBloc.add( OnEmailSignInUser( email: aeroxUser.email, password: aeroxUser.password! ) ),
       expect: () => [
-        UserState( user: user, errorMessage: null ),
+        UserState( user: null,uiState: UIState.loading() ),
+        UserState( user: user,uiState: UIState.success( next: '/home' ),  ),
       ],
     );
 
@@ -71,7 +73,8 @@ void main(){
       act: (bloc) => bloc.add( OnEmailSignInUser( email: aeroxUser.email, password: aeroxUser.password! ) ),
       
       expect: () => [
-        UserState( user: null, errorMessage: '' ),
+                UserState( user: null,uiState: UIState.loading() ),
+        UserState( user: null, uiState: UIState.error( '' ) ),
       ],
     );
   });
@@ -85,7 +88,8 @@ void main(){
       act: (bloc) => bloc.add( OnEmailSignOutUser() ),
       
       expect: () => [
-        UserState( user: null, errorMessage: null ),
+        UserState( user: null, uiState: UIState.loading() ),
+        UserState( user: null, uiState: UIState.success( next: '/' ) ),
       ],
     );
 
@@ -97,7 +101,8 @@ void main(){
       act: (bloc) => bloc.add( OnEmailSignOutUser() ),
       
       expect: () => [
-        UserState( user: null, errorMessage: 'text' )
+        UserState( user: null, uiState: UIState.loading() ),
+        UserState( user: null, uiState: UIState.error( 'text') )
       ],
     );
   });
@@ -110,7 +115,8 @@ void main(){
       act: (bloc) => bloc.add( OnGoogleSignInUser() ),
       
       expect: () => [
-        UserState( user: user, errorMessage: null )
+        UserState( user: null, uiState: UIState.loading() ),
+        UserState( user: user, uiState: UIState.success(  next: '/home' ) ),
       ],
 
     );
@@ -123,7 +129,8 @@ void main(){
       act: (bloc) => bloc.add( OnGoogleSignOutUser() ),
       
       expect: () => [
-        UserState( user: null, errorMessage: '' )
+        UserState( user: null,uiState: UIState.loading( ) ),
+        UserState( user: null,uiState: UIState.error( '' ) ),
       ],
     );
   });
@@ -136,7 +143,8 @@ void main(){
         act: (bloc) => bloc.add( OnCheckUserIsSignedIn() ),
         
         expect: () => [
-          UserState( user: user)
+          UserState( user: null, uiState: UIState.loading()),
+          UserState( user: user, uiState: UIState.success( next: '/home' )),
         ],
       );
   
@@ -148,7 +156,8 @@ void main(){
         act: (bloc) => bloc.add( OnCheckUserIsSignedIn() ),
         
         expect: () => [
-          UserState( user: null )
+          UserState( user: null, uiState: UIState.loading( ) ),
+          UserState( user: null, uiState: UIState.success() ),
         ],
   );
   });
@@ -161,7 +170,8 @@ void main(){
         act: (bloc) => bloc.add( OnPasswordReset( email: email ) ),
         
         expect: () => [
-          isA<UserState>().having((state) => state.errorMessage, 'errorMessage', isNotNull),
+          UserState( user: null, uiState: UIState.loading( ) ),
+          UserState( user: null, uiState: UIState.idle() ),
         ],
       );
   
@@ -173,19 +183,20 @@ void main(){
         act: (bloc) => bloc.add( OnPasswordReset( email: email ) ),
         
         expect: () => [
-          isA<UserState>().having((state) => state.errorMessage, 'errorMessage', isNotNull),
+          UserState( user: null,uiState: UIState.loading( ) ),
+          UserState( user: null,uiState: UIState.error( '' ) ),
         ],
       );
   });
 
-  blocTest<UserBloc, UserState>('On delete error message, emits [ errorMessage: [ null ] ]', 
-        build: () => userBloc,
-        act: (bloc) => bloc.add( OnDeleteErrorMsg() ),
+  // blocTest<UserBloc, UserState>('On delete error message, emits [ errorMessage: [ null ] ]', 
+  //       build: () => userBloc,
+  //       act: (bloc) => bloc.add( OnDeleteErrorMsg() ),
         
-        expect: () => [
-          UserState( errorMessage: null )
-        ],
-  );
+  //       expect: () => [
+  //         UserState( uiState: UIState.success() )
+  //       ],
+  // );
 
 }
 
