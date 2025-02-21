@@ -1,7 +1,7 @@
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/domain/models/racket_extension.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/technical_specs_text.dart';
+import 'package:aerox_stage_1/features/feature_details/ui/widgets/technical_specs_text.dart';
 
 import 'package:flutter/material.dart';
 

@@ -2,8 +2,8 @@ import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_scree
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/widgets/bluetooth_connect_button.dart';
 import 'package:aerox_stage_1/common/ui/selected_racket_widget.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/details_screen.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_select/ui/racket_select_screen.dart';
+import 'package:aerox_stage_1/features/feature_details/ui/details_screen.dart';
+import 'package:aerox_stage_1/features/feature/feature_select/ui/racket_select_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePageAdminView extends StatelessWidget {

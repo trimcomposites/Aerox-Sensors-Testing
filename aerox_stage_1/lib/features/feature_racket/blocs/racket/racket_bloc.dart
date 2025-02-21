@@ -26,32 +26,36 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
     on<OnGetRackets>((event, emit) async{
       emit( state.copyWith( uiState: UIState.loading() ) );
       // ignore: avoid_single_cascade_in_expression_statements
-      await getRacketsUsecase()..fold(
-        (l)=>  emit(state.copyWith( rackets: null )) , 
+      final result = await getRacketsUsecase();
+      result.fold(
+        (l)=>  emit(state.copyWith( rackets: null,uiState: UIState.idle() )) , 
         (r)=> emit( state.copyWith( rackets: r, uiState: UIState.idle() ) )
       );
     },);
 
     on<OnSelectRacket>((event, emit) async{
+      emit( state.copyWith( uiState: UIState.loading() ) );
       // ignore: avoid_single_cascade_in_expression_statements
       await selectRacketUsecase( event.racket )..fold(
-        (l) => emit( state.copyWith( myRacket: null )),
+      (l) => ( emit(state.copyWith( myRacket: null , uiState: UIState.error( l.errMsg ) ))),
         (r) => emit( state.copyWith( myRacket: r, uiState: UIState.success( next: '/home' ) ))
       );
       //emit( state.copyWith( myRacket: event.racket ) );
     },);
     on<OnUnSelectRacket>((event, emit)async{
+      emit( state.copyWith( uiState: UIState.loading() ) );
       // ignore: avoid_single_cascade_in_expression_statements
       await deselectRacketUsecase()..fold(
-      (l) => emit( state.copyWith( myRacket: null) ),
+      (l) => ( emit(state.copyWith( myRacket: null , uiState: UIState.error( l.errMsg ) ))),
       (r) => emit( state.copyWith( myRacket: null, uiState: UIState.success( next: '/home' ) ) )
       );
     },);
   
   on<OnGetSelectedRacket>((event, emit) async {
+    emit( state.copyWith( uiState: UIState.loading() ) );
     // ignore: avoid_single_cascade_in_expression_statements
     await getSelectedRacketUsecase()..fold(
-      (l) => ( emit(state.copyWith( myRacket: null )) ),
+      (l) => ( emit(state.copyWith( myRacket: null , uiState: UIState.error( l.errMsg ) ))),
       (r) => ( emit( state.copyWith( myRacket: r, uiState: UIState.idle() ) ) )
     );
   });

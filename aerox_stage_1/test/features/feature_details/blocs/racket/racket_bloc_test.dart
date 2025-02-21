@@ -22,6 +22,9 @@ void main() {
 
   setUp((){
     getRacketsUsecase = MockGetRacketsUseCase();
+    selectRacketUsecase= MockSelectRacketUseCase();
+    deselectRacketUsecase= MockUnSelectRacketUseCase();
+    getSelectedRacketUsecase= MockGetSelectedRacketUseCase();
     racketBloc = RacketBloc(
       getRacketsUsecase: getRacketsUsecase,
       selectRacketUsecase: selectRacketUsecase,
@@ -30,81 +33,133 @@ void main() {
       );
   });
 
-  final List<Racket> rackets = [];
+
+  tearDown( () => racketBloc.close() );
+
+
   final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
-  final Racket racket = any( named: 'racket' );
-  group(' on get racket event ...', () {
-    blocTest<RacketBloc, RacketState>('on get rackets success, emits [ rackets: [ List<Racket> ]', 
+  final Racket racket = Racket(id: 1, hit: '', racket: '', racketName: '', color: '', weightNumber: '', weightName: '', weightType: '', balance: '', headType: '', swingWeight: '', powerType: '', acor: '', acorType: '', maneuverability: '', maneuverabilityType: '', image: ''  );
+
+  final List<Racket> rackets = [ racket, racket ];
+group('on get racket event', () {
+    blocTest<RacketBloc, RacketState>(
+      'on get rackets success, emits [loading, success]',
       build: () {
         when(() => getRacketsUsecase())
-        .thenAnswer( ( _ ) async => Right(  rackets ) );
-        return racketBloc;
+            .thenAnswer((_) async => Right(rackets));
+        return RacketBloc(
+          getRacketsUsecase: getRacketsUsecase,
+          selectRacketUsecase: selectRacketUsecase,
+          deselectRacketUsecase: deselectRacketUsecase,
+          getSelectedRacketUsecase: getSelectedRacketUsecase,
+        );
       },
-      act: (bloc) => bloc.add( OnGetRackets() ),
-      
+      act: (bloc) => bloc.add(OnGetRackets()),
       expect: () => [
-        RacketState( rackets: rackets, uiState: UIState.success() ),
-      ],
-    );
-    blocTest<RacketBloc, RacketState>('on get rackets failure, emits [ rackets: [ List<Racket>.empty ]', 
-      build: () {
-        when(() => getRacketsUsecase())
-        .thenAnswer( ( _ ) async => Left(  racketErr ) );
-        return racketBloc;
-      },
-      act: (bloc) => bloc.add( OnGetRackets() ),
-      
-      expect: () => [
-        RacketState( rackets: [], uiState: UIState.error( any()) ),
-      ],
-    );
-  });
-  
-  group(('on select racket event'), (){
-    blocTest<RacketBloc, RacketState>('on select rackets success, emits [ myRacket: [ Racket ]', 
-      build: () => racketBloc,
-      
-      act: (bloc) => bloc.add( OnSelectRacket( racket: racket ) ),
-      
-      expect: () => [
-        RacketState( myRacket: racket, uiState: UIState.success() ),
-      ],
-    );
-    blocTest<RacketBloc, RacketState>('on Deselect rackets success, emits [ myRacket: [ Racket ]', 
-      build: () => racketBloc,
-      
-      act: (bloc) => bloc.add( OnUnSelectRacket() ),
-      
-      expect: () => [
-        RacketState( myRacket: null,uiState: UIState.success() ),
+        RacketState(rackets: [], uiState: UIState.loading()),
+        RacketState(rackets: rackets, uiState: UIState.idle()),
       ],
     );
 
-  group(('on get selected racket event'), (){
-    blocTest<RacketBloc, RacketState>('on get selected racket success, emits [ myRacket: [ Racket ]', 
+    blocTest<RacketBloc, RacketState>(
+      'on get rackets failure, emits [loading, error]',
       build: () {
-        when(() => getSelectedRacketUsecase( ))
-        .thenAnswer( ( _ ) async => Right(  racket ) );
-        return racketBloc;
+        when(() => getRacketsUsecase())
+            .thenAnswer((_) async => Left(racketErr));
+        return RacketBloc(
+          getRacketsUsecase: getRacketsUsecase,
+          selectRacketUsecase: selectRacketUsecase,
+          deselectRacketUsecase: deselectRacketUsecase,
+          getSelectedRacketUsecase: getSelectedRacketUsecase,
+        );
       },
-      act: (bloc) => bloc.add( OnGetSelectedRacket() ),
-      
+      act: (bloc) => bloc.add(OnGetRackets()),
       expect: () => [
-        RacketState( myRacket: racket, uiState: UIState.success() ),
-      ],
-    );
-    blocTest<RacketBloc, RacketState>('on get selected racket failure, emits [ myRacket: [ null ]', 
-      build: () {
-        when(() => getSelectedRacketUsecase( ))
-        .thenAnswer( ( _ ) async => Left(  racketErr ) );
-        return racketBloc;
-      },
-      act: (bloc) => bloc.add( OnGetSelectedRacket() ),
-      
-      expect: () => [
-        RacketState( myRacket: null, uiState: UIState.error( any() ) ),
+        RacketState(rackets: [], uiState: UIState.loading()),
+        RacketState(rackets: [], uiState: UIState.idle()),
       ],
     );
   });
-});
+
+  group('on select racket event', () {
+    blocTest<RacketBloc, RacketState>(
+      'on select racket success, emits [myRacket: Racket]',
+      build: () {
+        when(() => selectRacketUsecase(racket))
+            .thenAnswer((_) async => Right(racket));
+        return RacketBloc(
+          getRacketsUsecase: getRacketsUsecase,
+          selectRacketUsecase: selectRacketUsecase,
+          deselectRacketUsecase: deselectRacketUsecase,
+          getSelectedRacketUsecase: getSelectedRacketUsecase,
+        );
+      },
+      act: (bloc) => bloc.add(OnSelectRacket(racket: racket)),
+      expect: () => [
+        RacketState( rackets: [], uiState: UIState.loading( ) ),
+       RacketState( myRacket: racket, uiState: UIState.success( next: '/home' ) ),
+      ],
+    );
+  });
+
+  group('on deselect racket event', () {
+    blocTest<RacketBloc, RacketState>(
+      'on deselect racket success, emits [myRacket: null]',
+      build: () {
+        when(() => deselectRacketUsecase())
+            .thenAnswer((_) async => Right(null));
+        return RacketBloc(
+          getRacketsUsecase: getRacketsUsecase,
+          selectRacketUsecase: selectRacketUsecase,
+          deselectRacketUsecase: deselectRacketUsecase,
+          getSelectedRacketUsecase: getSelectedRacketUsecase,
+        );
+      },
+      act: (bloc) => bloc.add(OnUnSelectRacket()),
+      expect: () => [
+        RacketState(myRacket: null, uiState: UIState.loading( )),
+        RacketState(myRacket: null, uiState: UIState.success( next: '/home' )),
+      ],
+    );
+  });
+
+  group('on get selected racket event', () {
+    blocTest<RacketBloc, RacketState>(
+      'on get selected racket success, emits [myRacket: Racket]',
+      build: () {
+        when(() => getSelectedRacketUsecase())
+            .thenAnswer((_) async => Right(racket));
+        return RacketBloc(
+          getRacketsUsecase: getRacketsUsecase,
+          selectRacketUsecase: selectRacketUsecase,
+          deselectRacketUsecase: deselectRacketUsecase,
+          getSelectedRacketUsecase: getSelectedRacketUsecase,
+        );
+      },
+      act: (bloc) => bloc.add(OnGetSelectedRacket()),
+      expect: () => [
+        RacketState(myRacket: null, uiState: UIState.loading()),
+        RacketState(myRacket: racket, uiState: UIState.idle()),
+      ],
+    );
+
+    blocTest<RacketBloc, RacketState>(
+      'on get selected racket failure, emits [myRacket: null]',
+      build: () {
+        when(() => getSelectedRacketUsecase())
+            .thenAnswer((_) async => Left(racketErr));
+        return RacketBloc(
+          getRacketsUsecase: getRacketsUsecase,
+          selectRacketUsecase: selectRacketUsecase,
+          deselectRacketUsecase: deselectRacketUsecase,
+          getSelectedRacketUsecase: getSelectedRacketUsecase,
+        );
+      },
+      act: (bloc) => bloc.add(OnGetSelectedRacket()),
+      expect: () => [
+        RacketState(myRacket: null, uiState: UIState.loading()),
+        RacketState(myRacket: null, uiState: UIState.error(racketErr.errMsg)),
+      ],
+    );
+  });
 }

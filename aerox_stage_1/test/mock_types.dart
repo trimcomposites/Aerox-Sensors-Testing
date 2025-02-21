@@ -4,6 +4,9 @@ import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
@@ -33,3 +36,6 @@ class MockMockRacketDataSource extends Mock implements MockRacketDatasource{}
 class MockRacketRepository extends Mock implements RacketRepository{}
 
 class MockGetRacketsUseCase extends Mock implements GetRacketsUseCase{}
+class MockGetSelectedRacketUseCase extends Mock implements GetSelectedRacketUseCase{}
+class MockUnSelectRacketUseCase extends Mock implements UnSelectRacketUseCase{}
+class MockSelectRacketUseCase extends Mock implements SelectRacketUseCase{}

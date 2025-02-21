@@ -1,8 +1,8 @@
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/expansion_spec_data.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/specs_data_text.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_details/ui/widgets/technical_specs_sheet.dart';
+import 'package:aerox_stage_1/features/feature_details/ui/widgets/expansion_spec_data.dart';
+import 'package:aerox_stage_1/features/feature_details/ui/widgets/specs_data_text.dart';
+import 'package:aerox_stage_1/features/feature_details/ui/widgets/technical_specs_sheet.dart';
 
 class RacketSpecs extends StatelessWidget {
   const RacketSpecs({

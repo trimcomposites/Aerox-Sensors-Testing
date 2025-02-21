@@ -1,11 +1,11 @@
 import 'package:aerox_stage_1/common/services/injection_container.dart';
 import 'package:aerox_stage_1/common/services/router.dart';
 import 'package:aerox_stage_1/features/feature/3d/blocs/bloc/3d_bloc.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_details/blocs/details_screen/details_screen_bloc.dart';
+import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_options.dart';
-import 'package:aerox_stage_1/features/feature_racket/feature_select/blocs/select_screen/select_screen_bloc.dart';
+import 'package:aerox_stage_1/features/feature/feature_select/blocs/select_screen/select_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_splash/ui/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
