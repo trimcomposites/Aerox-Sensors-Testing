@@ -18,9 +18,6 @@ class HomePageAdmin extends StatelessWidget {
   Widget build(BuildContext context) {
     final HomeScreenBloc homeScreenBloc =
         BlocProvider.of<HomeScreenBloc>(context)..add(OnGetSelectedRacketHome());
-    final RacketBloc racketBloc = BlocProvider.of<RacketBloc>(context);
-    final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-
     void onback() {
       homeScreenBloc.add(OnGetSelectedRacketHome());
       Navigator.of(context).pop();
