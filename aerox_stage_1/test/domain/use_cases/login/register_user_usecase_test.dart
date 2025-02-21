@@ -1,6 +1,5 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
-import 'package:aerox_stage_1/common/utils/exceptions/sign_in_exception.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
