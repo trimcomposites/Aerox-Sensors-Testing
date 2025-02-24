@@ -1,14 +1,18 @@
+import 'package:aerox_stage_1/features/feature_comments/repository/remote/firestore_comments.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/comment.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/add_comment_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CommentSection extends StatelessWidget {
   const CommentSection({
-    super.key,
+    super.key, required this.racketId,
   });
+  final int racketId;
 
   @override
   Widget build(BuildContext context) {
+    final comments = FirestoreComments().getCommentsByRacketId(racketId );
     return SingleChildScrollView(
       physics: NeverScrollableScrollPhysics(),
       child: Column(
@@ -23,24 +27,31 @@ class CommentSection extends StatelessWidget {
               AddCommentButton(),
             ],
           ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: 3,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              return Comment(
-                authorName: 'Samuel',
-                date: '08.02.25',
-                location: 'Málaga',
-                content: 'Excepteur ea consectetur et mollit mollit. Nulla eu deserunt laboris nostrud '
-                  'culpa id do pariatur mollit aliquip excepteur proident reprehenderit in. Minim magna i'
-                  'n pariatur dolore mollit sint pariatur. Labore eiusmod labore do exercitation amet nostrud consectetur occaecat e'
-                  'xcepteur commodo reprehenderit. Lorem est consectetur dolore mollit nisi elit est occaecat fugiat. Voluptate sunt des'
-                  'erunt cillum eiusmod veniam adipisicing.',
-                time: 'Hoy',
+          StreamBuilder<QuerySnapshot>(
+            stream:  FirestoreComments().getCommentsByRacketId(racketId ), 
+            builder: ( context, snapshot ) {
+              if( snapshot.hasData ){
+                var comments = snapshot.data!.docs;
+
+                return ListView.builder(
+                shrinkWrap: true,
+                itemCount: comments.length,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  var comment = comments[index];
+
+                  return Comment(
+                    authorName: comment['authorId'], // Asumiendo que 'authorId' es el nombre del autor
+                    date: '11111', // Utilizamos la fecha proporcionada en el comentario
+                    location: comment['location'], // Usamos la ubicación del comentario
+                    content: comment['content'], // Contenido del comentario
+                    time: '11', // Formateamos la fecha para mostrar el tiempo
+                  );
+                },
               );
-            },
-          ),
+            }
+            return Container( child: Text( 'No hay comentarios' ), );
+          }),
         ],
       ),
     );

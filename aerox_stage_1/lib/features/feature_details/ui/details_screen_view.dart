@@ -88,7 +88,7 @@ class DetailsScreenView extends StatelessWidget {
               ),
               isRacketSelected
 
-              ? CommentSection()
+              ? CommentSection( racketId: rackets[0].id, )
 
               : Container()
             ],

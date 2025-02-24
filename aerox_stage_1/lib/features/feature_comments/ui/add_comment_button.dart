@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/features/feature_comments/repository/remote/firestore_comments.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 
 class AddCommentButton extends StatelessWidget {
@@ -14,12 +15,18 @@ class AddCommentButton extends StatelessWidget {
         border: Border.all( color: Colors.black, width: 1 ),
         borderRadius: BorderRadius.circular(30)
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text('ADD'),
-          Icon( Icons.comment ),
-        ],
+      child: InkWell(
+        onTap: () {
+          final comments = FirestoreComments();
+          //TODO: PAgina de comentar
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text('ADD'),
+            Icon( Icons.comment ),
+          ],
+        ),
       ),
     );
   }
