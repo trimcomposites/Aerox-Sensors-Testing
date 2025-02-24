@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">293842013726-8462akpn4bad018q7jr9bda419gnu6gf.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">293842013726</string>
+    <string name="google_api_key" translatable="false">AIzaSyCoBZLTSwOeKDRA_TxVpOiqjjjut7J4PPE</string>
+    <string name="google_app_id" translatable="false">1:293842013726:android:70ed409487b67204cc280f</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCoBZLTSwOeKDRA_TxVpOiqjjjut7J4PPE</string>
+    <string name="google_storage_bucket" translatable="false">aerox-1.firebasestorage.app</string>
+    <string name="project_id" translatable="false">aerox-1</string>
+</resources>

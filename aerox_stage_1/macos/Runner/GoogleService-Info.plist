@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>293842013726-ed1ie2r1mvlr0657arldsadeqjb5cc3d.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.293842013726-ed1ie2r1mvlr0657arldsadeqjb5cc3d</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>293842013726-tl96rs5t8k25ot5is38en5grqo1q613j.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA5kziInLPEJOEbIZnn968YX1TFGbNzajQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>293842013726</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.aeroxStage1</string>
+	<key>PROJECT_ID</key>
+	<string>aerox-1</string>
+	<key>STORAGE_BUCKET</key>
+	<string>aerox-1.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:293842013726:ios:04e35618b4031ac2cc280f</string>
+</dict>
+</plist>

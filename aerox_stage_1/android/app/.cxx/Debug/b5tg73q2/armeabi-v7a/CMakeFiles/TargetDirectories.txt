@@ -1,0 +1,2 @@
+/Users/roberto.pavon/Documents/GitHub/Aerox-Stage-1/aerox_stage_1/android/app/.cxx/Debug/b5tg73q2/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/roberto.pavon/Documents/GitHub/Aerox-Stage-1/aerox_stage_1/android/app/.cxx/Debug/b5tg73q2/armeabi-v7a/CMakeFiles/rebuild_cache.dir

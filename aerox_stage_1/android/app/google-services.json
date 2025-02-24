@@ -39,10 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "293842013726-u5f5qkc2278es3t9riliafqv6150hl7v.apps.googleusercontent.com",
+              "client_id": "293842013726-ed1ie2r1mvlr0657arldsadeqjb5cc3d.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.labtend.aerox"
+                "bundle_id": "com.example.aeroxStage1"
               }
             }
           ]

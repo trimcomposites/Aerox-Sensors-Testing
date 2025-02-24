@@ -1,0 +1,14 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/roberto.pavon/.pub-cache/hosted/pub.dev/android_intent_plus-5.3.0/android/src/main/AndroidManifest.xml:1:1-13
+INJECTED from /Users/roberto.pavon/.pub-cache/hosted/pub.dev/android_intent_plus-5.3.0/android/src/main/AndroidManifest.xml:1:1-13
+	package
+		INJECTED from /Users/roberto.pavon/.pub-cache/hosted/pub.dev/android_intent_plus-5.3.0/android/src/main/AndroidManifest.xml
+uses-sdk
+INJECTED from /Users/roberto.pavon/.pub-cache/hosted/pub.dev/android_intent_plus-5.3.0/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/roberto.pavon/.pub-cache/hosted/pub.dev/android_intent_plus-5.3.0/android/src/main/AndroidManifest.xml
+INJECTED from /Users/roberto.pavon/.pub-cache/hosted/pub.dev/android_intent_plus-5.3.0/android/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/roberto.pavon/.pub-cache/hosted/pub.dev/android_intent_plus-5.3.0/android/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/roberto.pavon/.pub-cache/hosted/pub.dev/android_intent_plus-5.3.0/android/src/main/AndroidManifest.xml
