@@ -59,6 +59,7 @@ Future<void> dependencyInjectionInitialize() async{
     ))
     ..registerFactory(() => CommentsBloc(
       getCommentsUsecase: sl(),
+      checkUserSignedInUseCase: sl()
     ))
     ..registerFactory(() => Model3DBloc(
     ))
