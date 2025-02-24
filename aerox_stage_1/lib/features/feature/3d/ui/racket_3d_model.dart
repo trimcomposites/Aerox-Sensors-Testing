@@ -63,7 +63,7 @@ class Racket3dModel extends StatelessWidget {
                     model3dBloc.add(OnStartErrorModel3d());
                     debugPrint('model failed to load: $error');
                   },
-                  src: 'assets/3d/morello_cerchi_-_rims_-_murgese_v.glb',
+                  src: 'assets/3d/20250222_LABT003_3D_GLB_V2.glb',
                   controller: controller,
                 ),
                 if (state.uiState.status == UIStatus.loading)

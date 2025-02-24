@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/features/feature_comments/ui/comment.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/add_comment_button.dart';
 
@@ -39,72 +40,6 @@ class CommentSection extends StatelessWidget {
                 time: 'Hoy',
               );
             },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Comment extends StatelessWidget {
-  const Comment({
-    super.key,
-    required this.authorName,
-    required this.date,
-    required this.location,
-    required this.content,
-    required this.time
-  });
-  final String date;
-  final String location;
-  final String authorName;
-  final String content;
-  final String time;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      //color: Colors.red,
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.symmetric(vertical: 5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, 
-        children: [
-          Text(time),
-          SizedBox( height: 15, ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center, 
-            children: [
-              CircleAvatar(radius: 20),
-              SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    authorName,
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
-                  Row(
-                    children: [
-                      Text(date),
-                      SizedBox(width: 5),
-                      Icon(Icons.location_on_outlined, size: 16),
-                      SizedBox(width: 5),
-                      Text( location ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10), 
-          Container(
-            width: double.infinity, 
-            child: Text( content,
-              maxLines: 6,
-              overflow: TextOverflow.ellipsis,
-              softWrap: true,
-            ),
           ),
         ],
       ),
