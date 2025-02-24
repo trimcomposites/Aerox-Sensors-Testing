@@ -55,6 +55,8 @@ dependencies:
   flutter_inappwebview_ios: ^1.1.2
   cloud_firestore: ^5.6.4
   intl: ^0.20.2
+  bottom_sheet: ^4.0.4
+  modal_bottom_sheet: ^3.0.0
 
 dev_dependencies:
   flutter_test:

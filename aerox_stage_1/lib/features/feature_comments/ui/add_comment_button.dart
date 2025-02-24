@@ -1,5 +1,9 @@
+
 import 'package:aerox_stage_1/features/feature_comments/repository/remote/firestore_comments.dart';
+import 'package:aerox_stage_1/features/feature_comments/ui/add_comment_form.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
+import 'package:bottom_sheet/bottom_sheet.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class AddCommentButton extends StatelessWidget {
   const AddCommentButton({
@@ -17,9 +21,11 @@ class AddCommentButton extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          final comments = FirestoreComments();
-          //TODO: PAgina de comentar
-          comments.publishComment(content: 'Contenido del comentario', userId: 'dffd', location: 'Madrid', racketId: '1');
+          showMaterialModalBottomSheet(
+            backgroundColor: Colors.transparent,
+            context: context,
+            builder: (context) => AddCommentForm(),
+          );
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
