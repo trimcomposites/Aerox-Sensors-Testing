@@ -40,10 +40,10 @@ class CommentSection extends StatelessWidget {
           
                   return CommentWidget(
                     authorName: comment.authorName ?? 'Anónimo',
-                    date:  'No hay datos',
+                    date:  comment.date ?? 'No hay datos',
                     location: comment.location ?? 'No hay datos',
                     content: comment.content ?? 'No hay comentario',
-                    time: '11',
+                    time: comment.time ?? 'Hace mucho',
                   );
                 },
               );

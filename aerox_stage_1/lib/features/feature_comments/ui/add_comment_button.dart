@@ -19,6 +19,7 @@ class AddCommentButton extends StatelessWidget {
         onTap: () {
           final comments = FirestoreComments();
           //TODO: PAgina de comentar
+          comments.publishComment(content: 'Contenido del comentario', userId: 'dffd', location: 'Madrid', racketId: '1');
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
