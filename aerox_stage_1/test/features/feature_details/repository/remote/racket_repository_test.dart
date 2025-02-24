@@ -1,7 +1,7 @@
 import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
@@ -17,7 +17,7 @@ void main() {
   late RacketRepository repository;
   setUp((){
     datasource = MockMockRacketDataSource();
-    repository = RacketRepository( sqLiteDB: SQLiteDB(), remoteGetRackets: RemoteGetRackets());
+    repository = RacketRepository( sqLiteDB: RacketsSQLiteDB(), remoteGetRackets: RemoteGetRackets());
     
   });
 

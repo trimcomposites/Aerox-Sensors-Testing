@@ -11,7 +11,7 @@ import 'package:aerox_stage_1/features/feature/3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature/feature_select/blocs/select_screen/select_screen_bloc.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
@@ -88,7 +88,7 @@ Future<void> dependencyInjectionInitialize() async{
     //services//
 
     //sqlite
-    ..registerLazySingleton(() => SQLiteDB())
+    ..registerLazySingleton(() => RacketsSQLiteDB())
 
     //login
     ..registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance)

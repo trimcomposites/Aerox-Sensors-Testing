@@ -4,7 +4,7 @@ import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/status_code.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/domain/sqlite_db.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
 import 'package:dartz/dartz.dart';
 
@@ -14,7 +14,7 @@ class RacketRepository {
   RacketRepository( { 
     required this.sqLiteDB, required this.remoteGetRackets,
   });
-  final SQLiteDB sqLiteDB;
+  final RacketsSQLiteDB sqLiteDB;
   final RemoteGetRackets remoteGetRackets;
 
 
