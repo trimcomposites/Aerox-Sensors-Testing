@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
@@ -8,6 +9,9 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature/3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
+import 'package:aerox_stage_1/features/feature_comments/repository/comments_repository.dart';
+import 'package:aerox_stage_1/features/feature_comments/repository/remote/firestore_comments.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature/feature_select/blocs/select_screen/select_screen_bloc.dart';
@@ -53,6 +57,9 @@ Future<void> dependencyInjectionInitialize() async{
       selectRacketUseCase: sl(),
       getRacketsUseCase: sl()
     ))
+    ..registerFactory(() => CommentsBloc(
+      getCommentsUsecase: sl(),
+    ))
     ..registerFactory(() => Model3DBloc(
     ))
     //use cases//
@@ -70,6 +77,9 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerLazySingleton(() =>SelectRacketUseCase(racketRepository: sl()) )
     ..registerLazySingleton(() =>UnSelectRacketUseCase(racketRepository: sl()) )
 
+    //comments
+    ..registerLazySingleton(() =>GetCommentsUsecase( commentsRepository: sl()) )
+
     //repository
     ..registerLazySingleton(
       () => LoginRepository(
@@ -84,6 +94,11 @@ Future<void> dependencyInjectionInitialize() async{
         sqLiteDB: sl()
       )
     )
+    //comments
+    ..registerLazySingleton(() => CommentsRepository(
+      firestoreComments: sl()
+    ))
+
 
     //services//
 
@@ -101,7 +116,10 @@ Future<void> dependencyInjectionInitialize() async{
 
     //racket
     ..registerLazySingleton(() => RemoteGetRackets(
-    )); 
+    ))
 
+    //comments
+    ..registerLazySingleton(() => FirestoreComments(
+    )); 
 }
    

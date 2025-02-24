@@ -10,6 +10,11 @@ abstract class AsyncUseCaseWithParams<Type, Params> {
   const AsyncUseCaseWithParams();
   Future<EitherErr<Type>> call( Params params );
 }
+abstract class StreamUseCaseWithParams<Type, Params> {
+
+  const StreamUseCaseWithParams();
+  Stream<EitherErr<Type>> call( Params params );
+}
 abstract class AsyncUseCaseWithoutParams<Type> {
 
   const AsyncUseCaseWithoutParams();

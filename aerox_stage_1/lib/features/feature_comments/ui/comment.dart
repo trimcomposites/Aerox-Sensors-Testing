@@ -2,8 +2,8 @@ import 'package:aerox_stage_1/features/feature_comments/ui/comment_content.dart'
 import 'package:aerox_stage_1/features/feature_comments/ui/comment_header.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 
-class Comment extends StatelessWidget {
-  const Comment({
+class CommentWidget extends StatelessWidget {
+  const CommentWidget({
     super.key,
     required this.authorName,
     required this.date,
