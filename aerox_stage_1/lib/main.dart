@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
       //db.clearDatabase();
       //db.checkAndDeleteDB();
     //SQLiteDB sqLiteDB  =sl();
-    //final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() )..add( OnGetSelectedRacket() ) ;
+    final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() )..add( OnGetSelectedRacket() ) ;
     return MaterialApp(
       title: 'Aerox',
       routes: appRoutes,

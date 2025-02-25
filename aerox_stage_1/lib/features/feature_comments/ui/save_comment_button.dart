@@ -8,10 +8,12 @@ class SaveCommentButton extends StatelessWidget {
   const SaveCommentButton({
     super.key,
     required this.textController,
-    required this.user
+    required this.user, 
+    this.enabled = true
   });
   final TextEditingController textController;
   final AeroxUser user;
+  final bool enabled;
   @override
   Widget build(BuildContext context) {
     final commentsBloc = BlocProvider.of<CommentsBloc>(context);
@@ -19,7 +21,9 @@ class SaveCommentButton extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all( color: Colors.transparent ),
           borderRadius: BorderRadius.circular(30),
-          color: appYellowColor,
+          color: enabled
+          ? appYellowColor
+          : Colors.grey.shade700
       ),
         
       height: 50,
@@ -35,7 +39,7 @@ class SaveCommentButton extends StatelessWidget {
                                     hit: commentsBloc.state.racket!.hit, 
                                     racket: commentsBloc.state.racket!.racket, 
                                 );
-          if(textController.text.isNotEmpty){
+          if(textController.text.isNotEmpty && enabled ){
             commentsBloc.add( OnSaveComment(comment: comment) );
           }
 

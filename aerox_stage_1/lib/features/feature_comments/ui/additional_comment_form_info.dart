@@ -23,9 +23,13 @@ class AdditionalCommentFormInfo extends StatelessWidget {
             ),
             BlocBuilder<CommentsBloc, CommentsState>(
               builder: (context, state) {
-                return Text(
-                  state.city,
-                  style: TextStyle(color: Colors.grey),
+                return Container(
+                  width: 150,
+                  child: Text(
+                    state.city,
+                    style: TextStyle(color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               },
             )

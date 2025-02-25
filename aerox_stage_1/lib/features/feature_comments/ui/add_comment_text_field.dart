@@ -17,6 +17,7 @@ class AddCommentTextField extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(20),
         child: TextField(
+          autofocus: true,
           controller: textControlller,
           maxLines: 6,
           minLines: 1,                   

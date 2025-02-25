@@ -20,10 +20,9 @@ class AddCommentForm extends StatelessWidget {
 
     return BlocListener<CommentsBloc, CommentsState>(
       listener: (context, state) {
-        if( state.uistate.status == UIStatus.success ){
-          commentsBloc.add( OnGetRacketComments(racketId: state.racket!.id) );
+        if (state.uistate.status == UIStatus.success) {
+          commentsBloc.add(OnGetRacketComments(racketId: state.racket!.id));
           Navigator.pop(context);
-
         }
       },
       child: Container(
@@ -59,9 +58,15 @@ class AddCommentForm extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 175),
-                    child: SaveCommentButton(
-                      textController: textController,
-                      user: user,
+                    child: BlocBuilder<CommentsBloc, CommentsState>(
+                      builder: (context, state) {
+                        return state.uistate.status != UIStatus.loading
+                        ? SaveCommentButton(
+                          textController: textController,
+                          user: user,
+                        )
+                        : SaveCommentButton(textController: textController, user: user, enabled: false,);
+                      },
                     ),
                   ),
                   SizedBox(
