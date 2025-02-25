@@ -4,6 +4,7 @@ import 'package:aerox_stage_1/domain/models/comment.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_city_location_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/comments/hide_comment_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/save_comment_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
@@ -18,13 +19,15 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
   final CheckUserSignedInUseCase checkUserSignedInUseCase;
   final GetSelectedRacketUseCase getSelectedRacketUseCase;
   final SaveCommentUsecase saveCommentUsecase;
+  final HideCommentUsecase hideCommentUsecase;
   final GetCityLocationUseCase getCityLocationUseCase;
   CommentsBloc({
     required this.getCommentsUsecase,
     required this.checkUserSignedInUseCase,
     required this.getSelectedRacketUseCase,
     required this.saveCommentUsecase,
-    required this.getCityLocationUseCase
+    required this.getCityLocationUseCase,
+    required this.hideCommentUsecase
   }) : super(CommentsState( uistate: UIState.idle() )) {
     on<OnGetRacketComments>((event, emit) async {
       emit( state.copyWith( uistate: UIState.loading() ) );
@@ -63,6 +66,16 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
 
       emit( state.copyWith( uistate: UIState.loading() ) );
      final result = await saveCommentUsecase.call( event.comment );
+      result.fold(
+        (l) { emit(state.copyWith( uistate: UIState.error( l.errMsg)));},
+        (r) {  emit( state.copyWith( uistate: UIState.success( ) )); },
+      );
+
+    });
+    on<OnHideComment>((event, emit) async {
+
+      emit( state.copyWith( uistate: UIState.loading() ) );
+     final result = await hideCommentUsecase.call( event.comment );
       result.fold(
         (l) { emit(state.copyWith( uistate: UIState.error( l.errMsg)));},
         (r) {  emit( state.copyWith( uistate: UIState.success( ) )); },

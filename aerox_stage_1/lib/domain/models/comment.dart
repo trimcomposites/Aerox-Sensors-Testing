@@ -10,8 +10,9 @@ class Comment {
   final String? realDate;
   final String? racket;
   final String? hit;
+  String? id;
 
-  Comment( {
+  Comment({
      this.racketId, 
      this.authorName, 
      this.content, 
@@ -21,7 +22,8 @@ class Comment {
      this.authorId,
      this.realDate,
      this.racket,
-     this.hit
+     this.hit,
+     this.id,  
   });
 
 

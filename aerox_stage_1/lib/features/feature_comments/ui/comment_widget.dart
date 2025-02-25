@@ -1,7 +1,9 @@
 import 'package:aerox_stage_1/domain/models/comment.dart';
+import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/comment_content.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/comment_header.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommentWidget extends StatelessWidget {
   const CommentWidget({
@@ -31,7 +33,22 @@ class CommentWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start, 
         children: [
-          Text(time),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(time),
+              //Text(comment.id ?? 'no hay id'),
+              IconButton(
+                onPressed: (){
+                  final commentsBloc = BlocProvider.of<CommentsBloc>(context);
+                  commentsBloc.add( OnHideComment(comment: comment) );
+                  commentsBloc.add( OnGetSelectedRacketComments());
+                },
+                icon: Icon( Icons.delete, size: 20, color: Colors.red,  )
+              )
+            ],
+          ),
+
           SizedBox( height: 15, ),
           CommentHeader( fullScreen: fullScreen, authorName: authorName, date: date, location: location),
           SizedBox(height: 10), 

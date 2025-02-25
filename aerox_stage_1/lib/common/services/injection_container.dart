@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_city_location_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/comments/hide_comment_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/save_comment_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
@@ -65,7 +66,8 @@ Future<void> dependencyInjectionInitialize() async{
       checkUserSignedInUseCase: sl(),
       getSelectedRacketUseCase: sl(),
       saveCommentUsecase: sl(),
-      getCityLocationUseCase: sl()
+      getCityLocationUseCase: sl(),
+      hideCommentUsecase: sl()
     ))
     ..registerFactory(() => Model3DBloc(
     ))
@@ -88,6 +90,7 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerLazySingleton(() =>GetCommentsUsecase( commentsRepository: sl()) )
     ..registerLazySingleton(() =>SaveCommentUsecase( commentsRepository: sl()) )
     ..registerLazySingleton(() =>GetCityLocationUseCase( commentsRepository: sl() ))
+    ..registerLazySingleton(() =>HideCommentUsecase( commentsRepository: sl() ))
 
     //repository
     ..registerLazySingleton(
@@ -108,6 +111,7 @@ Future<void> dependencyInjectionInitialize() async{
       firestoreComments: sl(),
       commentLocationService: sl()
     ))
+    
 
 
     //services//

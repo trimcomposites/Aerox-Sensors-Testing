@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 extension CommentExtension on Comment{
 
-    Comment  fromFSComment(Map<String, dynamic> data) {
+    Comment  fromFSComment(Map<String, dynamic> data, String id) {
 
       final date = formatDate( data['date'].toString() );
       final time = timeAgo( data['date'].toString() );
@@ -19,6 +19,7 @@ extension CommentExtension on Comment{
       realDate: data['date'],
       racket: data[ 'racket' ] ?? '',
       hit: data[ 'hit' ] ?? '',
+      id: id
     );
   }
   String formatDate(String dateString) {

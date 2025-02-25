@@ -29,5 +29,9 @@ class CommentsRepository {
 
     return await commentLocationService.getCity();
   } 
+  Future<EitherErr<void>> hideComment( Comment comment ) async {
+
+    return await firestoreComments.hideComment( comment.id );
+  } 
 
 }

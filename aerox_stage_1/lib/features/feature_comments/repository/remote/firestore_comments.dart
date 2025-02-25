@@ -22,6 +22,8 @@ Future<EitherErr<void>> saveComment(Comment comment) async {
         'racketId': comment.racketId,
         'racket': comment.racket,
         'hit': comment.hit,
+        'isVisible': true,
+        'id': comment.id
       };
 
       await _firebaseFirestore.collection('comments').add(commentData);
@@ -45,12 +47,13 @@ Future<EitherErr<List<Comment>>> getCommentsByRacketId(int racketId) async {
     final querySnapshot = await _firebaseFirestore
         .collection('comments')
         .where('racketId', isEqualTo: racketId)
-
+        .where( 'isVisible', isEqualTo: true )
         .get();
 
     List<Comment> commentList = querySnapshot.docs.map((doc) {
       final comment = Comment();
-      return comment.fromFSComment(doc.data());
+      print(doc.id);
+      return comment.fromFSComment(doc.data(  ), doc.id);
     }).toList();
     commentList.sort((a, b) {
 
@@ -61,4 +64,27 @@ Future<EitherErr<List<Comment>>> getCommentsByRacketId(int racketId) async {
     return commentList;
     }, (exception) => CommentErr(errMsg: 'Error al obtener comentarios: $exception', statusCode: 500));
   }
+
+  Future<EitherErr<void>> hideComment( commentId) async {
+  return EitherCatch.catchAsync<void, CommentErr>(() async {
+    try {
+      DocumentReference commentDocRef = _firebaseFirestore.collection('comments').doc(commentId);
+      await commentDocRef.update({
+        'isVisible': false,
+      });
+
+    } catch (e) {
+      throw CommentErr(
+        errMsg: 'Error al ocultar el comentario: $e',
+        statusCode: 500,
+      );
+    }
+  }, (exception) {
+    return CommentErr(
+      errMsg: 'Error al ocultar el comentario: ${exception.toString()}',
+      statusCode: 500,
+    );
+  });
+}
+
 }

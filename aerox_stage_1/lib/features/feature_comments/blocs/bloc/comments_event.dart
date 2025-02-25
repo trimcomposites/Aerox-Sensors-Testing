@@ -26,3 +26,10 @@ class OnSaveComment extends CommentsEvent{
   OnSaveComment({required this.comment});
 
 }
+class OnHideComment extends CommentsEvent{
+
+  final Comment comment;
+
+  OnHideComment({required this.comment});
+
+}
