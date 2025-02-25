@@ -27,7 +27,7 @@ class SaveCommentButton extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(30),
         onTap: (){
-          final comment = Comment( authorId: '',
+          final comment = Comment( authorId: user.id,
                                     authorName: user.name,
                                     content: textController.text,
                                     location: commentsBloc.state.city,

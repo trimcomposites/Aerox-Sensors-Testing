@@ -30,7 +30,7 @@ class SignInUserUsecaseParams extends Equatable {
 
   SignInUserUsecaseParams.empty()
       : signInType = EmailSignInType.email,
-        user = AeroxUser(name: 'name', email: 'email', password: 'password');
+        user = AeroxUser(name: 'name',  id: 'id', email: 'email', password: 'password');
 
   @override
   List<Object?> get props => [ signInType, user ];

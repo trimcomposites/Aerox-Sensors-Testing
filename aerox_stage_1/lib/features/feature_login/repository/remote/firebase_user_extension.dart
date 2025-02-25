@@ -6,7 +6,8 @@ extension FirebaseUserExtensions on User {
     return AeroxUser(
       name: displayName ?? 'Unknown', // Usa displayName o un valor por defecto.
       email: email ?? 'No email',    // Usa el email o un valor por defecto.
-      password: null,                // Firebase no expone contraseñas por razones de seguridad.
+      password: null,       
+      id: uid         // Firebase no expone contraseñas por razones de seguridad.
     );
   }
 }

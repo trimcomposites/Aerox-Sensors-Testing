@@ -54,7 +54,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<OnEmailSignInUser>((event, emit) async {
       emit( state.copyWith( uiState: UIState.loading() ) );
       //await Future.delayed( Duration( seconds: 3 ) );
-      final user = AeroxUser(name: 'name', email: event.email, password: event.password  );
+      final user = AeroxUser(name: 'name', email: event.email, password: event.password , id: '' );
       final result = await signInUsecase(SignInUserUsecaseParams(signInType: EmailSignInType.email, user: user));
       result.fold(
         (l) {
@@ -81,7 +81,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<OnEmailRegisterUser>((event, emit) async {
       emit( state.copyWith( uiState: UIState.loading() ) );
       //await Future.delayed(Duration(seconds: 3));
-      final user = AeroxUser(name: event.name, email: event.email, password: event.password);
+      final user = AeroxUser(name: event.name, email: event.email, password: event.password, id: '');
       final result = await registerUseCase(user);
       result.fold(
         (l) {
