@@ -23,7 +23,8 @@ class OnEmailSignOutUser extends UserEvent{
 class OnEmailRegisterUser extends UserEvent{
   final String email;
   final String password;
-  OnEmailRegisterUser({required this.email, required this.password});
+  final String name;
+  OnEmailRegisterUser({required this.email, required this.password, required this.name});
 }
 class OnCheckUserIsSignedIn extends UserEvent{
   

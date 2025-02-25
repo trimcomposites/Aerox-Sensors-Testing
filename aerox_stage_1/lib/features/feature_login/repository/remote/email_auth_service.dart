@@ -18,7 +18,6 @@ class EmailAuthService {
     required AeroxUser aeroxUser,
   }) async {
     return EitherCatch.catchAsync<AeroxUser, SignInErr>(() async {
-      // Intento de inicio de sesión con el correo y la contraseña
       UserCredential credential = await firebaseAuth.signInWithEmailAndPassword(
         email: aeroxUser.email,
         password: aeroxUser.password!,
@@ -26,6 +25,7 @@ class EmailAuthService {
       User? user = credential.user;
 
       if (user != null) {
+        await user.updateDisplayName( aeroxUser.name );
         return user.toAeroxUser(); 
       } else {
         throw Exception('Ocurrió un error desconocido. Por favor, inténtelo nuevamente.');
@@ -39,12 +39,14 @@ Future<EitherErr<AeroxUser>> createUserWithEmail({
     UserCredential credential = await firebaseAuth.createUserWithEmailAndPassword(
       email: aeroxUser.email,
       password: aeroxUser.password!,
+    
     );
 
     User? user = credential.user;
 
     if (user != null) {
-      return user.toAeroxUser(); // Si el usuario existe, retornamos el objeto AeroxUser
+      await user.updateDisplayName( aeroxUser.name );
+      return user.toAeroxUser(); 
     } else {
       throw Exception('Ocurrió un error desconocido. Por favor, inténtelo nuevamente.');
     }
@@ -52,7 +54,7 @@ Future<EitherErr<AeroxUser>> createUserWithEmail({
 }
 Future<EitherErr<void>> signOut() async {
   return EitherCatch.catchAsync<void, SignInErr>(() async {
-    await firebaseAuth.signOut();  // Llamamos a signOut() de Firebase Auth
+    await firebaseAuth.signOut();  
   }, (exception) => SignInErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
 }
 
@@ -60,7 +62,7 @@ Future<EitherErr<void>> sendPasswordResetEmail({
   required String email,
 }) async {
   return EitherCatch.catchAsync<void, SignInErr>(() async {
-    // Envía el correo para restablecer la contraseña
+
     await firebaseAuth.sendPasswordResetEmail(email: email);
   }, (exception) => SignInErr(
     errMsg: exception.toString(),
