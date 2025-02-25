@@ -62,6 +62,7 @@ dependencies:
   painter: ^2.0.0
   geolocator: ^13.0.2
   geocoding: ^3.0.0
+  skeletonizer: ^1.4.3
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,8 @@
+import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/remote/firestore_comments.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/comment.dart';
+import 'package:aerox_stage_1/features/feature_comments/ui/fake_loading_comment_list.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/add_comment_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,7 +38,8 @@ class CommentSection extends StatelessWidget {
                       : Container(),
                 ],
               ),
-              ListView.builder(
+              state.uistate.status != UIStatus.loading
+              ? ListView.builder(
                 shrinkWrap: true, 
                 physics: NeverScrollableScrollPhysics(), 
                 itemCount: state.comments.length,
@@ -51,7 +54,8 @@ class CommentSection extends StatelessWidget {
                     time: comment.time ?? 'Hace mucho',
                   );
                 },
-              ),
+              )
+              : FakeLoadingCommentList()
             ],
           );
         },
@@ -59,3 +63,4 @@ class CommentSection extends StatelessWidget {
     );
   }
 }
+

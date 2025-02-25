@@ -28,6 +28,7 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
   }) : super(CommentsState( uistate: UIState.idle() )) {
     on<OnGetRacketComments>((event, emit) async {
       emit( state.copyWith( uistate: UIState.loading() ) );
+      //await Future.delayed(Duration(seconds: 5));
      final result = await getCommentsUsecase.call(event.racketId.toString());
 
       result.fold(
@@ -49,6 +50,7 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     on<OnGetSelectedRacketComments>((event, emit) async {
 
       emit( state.copyWith( uistate: UIState.loading() ) );
+      await Future.delayed( Duration( seconds: 6 ) );
      final result = await getSelectedRacketUseCase.call();
       result.fold(
         (l) { emit(state.copyWith( uistate: UIState.error( l.errMsg)));},
