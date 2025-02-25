@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/comments/save_comment_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
@@ -60,7 +61,8 @@ Future<void> dependencyInjectionInitialize() async{
     ..registerFactory(() => CommentsBloc(
       getCommentsUsecase: sl(),
       checkUserSignedInUseCase: sl(),
-      getSelectedRacketUseCase: sl()
+      getSelectedRacketUseCase: sl(),
+      saveCommentUsecase: sl()
     ))
     ..registerFactory(() => Model3DBloc(
     ))
@@ -81,6 +83,7 @@ Future<void> dependencyInjectionInitialize() async{
 
     //comments
     ..registerLazySingleton(() =>GetCommentsUsecase( commentsRepository: sl()) )
+    ..registerLazySingleton(() =>SaveCommentUsecase( commentsRepository: sl()) )
 
     //repository
     ..registerLazySingleton(
