@@ -14,51 +14,47 @@ class CommentSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final commentsBloc = BlocProvider.of<CommentsBloc>( context )
-      ..add( OnGetRacketComments(racketId: racketId) )
-      ..add( OnGetCurrentUser() )..add( OnGetSelectedRacketComments() );
+    final commentsBloc = BlocProvider.of<CommentsBloc>(context)
+      ..add(OnGetRacketComments(racketId: racketId))
+      ..add(OnGetCurrentUser())
+      ..add(OnGetSelectedRacketComments());
+
     return SingleChildScrollView(
-      physics: NeverScrollableScrollPhysics(),
-      child: Column(
-        children: [
-          
-          BlocBuilder<CommentsBloc, CommentsState>(
-            builder: (context, state) {
-              return Column(children: [
-                Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: BlocBuilder<CommentsBloc, CommentsState>(
+        builder: (context, state) {
+          return Column(
             children: [
-              Text(
-                'Notas',
-                style: TextStyle(fontSize: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Notas',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  commentsBloc.state.user != null
+                      ? AddCommentButton(user: commentsBloc.state.user!)
+                      : Container(),
+                ],
               ),
-               commentsBloc.state.user != null
-              ? AddCommentButton( user: commentsBloc.state.user!, )
-              : Container(),
               ListView.builder(
-                shrinkWrap: true,
+                shrinkWrap: true, 
+                physics: NeverScrollableScrollPhysics(), 
                 itemCount: state.comments.length,
-                physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
                   var comment = state.comments[index];
-          
+
                   return CommentWidget(
                     authorName: comment.authorName ?? 'Anónimo',
-                    date:  comment.date ?? 'No hay datos',
+                    date: comment.date ?? 'No hay datos',
                     location: comment.location ?? 'No hay datos',
                     content: comment.content ?? 'No hay comentario',
                     time: comment.time ?? 'Hace mucho',
                   );
-                    },
-                  )
-                ],
+                },
               ),
-              ],);
-            },
-          ),
-            
-          //Container( child: Text( 'No hay comentarios' ), )
-        ],
+            ],
+          );
+        },
       ),
     );
   }

@@ -29,7 +29,7 @@ class AddCommentButton extends StatelessWidget {
           showMaterialModalBottomSheet(
             backgroundColor: Colors.transparent,
             context: context,
-            builder: (context) => AddCommentForm(),
+            builder: (context) => AddCommentForm( user: user ),
           );
         },
         child: Row(
