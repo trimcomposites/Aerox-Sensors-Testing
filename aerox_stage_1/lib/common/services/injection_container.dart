@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/comments/get_city_location_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/save_comment_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
@@ -12,6 +13,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart
 import 'package:aerox_stage_1/features/feature/3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/comments_repository.dart';
+import 'package:aerox_stage_1/features/feature_comments/repository/local/comment_location_service.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/remote/firestore_comments.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
@@ -62,7 +64,8 @@ Future<void> dependencyInjectionInitialize() async{
       getCommentsUsecase: sl(),
       checkUserSignedInUseCase: sl(),
       getSelectedRacketUseCase: sl(),
-      saveCommentUsecase: sl()
+      saveCommentUsecase: sl(),
+      getCityLocationUseCase: sl()
     ))
     ..registerFactory(() => Model3DBloc(
     ))
@@ -84,6 +87,7 @@ Future<void> dependencyInjectionInitialize() async{
     //comments
     ..registerLazySingleton(() =>GetCommentsUsecase( commentsRepository: sl()) )
     ..registerLazySingleton(() =>SaveCommentUsecase( commentsRepository: sl()) )
+    ..registerLazySingleton(() =>GetCityLocationUseCase( commentsRepository: sl() ))
 
     //repository
     ..registerLazySingleton(
@@ -101,7 +105,8 @@ Future<void> dependencyInjectionInitialize() async{
     )
     //comments
     ..registerLazySingleton(() => CommentsRepository(
-      firestoreComments: sl()
+      firestoreComments: sl(),
+      commentLocationService: sl()
     ))
 
 
@@ -125,6 +130,8 @@ Future<void> dependencyInjectionInitialize() async{
 
     //comments
     ..registerLazySingleton(() => FirestoreComments(
+    ))
+    ..registerLazySingleton(() => CommentLocationService(
     )); 
 }
    

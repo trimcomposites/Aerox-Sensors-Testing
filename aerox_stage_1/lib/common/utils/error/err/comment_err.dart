@@ -3,9 +3,9 @@ import 'package:aerox_stage_1/domain/models/comment.dart';
 
 
 class CommentErr extends Err{
-  final Comment? racket;
+  final Comment? comment;
   CommentErr( { 
-    this.racket,
+    this.comment,
     required super.errMsg, 
     required super.statusCode, 
   });

@@ -1,8 +1,10 @@
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
+import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/local/comment_location_service.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/add_comment_text_field.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/save_comment_button.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddCommentForm extends StatelessWidget {
   const AddCommentForm({
@@ -12,7 +14,11 @@ class AddCommentForm extends StatelessWidget {
   final AeroxUser user;
   @override
   Widget build(BuildContext context) {
+
     final textController = TextEditingController();
+
+    final commentsBloc = BlocProvider.of<CommentsBloc>(context)..add( OnGetCityLocation() );
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
@@ -41,17 +47,13 @@ class AddCommentForm extends StatelessWidget {
                     Row(
                       children: [
                         Icon( Icons.location_on_outlined, color: Colors.grey, ),
-                        FutureBuilder(
-                          future: CommentLocationService.getCity(),
-                          initialData: '',
-                          builder: (BuildContext context, AsyncSnapshot snapshot) {
-                            if( snapshot.hasData ){
-                              return Text( snapshot.data ,style: TextStyle( color: Colors.grey ),);
-                            }else{
-                              return Container();
-                            }
+
+                        BlocBuilder<CommentsBloc, CommentsState>(
+                          builder: (context, state) {
+                            return Text( state.city ,style: TextStyle( color: Colors.grey ),);
                           },
-                        ),
+                        )
+
                         
                       ],
                     ),

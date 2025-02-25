@@ -30,7 +30,7 @@ class SaveCommentButton extends StatelessWidget {
           final comment = Comment( authorId: '',
                                     authorName: user.name,
                                     content: textController.text,
-                                    location: 'Getafe',
+                                    location: commentsBloc.state.city,
                                     racketId: commentsBloc.state.racket!.id,
                                 );
           if(textController.text.isNotEmpty){

@@ -18,6 +18,7 @@ class OnGetRacketComments extends CommentsEvent{
 
 class OnGetCurrentUser extends CommentsEvent{}
 class OnGetSelectedRacketComments extends CommentsEvent{}
+class OnGetCityLocation extends CommentsEvent{}
 class OnSaveComment extends CommentsEvent{
 
   final Comment comment;
