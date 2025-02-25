@@ -22,9 +22,17 @@ class CommentHeader extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              authorName,
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            Container(
+              width: 250,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  authorName,
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
             ),
             Row(
               children: [

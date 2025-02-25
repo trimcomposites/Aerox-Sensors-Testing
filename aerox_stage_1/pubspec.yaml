@@ -57,6 +57,11 @@ dependencies:
   intl: ^0.20.2
   bottom_sheet: ^4.0.4
   modal_bottom_sheet: ^3.0.0
+  marquee: ^2.3.0
+  text: ^0.2.0
+  painter: ^2.0.0
+  geolocator: ^13.0.2
+  geocoding: ^3.0.0
 
 dev_dependencies:
   flutter_test:

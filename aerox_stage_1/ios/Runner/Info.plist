@@ -63,7 +63,15 @@
         <string>fetch</string>
     </array>
 
-    <!-- Configuración de Firebase (opcional, si es necesario) -->
+    <!-- Permisos de localizacion -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Necesitamos tu ubicación para mostrar tu ciudad en los comentarios.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Necesitamos tu ubicación para mejorar la experiencia.</string>
+
+
+
+    <!-- Configuración de Firebase ) -->
     <key>CLIENT_ID</key>
     <string>293842013726-u5f5qkc2278es3t9riliafqv6150hl7v.apps.googleusercontent.com</string>
     <key>REVERSED_CLIENT_ID</key>
