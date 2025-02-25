@@ -1,4 +1,5 @@
-import 'package:aerox_stage_1/features/feature_comments/ui/comment.dart';
+import 'package:aerox_stage_1/domain/models/comment.dart';
+import 'package:aerox_stage_1/features/feature_comments/ui/comment_widget.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -16,6 +17,8 @@ class FakeLoadingCommentList extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
       
           return CommentWidget(
+            fullScreen: false,
+            comment: Comment(),
             authorName: 'Anónimo',
             date: 'No hay datos',
             location: 'No hay datos',

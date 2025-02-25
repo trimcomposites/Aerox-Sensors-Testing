@@ -1,7 +1,7 @@
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/remote/firestore_comments.dart';
-import 'package:aerox_stage_1/features/feature_comments/ui/comment.dart';
+import 'package:aerox_stage_1/features/feature_comments/ui/comment_widget.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/fake_loading_comment_list.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/add_comment_button.dart';
@@ -39,22 +39,30 @@ class CommentSection extends StatelessWidget {
                 ],
               ),
               state.uistate.status != UIStatus.loading
+              ? 
+              state.comments.isNotEmpty
               ? ListView.builder(
-                shrinkWrap: true, 
-                physics: NeverScrollableScrollPhysics(), 
-                itemCount: state.comments.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var comment = state.comments[index];
+                  shrinkWrap: true, 
+                  physics: NeverScrollableScrollPhysics(), 
+                  itemCount: state.comments.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var comment = state.comments[index];
 
-                  return CommentWidget(
-                    authorName: comment.authorName ?? 'Anónimo',
-                    date: comment.date ?? 'No hay datos',
-                    location: comment.location ?? 'No hay datos',
-                    content: comment.content ?? 'No hay comentario',
-                    time: comment.time ?? 'Hace mucho',
-                  );
-                },
-              )
+                    return CommentWidget(
+                      fullScreen: false,
+                      comment: comment,
+                      authorName: comment.authorName ?? 'Anónimo',
+                      date: comment.date ?? 'No hay datos',
+                      location: comment.location ?? 'No hay datos',
+                      content: comment.content ?? 'No hay comentario',
+                      time: comment.time ?? 'Hace mucho',
+                    );
+                  },
+                )
+                : Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Center(child: Text('Aún no hay comentarios, ¡Haz Click en Añadir para Publicar uno!')),
+                ) 
               : FakeLoadingCommentList()
             ],
           );

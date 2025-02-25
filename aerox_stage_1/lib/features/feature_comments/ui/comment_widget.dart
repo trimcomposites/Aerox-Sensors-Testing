@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/domain/models/comment.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/comment_content.dart';
 import 'package:aerox_stage_1/features/feature_comments/ui/comment_header.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
@@ -9,13 +10,17 @@ class CommentWidget extends StatelessWidget {
     required this.date,
     required this.location,
     required this.content,
-    required this.time
+    required this.time,
+    required this.comment,
+    required this.fullScreen
   });
   final String date;
   final String location;
   final String authorName;
   final String content;
   final String time;
+  final Comment comment;
+  final bool fullScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +33,9 @@ class CommentWidget extends StatelessWidget {
         children: [
           Text(time),
           SizedBox( height: 15, ),
-          CommentHeader(authorName: authorName, date: date, location: location),
+          CommentHeader( fullScreen: fullScreen, authorName: authorName, date: date, location: location),
           SizedBox(height: 10), 
-          CommentContent(content: content),
+          CommentContent(  fullScreen: fullScreen, comment: comment, content: content),
         ],
       ),
     );

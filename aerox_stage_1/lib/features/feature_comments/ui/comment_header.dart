@@ -5,12 +5,14 @@ class CommentHeader extends StatelessWidget {
     super.key,
     required this.authorName,
     required this.date,
-    required this.location,
+    required this.location, 
+    required this.fullScreen,
   });
 
   final String authorName;
   final String date;
   final String location;
+  final bool fullScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +26,25 @@ class CommentHeader extends StatelessWidget {
           children: [
             Container(
               width: 250,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Text(
-                  authorName,
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+
+                child: fullScreen
+                ? Text(
+                    authorName,
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      authorName,
+                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+            
             Row(
               children: [
                 Text(date),
