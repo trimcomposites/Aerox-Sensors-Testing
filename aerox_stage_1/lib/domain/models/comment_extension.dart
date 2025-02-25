@@ -16,7 +16,9 @@ extension CommentExtension on Comment{
       date: date ?? '',
       time: time ?? '', 
       racketId: data['racketId'] ?? '', 
-      realDate: data['date']
+      realDate: data['date'],
+      racket: data[ 'racket' ] ?? '',
+      hit: data[ 'hit' ] ?? '',
     );
   }
   String formatDate(String dateString) {

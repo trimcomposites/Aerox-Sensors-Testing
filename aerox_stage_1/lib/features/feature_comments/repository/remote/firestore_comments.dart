@@ -20,6 +20,8 @@ Future<EitherErr<void>> saveComment(Comment comment) async {
         'date': now.toIso8601String(),
         'location': comment.location,
         'racketId': comment.racketId,
+        'racket': comment.racket,
+        'hit': comment.hit,
       };
 
       await _firebaseFirestore.collection('comments').add(commentData);

@@ -8,6 +8,8 @@ class Comment {
   final String? location;
   final String? authorId;
   final String? realDate;
+  final String? racket;
+  final String? hit;
 
   Comment( {
      this.racketId, 
@@ -17,7 +19,9 @@ class Comment {
      this.time,
      this.location,
      this.authorId,
-     this.realDate
+     this.realDate,
+     this.racket,
+     this.hit
   });
 
 
