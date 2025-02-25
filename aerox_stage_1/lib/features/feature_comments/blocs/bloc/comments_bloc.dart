@@ -75,7 +75,7 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
      final result = await getCityLocationUseCase.call();
       result.fold(
         (l) { emit(state.copyWith( uistate: UIState.error( l.errMsg)));},
-        (r) {  emit( state.copyWith(  city: r, uistate: UIState.success( ) )); },
+        (r) {  emit( state.copyWith(  city: r, uistate: UIState.idle( ) )); },
       );
 
     });

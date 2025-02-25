@@ -43,13 +43,19 @@ Future<EitherErr<List<Comment>>> getCommentsByRacketId(int racketId) async {
     final querySnapshot = await _firebaseFirestore
         .collection('comments')
         .where('racketId', isEqualTo: racketId)
+
         .get();
 
     List<Comment> commentList = querySnapshot.docs.map((doc) {
       final comment = Comment();
       return comment.fromFSComment(doc.data());
     }).toList();
+    commentList.sort((a, b) {
 
+      DateTime dateA = DateTime.parse(a.realDate!);
+      DateTime dateB = DateTime.parse(b.realDate!);
+      return dateB.compareTo(dateA); 
+    });
     return commentList;
     }, (exception) => CommentErr(errMsg: 'Error al obtener comentarios: $exception', statusCode: 500));
   }
