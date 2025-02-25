@@ -7,24 +7,35 @@ class RacketSerializer {
   static String racketToJson(List<Racket> data) => json.encode(List<dynamic>.from(data.map((x) => toJsonRacket( x ))));
 
   static Racket fromJsonRacket(Map<String, dynamic> json) => Racket(
-      id: json["id"],
-      hit: json["hit"],
-      racket: json["racket"],
-      racketName: json["racketName"],
-      color: json["color"],
-      weightNumber: json["weightNumber"],
-      weightName: json["weightUnit"],
-      weightType: json["weightType"],
-      balance: json["balance"],
-      headType: json["headType"],
-      swingWeight: json["swingWeight"],
-      powerType: json["powerType"],
-      acor: json["acor"],
-      acorType: json["acorType"],
-      maneuverability: json["maneuverability"],
-      maneuverabilityType: json["maneuverabilityType"],
-      image: json["image"],
+    id: json["id"],
+    hit: json["hit"],
+    racket: json["racket"],
+    racketName: json["racketName"],
+    color: json["color"],
+    weightNumber: (json["weightNumber"] is String) 
+        ? double.tryParse(json["weightNumber"]) ?? 0.0 
+        : json["weightNumber"].toDouble(),
+    weightName: json["weightUnit"],
+    weightType: json["weightType"],
+    balance: (json["balance"] is String) 
+        ? double.tryParse(json["balance"]) ?? 0.0 
+        : json["balance"].toDouble(),
+    headType: json["headType"],
+    swingWeight: (json["swingWeight"] is String) 
+        ? double.tryParse(json["swingWeight"]) ?? 0.0 
+        : json["swingWeight"].toDouble(),
+    powerType: json["powerType"],
+    acor: (json["acor"] is String) 
+        ? double.tryParse(json["acor"]) ?? 0.0 
+        : json["acor"].toDouble(),
+    acorType: json["acorType"],
+    maneuverability: (json["maneuverability"] is String) 
+        ? double.tryParse(json["maneuverability"]) ?? 0.0 
+        : json["maneuverability"].toDouble(),
+    maneuverabilityType: json["maneuverabilityType"],
+    image: json["image"],
   );
+
 
   static Map<String, dynamic> toJsonRacket(Racket racket) => {
       "id": racket.id,

@@ -8,7 +8,7 @@ extension RacketExtension on Racket{
       Spec(key: 'Golpeo', value: this.hit),
       Spec(key: 'Marco Reforzado', value: this.racketName),
       Spec(key: 'Rugosidad', value: this.racket),
-      Spec(key: 'Foam', value: this.acor),
+      Spec(key: 'Foam', value: this.acor.toString()),
       Spec(key: 'Nucleo', value: this.racketName),
       Spec(key: 'Carbon Fibre', value: this.color),
       Spec(key: 'Tacto', value: this.powerType),

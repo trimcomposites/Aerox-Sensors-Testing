@@ -5,10 +5,10 @@ class SpecsDataText extends StatelessWidget {
     super.key, required this.text, required this.value,
   });
   final String text;
-  final String value;
+  final double value;
   @override
   Widget build(BuildContext context) {
-    final double numValue = double.parse( value )/4;
+    final double numValue =value/4;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

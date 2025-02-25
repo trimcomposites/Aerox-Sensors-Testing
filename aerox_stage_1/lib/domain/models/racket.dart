@@ -6,16 +6,16 @@ class Racket {
     String racket;
     String racketName;
     String color;
-    String weightNumber;
+    double weightNumber;
     String weightName;
     String weightType;
-    String balance;
+    double balance;
     String headType;
-    String swingWeight;
+    double swingWeight;
     String powerType;
-    String acor;
+    double acor;
     String acorType;
-    String maneuverability;
+    double maneuverability;
     String maneuverabilityType;
     String image;
     bool isSelected;
@@ -46,16 +46,16 @@ class Racket {
         String? racket,
         String? racketName,
         String? color,
-        String? weightNumber,
+        double? weightNumber,
         String? weightName,
         String? weightType,
-        String? balance,
+        double? balance,
         String? headType,
-        String? swingWeight,
+        double? swingWeight,
         String? powerType,
-        String? acor,
+        double? acor,
         String? acorType,
-        String? maneuverability,
+        double? maneuverability,
         String? maneuverabilityType,
         String? image,
         bool? isSelected,

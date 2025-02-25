@@ -8,7 +8,7 @@ class CommentLocationService {
 
   Future<EitherErr<String>> getCity() async {
     return EitherCatch.catchAsync<String, LocationErr>(() async {
-      
+
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -18,7 +18,7 @@ class CommentLocationService {
       }
 
       if (permission == LocationPermission.deniedForever) {
-        throw LocationErr( errMsg: "Permiso de ubicación denegado permanentemente", statusCode: 33);
+        throw Exception();
       }
 
       // Obtener ubicación actual
@@ -35,7 +35,7 @@ class CommentLocationService {
       if (placemarks.isNotEmpty) {
         return placemarks.first.locality ?? "Ciudad desconocida";
       } else {
-        throw LocationErr( errMsg: "No se pudo obtener la ciudad", statusCode: 21);
+        throw Exception();
       }
     }, (exception) {
       return LocationErr( errMsg: "Error obteniendo ubicación: ${exception.toString()}", statusCode: 12);
