@@ -10,7 +10,7 @@ class SpecsDataText extends StatelessWidget {
   final double max;
   @override
   Widget build(BuildContext context) {
-    final double numValue =value/4;
+    final double numValue = ((value - min) / (max - min)) * 120;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
