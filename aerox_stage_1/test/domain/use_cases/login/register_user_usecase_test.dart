@@ -29,7 +29,7 @@ Future<void> main() async {
 
 
   final params = SignInUserUsecaseParams.empty();
-  final user = AeroxUser(name: 'name', email: 'email');
+  final user = AeroxUser(name: 'name', email: 'email', id: 'id');
 
   group('create users', (){
     test( 'call login repo and return user if values'

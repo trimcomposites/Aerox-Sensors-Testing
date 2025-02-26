@@ -25,7 +25,7 @@ void main(){
   late RegisterUserUseCase registerUserUsecase;
   late CheckUserSignedInUseCase checkUserSignedInUsecase;
   late ResetPasswordUseCase resetPasswordUsecase;
-  final user = AeroxUser(name: 'name', email: 'email');
+  final user = AeroxUser(name: 'name', email: 'email', id: '1');
   setUp((){
     signInUserUsecase = MockSignInUserUseCase();
     signOutUserUsecase = MockSignOutUserUsecase();
@@ -43,12 +43,12 @@ void main(){
     );
   });
   setUpAll(() {
-    registerFallbackValue( SignInUserUsecaseParams(signInType: EmailSignInType.email, user: AeroxUser(name: 'name', email: 'email', password: 'password')) );
+    registerFallbackValue( SignInUserUsecaseParams(signInType: EmailSignInType.email, user: AeroxUser(name: 'name', email: 'email', password: 'password', id: '1')) );
   });
   tearDown( () => userBloc.close() );
 
 
-  final aeroxUser = AeroxUser(name: 'name', email: 'email', password: 'password');
+  final aeroxUser =AeroxUser(name: 'name', email: 'email', id: '1', password: '');
   final emailSignInUserParams= SignInUserUsecaseParams(signInType: EmailSignInType.email, user: aeroxUser);
   final googleSignInUserParams= SignInUserUsecaseParams(signInType: EmailSignInType.google, user: aeroxUser);
   group(  'sign in email', (){

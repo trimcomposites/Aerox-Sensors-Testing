@@ -38,7 +38,10 @@ void main() {
 
 
   final RacketErr racketErr = RacketErr(errMsg: 'errMsg', statusCode: 1);
-  final Racket racket = Racket(id: 1, hit: '', racket: '', racketName: '', color: '', weightNumber: '', weightName: '', weightType: '', balance: '', headType: '', swingWeight: '', powerType: '', acor: '', acorType: '', maneuverability: '', maneuverabilityType: '', image: ''  );
+    final Racket racket = Racket( acorMax: 1, acorMin: 1, balanceMax: 1, balanceMin: 1, maneuverabilityMax: 1, maneuverabilityMin: 1,
+   swingWeightMax: 1, swingWeightMin: 1, weightMax: 1, weightMin: 1, isSelected: true, id: 1, hit: '', 
+   racket: '', racketName: '', color: '', weightNumber: 1, weightName: '', weightType: '', balance: 1, headType: '', swingWeight: 1,
+   powerType: '', acor: 1, acorType: '', maneuverability: 1, maneuverabilityType: '', image: ''  );
 
   final List<Racket> rackets = [ racket, racket ];
 group('on get racket event', () {

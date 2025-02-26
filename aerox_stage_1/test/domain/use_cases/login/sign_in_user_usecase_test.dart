@@ -21,7 +21,7 @@ void main() {
     usecase = SignInUserUseCase(loginRepo: repository);
     //mockUser = MockFirebaseUser();
   });
-    final user = AeroxUser(name: 'name', email: 'email');
+  final user = AeroxUser(name: 'name', email: 'email', id: 'id');
 
   final params = SignInUserUsecaseParams(signInType: EmailSignInType.email, user: user);
   test(' sign in user use case  should return AeroxUser', () async{

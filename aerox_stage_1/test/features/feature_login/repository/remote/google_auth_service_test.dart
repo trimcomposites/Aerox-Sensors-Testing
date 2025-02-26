@@ -25,7 +25,7 @@ void main() {
   });
 
 
-  final aeroxUser = AeroxUser(name: 'name', email: 'email', password: 'password');
+  final aeroxUser = AeroxUser(name: 'name', email: 'email', id: '1');
   //final authCredential = MockAuthCredential();
   final userCredential = MockUserCredential();
   final googleSignInAccount = MockGoogleSignInAccount();
@@ -56,7 +56,7 @@ group(' sign in with google method ', () {
     final result = await googleAuthService.signInWithGoogle();
 
     //assert
-    expect(result, equals( Right<Err, User>( user ) ));
+    expect(result, equals( Right<Err, AeroxUser>( aeroxUser ) ));
     verify(() => googleSignIn.signIn()
     ).called(1);
     verify(() => firebaseAuth.signInWithCredential( any())

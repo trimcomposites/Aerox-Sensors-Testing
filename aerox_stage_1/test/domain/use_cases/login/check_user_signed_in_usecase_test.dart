@@ -12,7 +12,7 @@ import '../../../mock_types.dart';
 late LoginRepository loginRepository;
 late CheckUserSignedInUseCase checkUserSignedInUsecase;
 late User mockUser;
-final user = AeroxUser(name: 'name', email: 'email');
+final user = AeroxUser(name: 'name', email: 'email', id: 'id');
 void main() {
   setUp((){
     loginRepository = MockLoginRepo();
