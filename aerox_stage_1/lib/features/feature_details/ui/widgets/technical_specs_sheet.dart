@@ -32,11 +32,11 @@ class TechnicalSpecsSheet extends StatelessWidget {
               fontSize: 11
             ), ),
     
-            SpecsDataText( text: 'Weight', value: rackets[racketIndex].weightNumber, ),
-            SpecsDataText( text: 'Balance', value: rackets[racketIndex].balance, ),
-            SpecsDataText( text: 'Swing Weight',  value: rackets[racketIndex].swingWeight, ),
-            SpecsDataText( text: 'ACOR',  value: rackets[racketIndex].acor, ),
-            SpecsDataText( text: 'Manejabilidad',  value: rackets[racketIndex].maneuverability, ),
+            SpecsDataText( text: 'Weight', value: rackets[racketIndex].weightNumber, min: rackets[racketIndex].weightMin, max: rackets[racketIndex].weightMax ),
+            SpecsDataText( text: 'Balance', value: rackets[racketIndex].balance, min: rackets[racketIndex].balanceMin, max: rackets[racketIndex].balanceMax),
+            SpecsDataText( text: 'Swing Weight',  value: rackets[racketIndex].swingWeight,  min: rackets[racketIndex].swingWeightMin, max: rackets[racketIndex].swingWeightMax ),
+            SpecsDataText( text: 'ACOR',  value: rackets[racketIndex].acor,  min: rackets[racketIndex].acorMin, max: rackets[racketIndex].acorMax ),
+            SpecsDataText( text: 'Manejabilidad',  value: rackets[racketIndex].maneuverability,  min: rackets[racketIndex].maneuverabilityMin, max: rackets[racketIndex].maneuverabilityMax ),
           ],
         ),
       ),

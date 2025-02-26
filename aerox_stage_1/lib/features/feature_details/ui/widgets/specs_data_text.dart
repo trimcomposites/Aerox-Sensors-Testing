@@ -2,10 +2,12 @@ import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 
 class SpecsDataText extends StatelessWidget {
   const SpecsDataText({
-    super.key, required this.text, required this.value,
+    super.key, required this.text, required this.value, required this.min, required this.max,
   });
   final String text;
   final double value;
+  final double min;
+  final double max;
   @override
   Widget build(BuildContext context) {
     final double numValue =value/4;
