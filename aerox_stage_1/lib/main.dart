@@ -56,11 +56,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      //final SQLiteDB db = sl();
+      //final RacketsSQLiteDB db = sl();
       //db.checkAndDeleteDB();
       //db.clearDatabase();
       //db.checkAndDeleteDB();
-    //SQLiteDB sqLiteDB  =sl();
+
     //final racketBloc = BlocProvider.of<RacketBloc>(context)..add( OnGetRackets() )..add( OnGetSelectedRacket() ) ;
     return MaterialApp(
       title: 'Aerox',

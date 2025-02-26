@@ -67,25 +67,36 @@ static Racket fromJsonRacket(Map<String, dynamic> json) => Racket(
 
 
 
-  static Map<String, dynamic> toJsonRacket(Racket racket) => {
-      "id": racket.id,
-      "hit": racket.hit,
-      "racket": racket.racket,
-      "racketName": racket.racketName,
-      "color": racket.color,
-      "weightNumber": racket.weightNumber,
-      "weightUnit": racket.weightName,
-      "weightType": racket.weightType,
-      "balance": racket.balance,
-      "headType": racket.headType,
-      "swingWeight": racket.swingWeight,
-      "powerType": racket.powerType,
-      "acor": racket.acor,
-      "acorType": racket.acorType,
-      "maneuverability": racket.maneuverability,
-      "maneuverabilityType": racket.maneuverabilityType,
-      "image": racket.image,
-  };
+static Map<String, dynamic> toJsonRacket(Racket racket) => {
+  "id": racket.id,
+  "hit": racket.hit,
+  "racket": racket.racket,
+  "racketName": racket.racketName,
+  "color": racket.color,
+  "weightNumber": racket.weightNumber,
+  "weightUnit": racket.weightName,
+  "weightType": racket.weightType,
+  "balance": racket.balance,
+  "headType": racket.headType,
+  "swingWeight": racket.swingWeight,
+  "powerType": racket.powerType,
+  "acor": racket.acor,
+  "acorType": racket.acorType,
+  "maneuverability": racket.maneuverability,
+  "maneuverabilityType": racket.maneuverabilityType,
+  "image": racket.image,
+  "isSelected": racket.isSelected,
+  "weightMin": racket.weightMin,
+  "weightMax": racket.weightMax,
+  "balanceMin": racket.balanceMin,
+  "balanceMax": racket.balanceMax,
+  "swingWeightMin": racket.swingWeightMin,
+  "swingWeightMax": racket.swingWeightMax,
+  "maneuverabilityMin": racket.maneuverabilityMin,
+  "maneuverabilityMax": racket.maneuverabilityMax,
+  "acorMin": racket.acorMin,
+  "acorMax": racket.acorMax,
+};
 
   static List<Racket> racketListFromJson(String str) =>
     List<Racket>.from(json.decode(str).map((x) => fromJsonRacket(x)));
