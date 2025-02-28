@@ -15,7 +15,8 @@ import 'features/feature_login/ui/login_barrel.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  dependencyInjectionInitialize();
+  await dependencyInjectionInitialize();
+  await sl.allReady();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
