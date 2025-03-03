@@ -2,8 +2,9 @@ import 'package:aerox_stage_1/domain/models/spec.dart';
 
 class Racket {
   int id;
+  String  docId;
   String hit;
-  String racket;
+  String frame;
   String racketName;
   String color;
   double weightNumber;
@@ -32,8 +33,9 @@ class Racket {
 
   Racket({
     required this.id,
+    this.docId = '',
     required this.hit,
-    required this.racket,
+    required this.frame,
     required this.racketName,
     required this.color,
     required this.weightNumber,
@@ -94,7 +96,7 @@ class Racket {
       Racket(
         id: id ?? this.id,
         hit: hit ?? this.hit,
-        racket: racket ?? this.racket,
+        frame: racket ?? this.frame,
         racketName: racketName ?? this.racketName,
         color: color ?? this.color,
         weightNumber: weightNumber ?? this.weightNumber,

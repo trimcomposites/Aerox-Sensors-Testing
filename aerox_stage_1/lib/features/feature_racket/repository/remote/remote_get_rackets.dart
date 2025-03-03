@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class RemoteGetRackets {
 
-  final baseurl = 'https://aeroxmock-477145875427.europe-southwest1.run.app/';
+  final baseurl = 'https://aerox-api-477145875427.europe-southwest1.run.app/rackets';
 
 
   Future<List<Racket>> fetchData() async {

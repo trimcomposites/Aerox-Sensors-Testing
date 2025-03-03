@@ -38,8 +38,7 @@ void main() async{
         BlocProvider(
           create: ( context )=>sl<SelectScreenBloc>() 
         ),
-        BlocProvider(
-          create: ( context )=>sl<CommentsBloc>() 
+        BlocProvider(          create: ( context )=>sl<CommentsBloc>() 
         ),
         BlocProvider(
           create: ( context )=>sl<Model3DBloc>() 

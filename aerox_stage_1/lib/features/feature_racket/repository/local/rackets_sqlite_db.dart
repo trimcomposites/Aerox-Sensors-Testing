@@ -33,43 +33,41 @@ class RacketsSQLiteDB {
       onCreate: _onCreate,
     );
   }
-
-FutureOr<void> _onCreate(Database db, int version) async {
-  await db.execute('''
-    CREATE TABLE rackets (
-      id INTEGER PRIMARY KEY,
-      hit TEXT NOT NULL,
-      racket TEXT NOT NULL,
-      racketName TEXT NOT NULL,
-      color TEXT NOT NULL,
-      weightNumber TEXT NOT NULL,
-      weightUnit TEXT NOT NULL,
-      weightType TEXT NOT NULL,
-      balance TEXT NOT NULL,
-      headType TEXT NOT NULL,
-      swingWeight TEXT NOT NULL,
-      powerType TEXT NOT NULL,
-      acor TEXT NOT NULL,
-      acorType TEXT NOT NULL,
-      maneuverability TEXT NOT NULL,
-      maneuverabilityType TEXT NOT NULL,
-      image TEXT NOT NULL,
-      weightMin TEXT NOT NULL,
-      weightMax TEXT NOT NULL,
-      balanceMin TEXT NOT NULL,
-      balanceMax TEXT NOT NULL,
-      swingWeightMin TEXT NOT NULL,
-      swingWeightMax TEXT NOT NULL,
-      maneuverabilityMin TEXT NOT NULL,
-      maneuverabilityMax TEXT NOT NULL,
-      acorMin TEXT NOT NULL,
-      acorMax TEXT NOT NULL,
-      isSelected INTEGER DEFAULT 0
-    )
-  ''');
-  // await insertRacketList(mockRackets, dbInstance: db); // Temp data
-}
-
+  FutureOr<void> _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE rackets (
+        docId INTEGER PRIMARY KEY,   -- Cambio: docId como la clave primaria
+        id INTEGER NOT NULL,         -- El campo id como un campo adicional, si lo necesitas
+        hit TEXT NOT NULL,
+        racket TEXT NOT NULL,
+        racketName TEXT NOT NULL,
+        color TEXT NOT NULL,
+        weightNumber TEXT NOT NULL,
+        weightUnit TEXT NOT NULL,
+        weightType TEXT NOT NULL,
+        balance TEXT NOT NULL,
+        headType TEXT NOT NULL,
+        swingWeight TEXT NOT NULL,
+        powerType TEXT NOT NULL,
+        acor TEXT NOT NULL,
+        acorType TEXT NOT NULL,
+        maneuverability TEXT NOT NULL,
+        maneuverabilityType TEXT NOT NULL,
+        image TEXT NOT NULL,
+        weightMin TEXT NOT NULL,
+        weightMax TEXT NOT NULL,
+        balanceMin TEXT NOT NULL,
+        balanceMax TEXT NOT NULL,
+        swingWeightMin TEXT NOT NULL,
+        swingWeightMax TEXT NOT NULL,
+        maneuverabilityMin TEXT NOT NULL,
+        maneuverabilityMax TEXT NOT NULL,
+        acorMin TEXT NOT NULL,
+        acorMax TEXT NOT NULL,
+        isSelected INTEGER DEFAULT 0
+      )
+    ''');
+  }
 
   // Insertar una raqueta
   Future<int> insertRacket(Racket racket) async {
