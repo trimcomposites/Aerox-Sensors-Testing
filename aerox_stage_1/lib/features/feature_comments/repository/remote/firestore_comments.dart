@@ -26,8 +26,14 @@ Future<EitherErr<void>> saveComment(Comment comment) async {
         'id': comment.id
       };
 
-      await _firebaseFirestore.collection('comments').add(commentData);
 
+       var docRef = await _firebaseFirestore.collection('comments').add(commentData);
+
+
+      await docRef.update({
+        'docId': docRef.id,
+      });
+      
     } catch (e) {
       throw CommentErr(
         errMsg: 'Error al publicar comentario: $e',
