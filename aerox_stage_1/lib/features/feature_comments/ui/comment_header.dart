@@ -25,7 +25,7 @@ class CommentHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 250,
+              width: 210,
 
                 child: fullScreen
                 ? Text(
