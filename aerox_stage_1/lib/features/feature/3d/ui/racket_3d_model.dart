@@ -72,7 +72,13 @@ class Racket3dModel extends StatelessWidget {
                   controller: controller,
                 ),
                 if (state.uiState.status == UIStatus.loading)
-                  CircularProgressIndicator(),
+                  Container(
+                    width: modelWidth/1.2,
+                    child: Image.asset(
+                      fit: BoxFit.cover,
+                      'assets/loading-builder-pala.png',
+                    ),
+                  )
               ],
             );
           },
