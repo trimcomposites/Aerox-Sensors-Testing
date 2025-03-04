@@ -16,6 +16,7 @@ class AddCommentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController textController = TextEditingController();
     return Container(
       width: 110,
       height: 50,
@@ -26,10 +27,11 @@ class AddCommentButton extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(30),
         onTap: () {
-          showMaterialModalBottomSheet(
+          showModalBottomSheet(
             backgroundColor: Colors.transparent,
             context: context,
-            builder: (context) => AddCommentForm( user: user ),
+            isScrollControlled: true,
+            builder: (context) => AddCommentForm( user: user, textController: textController, ),
           );
         },
         child: Row(
