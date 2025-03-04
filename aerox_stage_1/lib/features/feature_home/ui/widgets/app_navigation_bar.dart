@@ -11,15 +11,14 @@ class AppNavigationBar extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(
         bottom: 25,
-        left: 10,
-        right: 10
+        left: 15,
+        right: 15
       ),  
       child: ClipRRect(
       borderRadius: BorderRadius.circular(40),
       
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), 
-
         decoration: BoxDecoration(
           color: Colors.black.withAlpha(100),  
         ),
@@ -44,7 +43,7 @@ class AppNavigationBar extends StatelessWidget {
           ],
         ),
       ),
-            ),
+    ),
     );
   }
 }

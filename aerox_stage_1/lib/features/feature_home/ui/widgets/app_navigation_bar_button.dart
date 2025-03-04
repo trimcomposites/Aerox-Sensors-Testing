@@ -20,7 +20,7 @@ class AppNavigationBarButton extends StatelessWidget {
           isSelected
           ? Colors.black.withAlpha(180)
           : Colors.transparent,
-          width:115,
+          width: MediaQuery.of(context).size.width/3.5,
           height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
