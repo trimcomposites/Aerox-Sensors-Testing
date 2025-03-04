@@ -33,6 +33,12 @@ class OnCheckUserIsSignedIn extends UserEvent{
 class OnDeleteErrorMsg extends UserEvent{
 
 }
+class OnEnableLogin extends UserEvent{
+
+}
+class OnDisableLogin extends UserEvent{
+
+}
 
 class OnPasswordReset extends UserEvent{
 

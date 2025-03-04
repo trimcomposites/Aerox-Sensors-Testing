@@ -81,9 +81,18 @@ class CreateAccountScreenContent extends StatelessWidget {
                       showborder: false,
                       onPressed: (){
 
-                        //userBloc.add( OnStartLoadingUser() );
-                        userBloc.add( OnEmailRegisterUser(email: emailController.text, password: passwordController.text, name: nameController.text ) );
-
+                      if( emailController.text.length >6 && passwordController.text.length>=8 &&  nameController.text.length>4 ){
+                         userBloc.add( OnEmailRegisterUser(email: emailController.text, password: passwordController.text, name: nameController.text ) );
+                        }else if( emailController.text.isEmpty  || passwordController.text.isEmpty || nameController.text.isEmpty ){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text( 'Debe introducir los datos para crear una cuenta' ))
+                          );
+                        }else{
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text( 'El E-Mail o Contraseña introducidas no son lo suficientemente largos.' ))
+                        );
+                      }
+                       
                       }
                     ),
 

@@ -40,20 +40,29 @@ class LoginWithEmailContent extends StatelessWidget {
                   text: 'Contraseña',
                 )),
                 const SizedBox(height: 30),
-                //TODO:
+
                 AppButton(
                   text: 'Iniciar Sesión',
                   backgroundColor: appYellowColor,
                   fontColor: Colors.black,
                   showborder: false,
                   onPressed: () => {
+                    if( emailController.text.length >6 && passwordController.text.length>=8  ){
                     userBloc.add(OnEmailSignInUser(
                         email: emailController.text,
                         password: passwordController.text))
+                    }else if( emailController.text.isEmpty  || passwordController.text.isEmpty ){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text( 'Debe introducir los datos para iniciar Sesión' ))
+                      )
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text( 'El E-Mail o Contraseña introducidas no son lo suficientemente largos.' ))
+                      )
+                    }
+
                   },
                 ),
-
-
                 const SizedBox( height: 30, ),
 
                 LoginErrorMessage()

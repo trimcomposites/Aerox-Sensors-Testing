@@ -122,7 +122,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit( state.copyWith( uiState: UIState.idle() ) );
       
     });
-    
+
   }
   
 }
