@@ -27,11 +27,16 @@ class Racket3dModel extends StatelessWidget {
   Widget build(BuildContext context) {
     final Flutter3DController controller = Flutter3DController();
     final model3dBloc = BlocProvider.of<Model3DBloc>(context);
+    final widthMultiplier = ignorePointer
+      ? 1.1
+      : 1.0;
+    final modelWidth = MediaQuery.of(context).size.width / widthMultiplier;
+
     return IgnorePointer(
       ignoring: ignorePointer,
       child: Container(
         height: 600,
-        width: 400,
+        width: modelWidth,
         child: BlocBuilder<Model3DBloc, Model3DState>(
           builder: (context, state) {
             if (state.uiState.status == UIStatus.error) {
