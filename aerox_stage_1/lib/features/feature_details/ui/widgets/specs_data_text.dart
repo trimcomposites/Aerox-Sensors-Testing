@@ -10,7 +10,8 @@ class SpecsDataText extends StatelessWidget {
   final double max;
   @override
   Widget build(BuildContext context) {
-    final double numValue = ((value - min) / (max - min)) * 120;
+    final statBarSize = MediaQuery.of(context).size.width/4;
+    final double numValue = ((value - min) / (max - min)) * statBarSize;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -25,7 +26,7 @@ class SpecsDataText extends StatelessWidget {
           alignment: Alignment.centerLeft,
           children: [
             Container(
-              width: 120,
+              width: statBarSize,
               height: 3,
               color: Colors.black,
             ),
