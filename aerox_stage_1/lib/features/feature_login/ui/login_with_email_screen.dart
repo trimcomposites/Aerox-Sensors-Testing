@@ -22,6 +22,7 @@ class LoginWithEmailScreen extends StatelessWidget {
               appBar: BackButtonAppBar( () => Navigator.pop( context ) ),
               backgroundColor: backgroundColor,
               body: Stack(
+                alignment: AlignmentDirectional.topCenter,
                 children: [
                   BackgroundGradient(),
                   LoginWithEmailContent(),

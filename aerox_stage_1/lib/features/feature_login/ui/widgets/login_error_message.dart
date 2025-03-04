@@ -14,10 +14,7 @@ class LoginErrorMessage extends StatelessWidget {
       builder: (context, state) {
         final errorMsg = state.uiState.errorMessage;
         return errorMsg.isNotEmpty 
-        ? Padding(
-          padding: const EdgeInsets.symmetric( horizontal: 40 ),
-          child: Text(errorMsg, style: TextStyle( color: Colors.white ),),
-        )
+        ? Text(errorMsg, style: TextStyle( color: Colors.white ),)
         : Container();
       },
     );

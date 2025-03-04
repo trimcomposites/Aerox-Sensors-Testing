@@ -1,6 +1,6 @@
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
-import 'package:aerox_stage_1/features/feature/3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

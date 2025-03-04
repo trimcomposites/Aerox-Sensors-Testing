@@ -31,7 +31,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final result = await signInUsecase(SignInUserUsecaseParams(signInType: EmailSignInType.google));
       result.fold(
         (l) {
-          emit( state.copyWith( uiState: UIState.error( l.errMsg) ) );
+          emit( state.copyWith( uiState: UIState.error( '') ) );
         },
         (r) {
           emit(state.copyWith(user: r, uiState: UIState.success( next: '/home' )));
@@ -117,6 +117,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(state.copyWith(uiState: UIState.idle()));
         },
       );
+    });
+    on<OnDeleteErrorMsg>((event, emit) async {
+      emit( state.copyWith( uiState: UIState.idle() ) );
+      
     });
     
   }

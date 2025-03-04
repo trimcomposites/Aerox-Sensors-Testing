@@ -22,7 +22,7 @@ class CreateAccountScreen extends StatelessWidget {
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        //userBloc.add(OnDeleteErrorMsg());
+        userBloc.add(OnDeleteErrorMsg());
       },
       child:  BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {

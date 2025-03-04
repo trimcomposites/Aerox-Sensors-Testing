@@ -11,7 +11,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
-import 'package:aerox_stage_1/features/feature/3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/comments_repository.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/local/comment_location_service.dart';
@@ -25,7 +25,7 @@ import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.d
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
-import 'package:aerox_stage_1/features/feature/feature_select/blocs/select_screen/select_screen_bloc.dart';
+import 'package:aerox_stage_1/features/feature_select/blocs/select_screen/select_screen_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
