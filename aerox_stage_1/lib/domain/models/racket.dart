@@ -30,6 +30,7 @@ class Racket {
   double maneuverabilityMax;
   double acorMin;
   double acorMax;
+  String model;
 
   Racket({
     required this.id,
@@ -60,6 +61,7 @@ class Racket {
     required this.maneuverabilityMax,
     required this.acorMin,
     required this.acorMax,
+    required this.model,
     this.isSelected = false,
   });
 
@@ -92,6 +94,7 @@ class Racket {
     double? maneuverabilityMax,
     double? acorMin,
     double? acorMax,
+    String? model
   }) =>
       Racket(
         id: id ?? this.id,
@@ -122,6 +125,7 @@ class Racket {
         maneuverabilityMax: maneuverabilityMax ?? this.maneuverabilityMax,
         acorMin: acorMin ?? this.acorMin,
         acorMax: acorMax ?? this.acorMax,
+        model: model ?? this.model,
       );
 
 

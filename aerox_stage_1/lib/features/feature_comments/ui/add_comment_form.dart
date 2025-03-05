@@ -22,7 +22,7 @@ class AddCommentForm extends StatelessWidget {
     return BlocListener<CommentsBloc, CommentsState>(
       listener: (context, state) {
         if (state.uistate.status == UIStatus.success) {
-          commentsBloc.add(OnGetRacketComments(racketId: state.racket!.id));
+          commentsBloc.add(OnGetRacketComments(racketId: state.racket!.docId));
           Navigator.pop(context);
         }
       },

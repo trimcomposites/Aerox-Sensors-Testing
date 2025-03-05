@@ -35,7 +35,7 @@ class SaveCommentButton extends StatelessWidget {
                                     authorName: user.name,
                                     content: textController.text,
                                     location: commentsBloc.state.city,
-                                    racketId: commentsBloc.state.racket!.id,
+                                    racketId: commentsBloc.state.racket!.docId,
                                     hit: commentsBloc.state.racket!.hit, 
                                     racket: commentsBloc.state.racket!.frame, 
                                 );

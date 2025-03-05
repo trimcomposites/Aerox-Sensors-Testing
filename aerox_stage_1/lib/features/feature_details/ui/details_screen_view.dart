@@ -29,7 +29,7 @@ class DetailsScreenView extends StatelessWidget {
     final PageController _pageController = PageController();
     final ValueNotifier<int> racketIndexNotifier = ValueNotifier<int>(0); 
     final bool isRacketSelected = rackets.length == 1;
-
+    print(rackets[0].model ?? 'no hay modelo');
     return SingleChildScrollView(
       child: Center(
         child: Padding(
@@ -88,7 +88,7 @@ class DetailsScreenView extends StatelessWidget {
               ),
               isRacketSelected
 
-              ? CommentSection( racketId: rackets[0].id, )
+              ? CommentSection( racketId: rackets[0].docId, )
 
               : Container()
             ],

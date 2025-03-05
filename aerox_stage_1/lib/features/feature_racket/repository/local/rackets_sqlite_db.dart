@@ -36,12 +36,13 @@ class RacketsSQLiteDB {
   FutureOr<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE rackets (
-        docId INTEGER PRIMARY KEY,   -- Cambio: docId como la clave primaria
-        id INTEGER NOT NULL,         -- El campo id como un campo adicional, si lo necesitas
+        docId INTEGER PRIMARY KEY,  
+        id INTEGER NOT NULL,     
         hit TEXT NOT NULL,
-        racket TEXT NOT NULL,
+        frame TEXT NOT NULL,
         racketName TEXT NOT NULL,
         color TEXT NOT NULL,
+        model TEXT NOT NULL,
         weightNumber TEXT NOT NULL,
         weightUnit TEXT NOT NULL,
         weightType TEXT NOT NULL,
@@ -80,9 +81,15 @@ class RacketsSQLiteDB {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('rackets');
 
-    return List.generate(maps.length, (i) {
-      return RacketSerializer.fromJsonRacket(maps[i]);
-    });
+    // Usamos await para esperar la llamada asíncrona a fromJsonRacket
+    List<Racket> racketList = [];
+
+    // Iterar sobre los elementos de maps y esperar el resultado de fromJsonRacket
+    for (var i = 0; i < maps.length; i++) {
+      racketList.add(await RacketSerializer.fromJsonRacket(maps[i])); // Asegúrate de usar await aquí
+    }
+
+    return racketList;
   }
 
   // Limpiar la base de datos

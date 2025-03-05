@@ -10,7 +10,7 @@ sealed class CommentsEvent extends Equatable {
 
 class OnGetRacketComments extends CommentsEvent{
 
-  final int racketId;
+  final String racketId;
 
   OnGetRacketComments({required this.racketId});
 

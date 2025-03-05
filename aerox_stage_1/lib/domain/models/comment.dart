@@ -1,6 +1,6 @@
 class Comment {
 
-  final int? racketId;
+  final String? racketId;
   final String? authorName;
   final String? content;
   final String? date;

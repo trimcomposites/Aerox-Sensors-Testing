@@ -19,7 +19,7 @@ class CommentsRepository {
   Future<EitherErr<List<Comment>>> getCommentsByRacketId(String racketId) async {
     
     return await firestoreComments
-      .getCommentsByRacketId(int.parse(racketId));
+      .getCommentsByRacketId(racketId);
   } 
   Future<EitherErr<void>> saveComment(Comment comment) async {
 

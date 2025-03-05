@@ -22,7 +22,7 @@ class HomePageAdmin extends StatelessWidget {
       homeScreenBloc.add(OnGetSelectedRacketHome());
       Navigator.of(context).pop();
     }
-
+  
     return TopNotchPadding(
       color: Colors.white,
       context: context,

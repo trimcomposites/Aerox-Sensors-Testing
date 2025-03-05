@@ -1,17 +1,28 @@
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 class RacketSerializer {
   static List<Racket> racketFromJson(String str) => List<Racket>.from(json.decode(str).map((x) => fromJsonRacket(x)));
 
   static String racketToJson(List<Racket> data) => json.encode(List<dynamic>.from(data.map((x) => toJsonRacket( x ))));
 
-  static Racket fromJsonRacket(Map<String, dynamic> json) => Racket(
-    
-    id: json["id"],
+  static Future<Racket> fromJsonRacket(Map<String, dynamic> json)async {
+    String  localFilePath ="";
+    final modelUrl = json["model"];
+    if (modelUrl.startsWith("http://") || modelUrl.startsWith("https://")) {
+    // Si es una URL remota, realiza la descarga
+    localFilePath = await downloadFile(modelUrl, json["docId"]);
+    }else{
+      localFilePath=modelUrl;
+    }
+  return Racket(
+    id: 1,
     hit: json["hit"],
-    frame: json["racket"],
+    frame: json["frame"],
     racketName: json["racketName"],
     color: json["color"],
     weightNumber: (json["weightNumber"] is String)
@@ -36,6 +47,7 @@ class RacketSerializer {
         : json["maneuverability"]?.toDouble() ?? 0.0,
     maneuverabilityType: json["maneuverabilityType"],
     image: json["image"],
+    model: localFilePath,
     weightMin: (json["weightMin"] is String)
         ? double.tryParse(json["weightMin"]) ?? 0.0
         : json["weightMin"]?.toDouble() ?? 0.0,
@@ -67,11 +79,29 @@ class RacketSerializer {
         ? double.tryParse(json["acorMax"]) ?? 0.0
         : json["acorMax"]?.toDouble() ?? 0.0,
   );
+  }
+  static Future<String> downloadFile(String fileUrl, String name) async {
+  try {
+    print('fileUrl:'+ fileUrl);
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/${name}.glb';  
+
+    // Usa Dio o http para descargar el archivo
+    Dio dio = Dio();
+    await dio.download(fileUrl, filePath);
+
+    // Devuelve la ruta donde se guardó el archivo
+    return filePath;
+  } catch (e) {
+    print("Error downloading the file: $e");
+    return '';  // Retorna una cadena vacía si ocurre un error
+  }
+}
 
   static Map<String, dynamic> toJsonRacket(Racket racket) => {
     "id": racket.id,
     "hit": racket.hit,
-    "racket": racket.frame,
+    "frame": racket.frame,
     "racketName": racket.racketName,
     "color": racket.color,
     "weightNumber": racket.weightNumber,
@@ -96,15 +126,22 @@ class RacketSerializer {
     "maneuverabilityMax": racket.maneuverabilityMax,
     "acorMin": racket.acorMin,
     "acorMax": racket.acorMax,
+    "model": racket.model
   };
 
-static List<Racket> racketListFromJson(String str) {
-  final Map<String, dynamic> decoded = json.decode(str);  // Decodifica como un Map
-  final List<dynamic> racketList = decoded['rackets'];   // Obtén la lista de la clave 'rackets'
-  
-  // Convierte la lista de objetos a una lista de Racket
-  return racketList.map<Racket>((x) => fromJsonRacket(x)).toList();
-}
+  static Future<List<Racket>> racketListFromJson(String str) async {
+      final Map<String, dynamic> decoded = json.decode(str);
+
+      // Extrae la lista de 'rackets'
+      final List<dynamic> racketList = decoded['rackets'];
+
+      // Usa Future.wait para esperar todas las operaciones asíncronas
+      List<Racket> rackets = await Future.wait(
+        racketList.map((x) async => await RacketSerializer.fromJsonRacket(x)),
+      );
+
+    return rackets;
+  }
 
 
   static String racketListToJson(List<Racket> data) =>

@@ -13,7 +13,7 @@ class CommentSection extends StatelessWidget {
     super.key,
     required this.racketId,
   });
-  final int racketId;
+  final String racketId;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class CommentSection extends StatelessWidget {
       child: BlocListener<CommentsBloc, CommentsState>(
         listener: (context, state) {
           if (state.uistate.status == UIStatus.success) {
-            commentsBloc.add(OnGetRacketComments(racketId: state.racket!.id));
+            commentsBloc.add(OnGetRacketComments(racketId: state.racket!.docId));
           }
         },
         child: BlocBuilder<CommentsBloc, CommentsState>(

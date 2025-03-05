@@ -40,8 +40,8 @@ class Racket3dModel extends StatelessWidget {
         child: BlocBuilder<Model3DBloc, Model3DState>(
           builder: (context, state) {
             if (state.uiState.status == UIStatus.error) {
-              return Image.asset(
-                'assets/Pala-Catalogo.png',
+              return Image.network(
+                racket.image,
                 fit: BoxFit.fill,
               );
             }
@@ -68,7 +68,10 @@ class Racket3dModel extends StatelessWidget {
                     model3dBloc.add(OnStartErrorModel3d());
                     debugPrint('model failed to load: $error');
                   },
-                  src: 'assets/3d/20250222_LABT003_3D_GLB_V2.glb',
+                  src:
+                  racket.model.isEmpty 
+                  ? 'assets/3d/20250222_LABT003_3D_GLB_V2.glb'
+                  : racket.model,
                   controller: controller,
                 ),
                 if (state.uiState.status == UIStatus.loading)

@@ -48,7 +48,7 @@ Future<EitherErr<void>> saveComment(Comment comment) async {
   });
 }
 
-Future<EitherErr<List<Comment>>> getCommentsByRacketId(int racketId) async {
+Future<EitherErr<List<Comment>>> getCommentsByRacketId(String racketId) async {
   return EitherCatch.catchAsync<List<Comment>, CommentErr>(() async {
     final querySnapshot = await _firebaseFirestore
         .collection('comments')

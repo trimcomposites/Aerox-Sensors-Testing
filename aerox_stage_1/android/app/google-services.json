@@ -1,48 +1,40 @@
 {
   "project_info": {
-    "project_number": "293842013726",
-    "project_id": "aerox-1",
-    "storage_bucket": "aerox-1.firebasestorage.app"
+    "project_number": "300686522146",
+    "project_id": "aerox-stage1",
+    "storage_bucket": "aerox-stage1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:293842013726:android:70ed409487b67204cc280f",
+        "mobilesdk_app_id": "1:300686522146:android:adc15c3a2362217648577b",
         "android_client_info": {
           "package_name": "com.labtend.aerox"
         }
       },
       "oauth_client": [
         {
-          "client_id": "293842013726-tl96rs5t8k25ot5is38en5grqo1q613j.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.labtend.aerox",
-            "certificate_hash": "47b8a28b165233faf5fd77835779434b35d67b8b"
-          }
-        },
-        {
-          "client_id": "293842013726-8462akpn4bad018q7jr9bda419gnu6gf.apps.googleusercontent.com",
+          "client_id": "300686522146-4kihkc4qgen2bfdjgmb40tbskq85hqgj.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCoBZLTSwOeKDRA_TxVpOiqjjjut7J4PPE"
+          "current_key": "AIzaSyCq0QBGnbdyMWfLCJi2sdoqDNZfigbLPlo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "293842013726-8462akpn4bad018q7jr9bda419gnu6gf.apps.googleusercontent.com",
+              "client_id": "300686522146-4kihkc4qgen2bfdjgmb40tbskq85hqgj.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "293842013726-ed1ie2r1mvlr0657arldsadeqjb5cc3d.apps.googleusercontent.com",
+              "client_id": "300686522146-gcb4cnrdca9vlcc4mrlmrj6proi3m0bo.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.aeroxStage1"
+                "bundle_id": "com.labtend.aerox"
               }
             }
           ]
