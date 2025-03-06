@@ -22,20 +22,30 @@ final DownloadRacketModelsUsecase downloadRacketModelsUsecase;
     emit(state.copyWith(uiState: UIState.loading()));
 
     final result = await getRacketsUseCase();
-    
+
     await result.fold(
       (l) async {
         emit(state.copyWith(rackets: null, uiState: UIState.idle()));
       },
       (r1) async {
         final downloadResult = await downloadRacketModelsUsecase();
-        
-        downloadResult.fold(
-          (l) => emit(state.copyWith(rackets: null, uiState: UIState.idle())),
-          (r2) {
-            if (!emit.isDone) {
-              emit(state.copyWith(rackets: r1, uiState: UIState.success()));
-            }
+
+        await downloadResult.fold(
+          (l) async {
+            emit(state.copyWith(rackets: null, uiState: UIState.idle()));
+          },
+          (r2) async {
+
+            final updatedResult = await getRacketsUseCase();
+
+            updatedResult.fold(
+              (l) => emit(state.copyWith(rackets: null, uiState: UIState.idle())),
+              (updatedRackets) {
+                if (!emit.isDone) {
+                  emit(state.copyWith(rackets: updatedRackets, uiState: UIState.success()));
+                }
+              },
+            );
           },
         );
       },
