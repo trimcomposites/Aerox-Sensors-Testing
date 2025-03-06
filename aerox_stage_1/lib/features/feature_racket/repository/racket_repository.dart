@@ -48,7 +48,7 @@ class RacketRepository {
   }
   Future<EitherErr<Racket>> selectRacket( Racket racket ) async{
     return EitherCatch.catchAsync<Racket, RacketErr>(() async{     
-      await sqLiteDB.selectRacket( racket.id );
+      await sqLiteDB.selectRacket( racket.docId );
   
       return racket;
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));

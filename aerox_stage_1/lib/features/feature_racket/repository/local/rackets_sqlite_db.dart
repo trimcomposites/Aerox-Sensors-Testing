@@ -174,7 +174,7 @@ class RacketsSQLiteDB {
     );
   }
 
-  Future<void> selectRacket(int racketId) async {
+  Future<void> selectRacket(String racketId) async {
     final db = await database;
 
     await db.update('rackets', {'isSelected': 0});
@@ -182,7 +182,7 @@ class RacketsSQLiteDB {
     await db.update(
       'rackets',
       {'isSelected': 1},
-      where: 'id = ?',
+      where: 'docId = ?',
       whereArgs: [racketId],
     );
   }
