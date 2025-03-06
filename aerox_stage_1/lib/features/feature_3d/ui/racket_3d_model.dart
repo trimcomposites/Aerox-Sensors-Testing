@@ -41,7 +41,7 @@ class Racket3dModel extends StatelessWidget {
           builder: (context, state) {
             if (state.uiState.status == UIStatus.error) {
               print('modelo: ' + racket.model);
-              return Image.network(
+              return Image.asset(
                 racket.image,
                 fit: BoxFit.fill,
               );
@@ -80,7 +80,7 @@ class Racket3dModel extends StatelessWidget {
                     width: modelWidth/1.2,
                     child: Image.asset(
                       fit: BoxFit.cover,
-                      'assets/loading-builder-pala.png',
+                      racket.image,
                     ),
                   )
               ],

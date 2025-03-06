@@ -77,6 +77,24 @@ Future<EitherErr<List<Racket>>> downloadRacketModels() async {
     );
   }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
 }
+Future<EitherErr<List<Racket>>> downloadRacketImages() async {
+  return EitherCatch.catchAsync<List<Racket>, RacketErr>(() async {
+    final eitherLocalRackets = await localGetRackets();
+
+    return eitherLocalRackets.fold(
+      (failure) => throw Exception(), // Si hay un error, lo retornamos inmediatamente
+      (localRackets) async {
+        for (var racket in localRackets) {
+          if (racket.image.startsWith("http://") || racket.image.startsWith("https://")) {
+            final imagePath = await downloadFile.downloadFile(racket.image, racket.docId+'image');
+            await sqLiteDB.updateRacketImage(racket.docId, imagePath);
+          }
+        }
+        return Future.value(localRackets); // Devolvemos la lista actualizada dentro de un Either
+      },
+    );
+  }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
+}
 
   //TOD: Este metodo es sustituido en debug
  Future<EitherErr<List<Racket>>> getRackets() {

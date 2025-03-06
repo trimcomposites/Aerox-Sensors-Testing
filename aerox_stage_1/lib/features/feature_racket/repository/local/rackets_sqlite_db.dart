@@ -251,4 +251,16 @@ class RacketsSQLiteDB {
     print( 'update result' + result.toString());
     return result;
   }
+  Future<int> updateRacketImage(String racketId, String newImage) async {
+    final db = await database;
+    print('A actualizar a modelo: ' + newImage);
+    final result = await db.update(
+      'rackets',
+      {'image': newImage},
+      where: 'docId = ?',
+      whereArgs: [racketId],
+    );
+    print( 'update result' + result.toString());
+    return result;
+  }
 }

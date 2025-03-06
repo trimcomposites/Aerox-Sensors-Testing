@@ -8,6 +8,7 @@ import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart'
 import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/download_racket_images_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/download_racket_models_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
@@ -90,6 +91,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => SelectRacketUseCase(racketRepository: sl()))
     ..registerLazySingleton(() => UnSelectRacketUseCase(racketRepository: sl()))
     ..registerLazySingleton(() => DownloadRacketModelsUsecase(racketRepository: sl()))
+    ..registerLazySingleton(() => DownloadRacketImagesUsecase(racketRepository: sl()))
 
     // Comments
     ..registerLazySingleton(() => GetCommentsUsecase(commentsRepository: sl()))
@@ -123,7 +125,8 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerFactory(() => SelectScreenBloc(
           selectRacketUseCase: sl(),
           getRacketsUseCase: sl(),
-          downloadRacketModelsUsecase: sl()
+          downloadRacketModelsUsecase: sl(),
+          downloadRacketImagesUsecase: sl()
         ))
     ..registerFactory(() => CommentsBloc(
           getCommentsUsecase: sl(),
