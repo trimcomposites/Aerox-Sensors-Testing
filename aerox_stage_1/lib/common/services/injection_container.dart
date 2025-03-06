@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/services/download_file.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_city_location_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/hide_comment_usecase.dart';
@@ -7,6 +8,7 @@ import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart'
 import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_in_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/sign_out_user_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/download_racket_models_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
@@ -53,7 +55,8 @@ Future<void> dependencyInjectionInitialize() async {
     // Servicios Externos
     ..registerLazySingleton(() => RemoteGetRackets())
     ..registerLazySingleton(() => FirestoreComments())
-    ..registerLazySingleton(() => CommentLocationService());
+    ..registerLazySingleton(() => CommentLocationService())
+    ..registerLazySingleton(() => DownloadFile());
 
   // Registro de Repositorios
   sl
@@ -65,6 +68,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => RacketRepository(
           remoteGetRackets: sl(),
           sqLiteDB: sl(),
+          downloadFile: sl()
         ))
     ..registerLazySingleton(() => CommentsRepository(
           firestoreComments: sl(),
@@ -85,6 +89,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => GetSelectedRacketUseCase(racketRepository: sl()))
     ..registerLazySingleton(() => SelectRacketUseCase(racketRepository: sl()))
     ..registerLazySingleton(() => UnSelectRacketUseCase(racketRepository: sl()))
+    ..registerLazySingleton(() => DownloadRacketModelsUsecase(racketRepository: sl()))
 
     // Comments
     ..registerLazySingleton(() => GetCommentsUsecase(commentsRepository: sl()))
@@ -106,6 +111,7 @@ Future<void> dependencyInjectionInitialize() async {
           selectRacketUsecase: sl(),
           deselectRacketUsecase: sl(),
           getSelectedRacketUsecase: sl(),
+          downloadRacketModelsUsecase: sl()
         ))
     ..registerFactory(() => HomeScreenBloc(
           getSelectedRacketUsecase: sl(),
@@ -117,6 +123,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerFactory(() => SelectScreenBloc(
           selectRacketUseCase: sl(),
           getRacketsUseCase: sl(),
+          downloadRacketModelsUsecase: sl()
         ))
     ..registerFactory(() => CommentsBloc(
           getCommentsUsecase: sl(),

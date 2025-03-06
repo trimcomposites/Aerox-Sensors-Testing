@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
+import 'package:aerox_stage_1/domain/use_cases/racket/download_racket_models_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
@@ -16,12 +17,14 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
   final SelectRacketUseCase selectRacketUsecase;
   final UnSelectRacketUseCase deselectRacketUsecase;
   final GetSelectedRacketUseCase getSelectedRacketUsecase;
+  final DownloadRacketModelsUsecase downloadRacketModelsUsecase;
 
   RacketBloc({
     required this.getRacketsUsecase,
     required this.selectRacketUsecase,
     required this.deselectRacketUsecase,
-    required this.getSelectedRacketUsecase
+    required this.getSelectedRacketUsecase,
+    required this.downloadRacketModelsUsecase
   }) : super(RacketState( uiState: UIState.idle() )){
     on<OnGetRackets>((event, emit) async{
       emit( state.copyWith( uiState: UIState.loading() ) );
@@ -29,7 +32,11 @@ class RacketBloc extends Bloc<RacketEvent, RacketState> {
       final result = await getRacketsUsecase();
       result.fold(
         (l)=>  emit(state.copyWith( rackets: null,uiState: UIState.idle() )) , 
-        (r)=> emit( state.copyWith( rackets: r, uiState: UIState.idle() ) )
+        // ignore: unnecessary_set_literal
+        (r) async {
+          final result = await downloadRacketModelsUsecase();
+          emit( state.copyWith( rackets: r, uiState: UIState.idle() ) );
+          }
       );
     },);
 

@@ -11,15 +11,9 @@ class RacketSerializer {
   static String racketToJson(List<Racket> data) => json.encode(List<dynamic>.from(data.map((x) => toJsonRacket( x ))));
 
   static Future<Racket> fromJsonRacket(Map<String, dynamic> json)async {
-    String  localFilePath ="";
-    final modelUrl = json["model"];
-    if (modelUrl.startsWith("http://") || modelUrl.startsWith("https://")) {
-    // Si es una URL remota, realiza la descarga
-    localFilePath = await downloadFile(modelUrl, json["docId"]);
-    }else{
-      localFilePath=modelUrl;
-    }
+
   return Racket(
+    docId: json["docId"],
     id: 1,
     hit: json["hit"],
     frame: json["frame"],
@@ -47,7 +41,7 @@ class RacketSerializer {
         : json["maneuverability"]?.toDouble() ?? 0.0,
     maneuverabilityType: json["maneuverabilityType"],
     image: json["image"],
-    model: localFilePath,
+    model: json["model"],
     weightMin: (json["weightMin"] is String)
         ? double.tryParse(json["weightMin"]) ?? 0.0
         : json["weightMin"]?.toDouble() ?? 0.0,
@@ -80,25 +74,9 @@ class RacketSerializer {
         : json["acorMax"]?.toDouble() ?? 0.0,
   );
   }
-  static Future<String> downloadFile(String fileUrl, String name) async {
-  try {
-    print('fileUrl:'+ fileUrl);
-    final directory = await getApplicationDocumentsDirectory();
-    final filePath = '${directory.path}/${name}.glb';  
-
-    // Usa Dio o http para descargar el archivo
-    Dio dio = Dio();
-    await dio.download(fileUrl, filePath);
-
-    // Devuelve la ruta donde se guardó el archivo
-    return filePath;
-  } catch (e) {
-    print("Error downloading the file: $e");
-    return '';  // Retorna una cadena vacía si ocurre un error
-  }
-}
 
   static Map<String, dynamic> toJsonRacket(Racket racket) => {
+    "docId": racket.docId,
     "id": racket.id,
     "hit": racket.hit,
     "frame": racket.frame,

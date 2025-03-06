@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      //final RacketsSQLiteDB db = sl();
+      final RacketsSQLiteDB db = sl();
       //db.checkAndDeleteDB();
       //db.clearDatabase();
       //db.checkAndDeleteDB();

@@ -10,7 +10,6 @@ class RacketsSQLiteDB {
   static final RacketsSQLiteDB _instance = RacketsSQLiteDB._internal();
   static Database? _database;
 
-
   factory RacketsSQLiteDB() {
     return _instance;
   }
@@ -33,10 +32,11 @@ class RacketsSQLiteDB {
       onCreate: _onCreate,
     );
   }
-  FutureOr<void> _onCreate(Database db, int version) async {
+
+  Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE rackets (
-        docId INTEGER PRIMARY KEY,  
+        docId TEXT PRIMARY KEY,  
         id INTEGER NOT NULL,     
         hit TEXT NOT NULL,
         frame TEXT NOT NULL,
@@ -70,35 +70,34 @@ class RacketsSQLiteDB {
     ''');
   }
 
-  // Insertar una raqueta
   Future<int> insertRacket(Racket racket) async {
     final db = await database;
-    return await db.insert('rackets', RacketSerializer.toJsonRacket(racket)); 
+    return await db.insert('rackets', RacketSerializer.toJsonRacket(racket));
   }
 
-  // Obtener todas las raquetas
   Future<List<Racket>> getAllRackets() async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('rackets');
+    try {
+      final db = await database;
+      final List<Map<String, dynamic>> maps = await db.query('rackets');
 
-    // Usamos await para esperar la llamada asíncrona a fromJsonRacket
-    List<Racket> racketList = [];
+      List<Racket> racketList = [];
 
-    // Iterar sobre los elementos de maps y esperar el resultado de fromJsonRacket
-    for (var i = 0; i < maps.length; i++) {
-      racketList.add(await RacketSerializer.fromJsonRacket(maps[i])); // Asegúrate de usar await aquí
+      for (var i = 0; i < maps.length; i++) {
+        racketList.add(await RacketSerializer.fromJsonRacket(maps[i]));
+      }
+
+      return racketList;
+    } catch (e) {
+      print('Error al obtener rackets: $e');
+      return [];
     }
-
-    return racketList;
   }
 
-  // Limpiar la base de datos
   Future<void> clearDatabase() async {
     final db = await database;
     await db.delete('rackets');
   }
 
-  // Añadir una columna nueva (si es necesario)
   Future<void> addColumn() async {
     final db = await database;
     await db.execute('''
@@ -106,18 +105,16 @@ class RacketsSQLiteDB {
     ''');
   }
 
-  // Actualizar una raqueta
   Future<int> updateRacket(Racket racket) async {
     final db = await database;
     return await db.update(
       'rackets',
-      RacketSerializer.toJsonRacket(racket), 
+      RacketSerializer.toJsonRacket(racket),
       where: 'id = ?',
       whereArgs: [racket.id],
     );
   }
 
-  // Eliminar una raqueta
   Future<int> deleteRacket(int id) async {
     final db = await database;
     return await db.delete(
@@ -127,54 +124,56 @@ class RacketsSQLiteDB {
     );
   }
 
-Future<void> insertRacketList(List<Racket> rackets, {Database? dbInstance}) async {
-  final db = dbInstance ?? await database;
-  await checkTableStructure();
+  Future<void> insertRacketList(List<Racket> rackets, {Database? dbInstance}) async {
+    final db = dbInstance ?? await database;
+    await checkAndCreateTable();
 
-  await db.transaction((txn) async {
-    final batch = txn.batch();
+    try {
+      await db.transaction((txn) async {
+        final batch = txn.batch();
 
-    for (var racket in rackets) {
-      await upsertRacket(racket, txn, batch);
+        for (var racket in rackets) {
+          await upsertRacket(racket, txn, batch);
+        }
+
+        await batch.commit(noResult: true);
+      });
+    } catch (e) {
+      print("Error al insertar lista de raquetas: $e");
     }
-
-    await batch.commit(noResult: true);
-  });
-}
-
-Future<void> upsertRacket(Racket racket, Transaction txn, Batch batch) async {
-  final existingRacket = await checkRacketExistence(racket.id, txn);
-
-  if (existingRacket.isEmpty) {
-    insertMyRacket(racket, batch);
-  } else {
-    updateMyRacket(racket, txn, batch);
   }
-}
 
-Future<List<Map<String, dynamic>>> checkRacketExistence(int id, Transaction txn) async {
-  return await txn.query(
-    'rackets',
-    where: 'id = ?',
-    whereArgs: [id],
-  );
-}
+  Future<void> upsertRacket(Racket racket, Transaction txn, Batch batch) async {
+    final existingRacket = await checkRacketExistence(racket.id, txn);
 
-void insertMyRacket(Racket racket, Batch batch) {
-  batch.insert('rackets', RacketSerializer.toJsonRacket(racket));
-}
+    if (existingRacket.isEmpty) {
+      insertMyRacket(racket, batch);
+    } else {
+      updateMyRacket(racket, txn, batch);
+    }
+  }
 
-void updateMyRacket(Racket racket, Transaction txn, Batch batch) {
-  batch.update(
-    'rackets',
-    RacketSerializer.toJsonRacket(racket),
-    where: 'id = ?',
-    whereArgs: [racket.id],
-  );
-}
+  Future<List<Map<String, dynamic>>> checkRacketExistence(int id, Transaction txn) async {
+    return await txn.query(
+      'rackets',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 
+  void insertMyRacket(Racket racket, Batch batch) {
+    batch.insert('rackets', RacketSerializer.toJsonRacket(racket));
+  }
 
-  // Seleccionar una raqueta
+  void updateMyRacket(Racket racket, Transaction txn, Batch batch) {
+    batch.update(
+      'rackets',
+      RacketSerializer.toJsonRacket(racket),
+      where: 'id = ?',
+      whereArgs: [racket.id],
+    );
+  }
+
   Future<void> selectRacket(int racketId) async {
     final db = await database;
 
@@ -188,13 +187,12 @@ void updateMyRacket(Racket racket, Transaction txn, Batch batch) {
     );
   }
 
-
   Future<void> deselectAllRackets() async {
     final db = await database;
 
     await db.update(
       'rackets',
-      {'isSelected': 0}, 
+      {'isSelected': 0},
     );
   }
 
@@ -208,16 +206,18 @@ void updateMyRacket(Racket racket, Transaction txn, Batch batch) {
     );
 
     if (result.isNotEmpty) {
-      return RacketSerializer.fromJsonRacket(result.first); 
+      return await RacketSerializer.fromJsonRacket(result.first);
     }
     return null;
   }
-  //debug
-  Future<void> checkTableStructure() async {
+
+  Future<void> checkAndCreateTable() async {
     final db = await database;
-    List<Map> columns = await db.rawQuery('PRAGMA table_info(rackets);');
-    print('columnas');
-    print(columns);
+    List<Map> tables = await db.rawQuery('SELECT name FROM sqlite_master WHERE type="table" AND name="rackets"');
+    if (tables.isEmpty) {
+      print("La tabla 'rackets' no existe. Creándola...");
+      await _onCreate(db, 1);
+    }
   }
 
   Future<void> checkAndDeleteDB() async {
@@ -239,4 +239,16 @@ void updateMyRacket(Racket racket, Transaction txn, Batch batch) {
     }
   }
 
+  Future<int> updateRacketModel(String racketId, String newModel) async {
+    final db = await database;
+    print('A actualizar a modelo: ' + newModel);
+    final result = await db.update(
+      'rackets',
+      {'model': newModel},
+      where: 'docId = ?',
+      whereArgs: [racketId],
+    );
+    print( 'update result' + result.toString());
+    return result;
+  }
 }

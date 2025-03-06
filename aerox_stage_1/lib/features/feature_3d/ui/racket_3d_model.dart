@@ -40,6 +40,7 @@ class Racket3dModel extends StatelessWidget {
         child: BlocBuilder<Model3DBloc, Model3DState>(
           builder: (context, state) {
             if (state.uiState.status == UIStatus.error) {
+              print('modelo: ' + racket.model);
               return Image.network(
                 racket.image,
                 fit: BoxFit.fill,

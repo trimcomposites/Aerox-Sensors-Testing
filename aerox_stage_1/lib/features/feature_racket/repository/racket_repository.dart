@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/services/download_file.dart';
 import 'package:aerox_stage_1/common/utils/either_catch.dart';
 import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
@@ -7,15 +8,17 @@ import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz_unsafe.dart';
 
 class RacketRepository {
 
   //futuras dependencias
   RacketRepository( { 
-    required this.sqLiteDB, required this.remoteGetRackets,
+    required this.sqLiteDB, required this.remoteGetRackets, required this.downloadFile
   });
   final RacketsSQLiteDB sqLiteDB;
   final RemoteGetRackets remoteGetRackets;
+  final DownloadFile downloadFile;
 
 
   Future<EitherErr<List<Racket>>>remotegetRackets() async {
@@ -56,35 +59,54 @@ class RacketRepository {
     
     }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
   }
+Future<EitherErr<List<Racket>>> downloadRacketModels() async {
+  return EitherCatch.catchAsync<List<Racket>, RacketErr>(() async {
+    final eitherLocalRackets = await localGetRackets();
+
+    return eitherLocalRackets.fold(
+      (failure) => throw Exception(), // Si hay un error, lo retornamos inmediatamente
+      (localRackets) async {
+        for (var racket in localRackets) {
+          if (racket.model.startsWith("http://") || racket.model.startsWith("https://")) {
+            final modelPath = await downloadFile.downloadFile(racket.model, racket.docId);
+            await sqLiteDB.updateRacketModel(racket.docId, modelPath);
+          }
+        }
+        return Future.value(localRackets); // Devolvemos la lista actualizada dentro de un Either
+      },
+    );
+  }, (exception) => RacketErr(errMsg: exception.toString(), statusCode: StatusCode.authenticationFailed));
+}
+
   //TOD: Este metodo es sustituido en debug
+ Future<EitherErr<List<Racket>>> getRackets() {
+
+     return localGetRackets().flatMap((localRackets) {
+
+
+       if (localRackets.isEmpty) {
+         //si no hay rquetas llamamos al remoto para que obtenga raquetas de la api
+         return remotegetRackets().flatMap((remoteRackets) async {
+
+           //si es right inserta remoterackets en local
+           await sqLiteDB.insertRacketList(remoteRackets);
+
+             return localGetRackets();
+           });
+      
+       } else {
+
+         return Future.value(Right(localRackets));
+       }
+     });
+   }
   // Future<EitherErr<List<Racket>>> getRackets() {
 
-  //     return localGetRackets().flatMap((localRackets) {
-
-
-  //       if (localRackets.isEmpty) {
-  //         //si no hay rquetas llamamos al remoto para que obtenga raquetas de la api
-  //         return remotegetRackets().flatMap((remoteRackets) async {
-
-  //           //si es right inserta remoterackets en local
-  //           await sqLiteDB.insertRacketList(remoteRackets);
-
-  //             return localGetRackets();
-  //           });
-          
-  //       } else {
-
-  //         return Future.value(Right(localRackets));
-  //       }
-  //     });
-  //   }
-  Future<EitherErr<List<Racket>>> getRackets() {
-
       
-      return remotegetRackets();
+  //     return remotegetRackets();
 
 
-    }
+  //   }
 
 
 }
