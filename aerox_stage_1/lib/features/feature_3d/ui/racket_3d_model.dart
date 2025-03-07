@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
@@ -31,7 +33,7 @@ class Racket3dModel extends StatelessWidget {
       ? 1.1
       : 1.0;
     final modelWidth = MediaQuery.of(context).size.width / widthMultiplier;
-
+    final imageFile =  File( racket.image, );
     return IgnorePointer(
       ignoring: ignorePointer,
       child: Container(
@@ -40,9 +42,9 @@ class Racket3dModel extends StatelessWidget {
         child: BlocBuilder<Model3DBloc, Model3DState>(
           builder: (context, state) {
             if (state.uiState.status == UIStatus.error) {
-              print('modelo: ' + racket.model);
-              return Image.asset(
-                racket.image,
+              print('modelo: ' + racket.toString());
+              return Image.file(
+                imageFile,
                 fit: BoxFit.fill,
               );
             }
@@ -59,6 +61,7 @@ class Racket3dModel extends StatelessWidget {
                     }
                     debugPrint('model loading progress: $progressValue');
                   },
+                  
                   onLoad: (String modelAddress) {
                     model3dBloc.add(OnStopLoadingModel3d());
                     debugPrint('model loaded: $modelAddress');
@@ -78,10 +81,10 @@ class Racket3dModel extends StatelessWidget {
                 if (state.uiState.status == UIStatus.loading)
                   Container(
                     width: modelWidth/1.2,
-                    child: Image.asset(
-                      fit: BoxFit.cover,
-                      racket.image,
-                    ),
+                child: Image.file(
+                  imageFile,
+                  fit: BoxFit.fill,
+                )
                   )
               ],
             );

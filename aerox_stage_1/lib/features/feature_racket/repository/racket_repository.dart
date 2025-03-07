@@ -61,14 +61,14 @@ class RacketRepository {
   }
 Future<EitherErr<List<Racket>>> downloadRacketModels() async {
   return EitherCatch.catchAsync<List<Racket>, RacketErr>(() async {
-    final eitherLocalRackets = await localGetRackets();
+    final eitherLocalRackets = await remotegetRackets();
 
     return eitherLocalRackets.fold(
       (failure) => throw Exception(), // Si hay un error, lo retornamos inmediatamente
       (localRackets) async {
         for (var racket in localRackets) {
           if (racket.model.startsWith("http://") || racket.model.startsWith("https://")) {
-            final modelPath = await downloadFile.downloadFile(racket.model, racket.docId);
+            final modelPath = await downloadFile.downloadFile(racket.model, racket.docId+'.glb');
             await sqLiteDB.updateRacketModel(racket.docId, modelPath);
           }
         }
@@ -86,7 +86,7 @@ Future<EitherErr<List<Racket>>> downloadRacketImages() async {
       (localRackets) async {
         for (var racket in localRackets) {
           if (racket.image.startsWith("http://") || racket.image.startsWith("https://")) {
-            final imagePath = await downloadFile.downloadFile(racket.image, racket.docId+'image');
+            final imagePath = await downloadFile.downloadFile(racket.image, racket.docId+'.png');
             await sqLiteDB.updateRacketImage(racket.docId, imagePath);
           }
         }
