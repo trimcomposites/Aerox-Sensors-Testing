@@ -7,7 +7,6 @@ import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 class Racket3dModel extends StatelessWidget {
   const Racket3dModel({
@@ -34,6 +33,7 @@ class Racket3dModel extends StatelessWidget {
       : 1.0;
     final modelWidth = MediaQuery.of(context).size.width / widthMultiplier;
     final imageFile =  File( racket.image, );
+    print( 'Archivo: '+ racket.model );
     return IgnorePointer(
       ignoring: ignorePointer,
       child: Container(
@@ -73,10 +73,10 @@ class Racket3dModel extends StatelessWidget {
                     debugPrint('model failed to load: $error');
                   },
                   src:
-                  racket.model.isEmpty 
-                  ? 'assets/3d/20250222_LABT003_3D_GLB_V2.glb'
-                  : racket.model,
-                  controller: controller,
+                  //racket.model.isEmpty 
+                  'assets/3d/20250222_LABT003_3D_GLB_V2.glb'
+                  //: racket.model,
+                  ,controller: controller,
                 ),
                 if (state.uiState.status == UIStatus.loading)
                   Container(

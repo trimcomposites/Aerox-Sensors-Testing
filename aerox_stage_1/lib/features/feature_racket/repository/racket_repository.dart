@@ -68,8 +68,8 @@ Future<EitherErr<List<Racket>>> downloadRacketModels() async {
       (localRackets) async {
         for (var racket in localRackets) {
           if (racket.model.startsWith("http://") || racket.model.startsWith("https://")) {
-            final modelPath = await downloadFile.downloadFile(racket.model, racket.docId+'.glb');
-            await sqLiteDB.updateRacketModel(racket.docId, modelPath);
+            final modelPath = await downloadFile.downloadFile(racket.model, 'model'+racket.docId+'.glb');
+            await  sqLiteDB.updateRacketModel(racket.docId, modelPath);
           }
         }
         return Future.value(localRackets); // Devolvemos la lista actualizada dentro de un Either
@@ -86,7 +86,7 @@ Future<EitherErr<List<Racket>>> downloadRacketImages() async {
       (localRackets) async {
         for (var racket in localRackets) {
           if (racket.image.startsWith("http://") || racket.image.startsWith("https://")) {
-            final imagePath = await downloadFile.downloadFile(racket.image, racket.docId+'.png');
+            final imagePath = await downloadFile.downloadFile(racket.image, 'image'+racket.docId+'.png');
             await sqLiteDB.updateRacketImage(racket.docId, imagePath);
           }
         }

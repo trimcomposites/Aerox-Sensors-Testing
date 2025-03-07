@@ -99,5 +99,15 @@
 	</array>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+    <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.googleusercontent.apps.300686522146-gcb4cnrdca9vlcc4mrlmrj6proi3m0bo</string>
+        </array>
+    </dict>
+	</array>
+
 </dict>
 </plist>
