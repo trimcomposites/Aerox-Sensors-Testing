@@ -9,4 +9,7 @@ part of '3d_bloc.dart';
 }
 class OnStartLoadingModel3d extends Model3DEvent {}
 class OnStopLoadingModel3d extends Model3DEvent {}
-class OnStartErrorModel3d extends Model3DEvent {}
+class OnStartErrorModel3d extends Model3DEvent {
+  late String errormsg;
+  OnStartErrorModel3d({ required this.errormsg });
+}

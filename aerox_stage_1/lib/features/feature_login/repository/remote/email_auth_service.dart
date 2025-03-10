@@ -25,7 +25,9 @@ class EmailAuthService {
       User? user = credential.user;
 
       if (user != null) {
-        await user.updateDisplayName( aeroxUser.name );
+        await user.reload();
+        await user.updateDisplayName( user.displayName );
+        await user.reload();
         return user.toAeroxUser(); 
       } else {
         throw Exception('Ocurrió un error desconocido. Por favor, inténtelo nuevamente.');

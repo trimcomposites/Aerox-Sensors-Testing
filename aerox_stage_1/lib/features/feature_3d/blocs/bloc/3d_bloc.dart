@@ -14,7 +14,7 @@ class Model3DBloc extends Bloc<Model3DEvent, Model3DState> {
       emit( state.copyWith( uiState: UIState.success() ) );
     });
     on<OnStartErrorModel3d>((event, emit) {
-      emit( state.copyWith( uiState: UIState.error( '' ) ) );
+      emit( state.copyWith( uiState: UIState.error( event.errormsg ) ) );
     });
   }
 }

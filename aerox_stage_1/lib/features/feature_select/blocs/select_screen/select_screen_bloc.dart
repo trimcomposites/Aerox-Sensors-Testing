@@ -1,7 +1,6 @@
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/download_racket_images_usecase.dart';
-import 'package:aerox_stage_1/domain/use_cases/racket/download_racket_models_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:bloc/bloc.dart';
@@ -13,12 +12,10 @@ part 'select_screen_state.dart';
 class SelectScreenBloc extends Bloc<SelectScreenEvent, SelectScreenState> {
 final GetRacketsUseCase getRacketsUseCase;
 final SelectRacketUseCase selectRacketUseCase;
-final DownloadRacketModelsUsecase downloadRacketModelsUsecase;
 final DownloadRacketImagesUsecase downloadRacketImagesUsecase;
   SelectScreenBloc({
     required this.getRacketsUseCase,
     required this.selectRacketUseCase,
-    required this.downloadRacketModelsUsecase,
     required this.downloadRacketImagesUsecase
   }) : super(SelectScreenState( uiState: UIState.loading()  )){
  on<OnGetRacketsSelect>((event, emit) async {
@@ -31,37 +28,27 @@ final DownloadRacketImagesUsecase downloadRacketImagesUsecase;
         emit(state.copyWith(rackets: null, uiState: UIState.idle()));
       },
       (r1) async {
-        final downloadResult = await downloadRacketModelsUsecase();
+        final downloadImagesResult = await downloadRacketImagesUsecase();
 
-        await downloadResult.fold(
+        await downloadImagesResult.fold(
           (l) async {
             emit(state.copyWith(rackets: null, uiState: UIState.idle()));
-          },
-          (r2) async {
+            },
+          (r3) async {
 
-            final downloadImagesResult = await downloadRacketImagesUsecase();
+            final updatedResult = await getRacketsUseCase();
 
-            await downloadImagesResult.fold(
-              (l) async {
-                emit(state.copyWith(rackets: null, uiState: UIState.idle()));
-              },
-              (r3) async {
-
-                final updatedResult = await getRacketsUseCase();
-
-                updatedResult.fold(
-                  (l) => emit(state.copyWith(rackets: null, uiState: UIState.idle())),
+              updatedResult.fold(
+                (l) => emit(state.copyWith(rackets: null, uiState: UIState.idle())),
                   (updatedRackets) {
                     if (!emit.isDone) {
-                      emit(state.copyWith(rackets: updatedRackets, uiState: UIState.success()));
-                    }
-                  },
-                );
+                    emit(state.copyWith(rackets: updatedRackets, uiState: UIState.success()));
+                }
               },
             );
           },
         );
-      },
+      }
     );
   });
 

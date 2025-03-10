@@ -33,7 +33,7 @@ class Racket3dModel extends StatelessWidget {
       : 1.0;
     final modelWidth = MediaQuery.of(context).size.width / widthMultiplier;
     final imageFile =  File( racket.image, );
-    print( 'Archivo: '+ racket.model );
+    print('modelo: ' + racket.model);
     return IgnorePointer(
       ignoring: ignorePointer,
       child: Container(
@@ -42,7 +42,7 @@ class Racket3dModel extends StatelessWidget {
         child: BlocBuilder<Model3DBloc, Model3DState>(
           builder: (context, state) {
             if (state.uiState.status == UIStatus.error) {
-              print('modelo: ' + racket.toString());
+              print(' error modelo: '+state.uiState.errorMessage);
               return Image.file(
                 imageFile,
                 fit: BoxFit.fill,
@@ -69,22 +69,23 @@ class Racket3dModel extends StatelessWidget {
                     controller.playAnimation();
                   },
                   onError: (String error) {
-                    model3dBloc.add(OnStartErrorModel3d());
+                    model3dBloc.add(OnStartErrorModel3d( errormsg: error ) );
                     debugPrint('model failed to load: $error');
                   },
                   src:
-                  //racket.model.isEmpty 
-                  'assets/3d/20250222_LABT003_3D_GLB_V2.glb'
-                  //: racket.model,
-                  ,controller: controller,
+                  racket.model.isEmpty 
+                  ? 'assets/3d/20250222_LABT003_3D_GLB_V2.glb'
+                  : 'assets/3d/${racket.model}.glb',
+                  controller: controller,
                 ),
                 if (state.uiState.status == UIStatus.loading)
                   Container(
-                    width: modelWidth/1.2,
-                child: Image.file(
-                  imageFile,
-                  fit: BoxFit.fill,
-                )
+                    //width: modelWidth/1.2,
+                // child: Image.file(
+                //   imageFile,
+                //   fit: BoxFit.fill,
+                // )
+                child: CircularProgressIndicator(),
                   )
               ],
             );
