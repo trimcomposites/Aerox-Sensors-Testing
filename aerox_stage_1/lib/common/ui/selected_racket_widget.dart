@@ -8,7 +8,8 @@ class SelectedRacketWidget extends StatelessWidget {
     super.key,
     required this.racket,
     this.textPosition = -30,
-    this.height = homePageRacketImgSize, required this.ignorePointer, required this.rotateSpeed
+    this.height = 700, required this.ignorePointer, required this.rotateSpeed,
+    this.textFontSize  = 40
   });
 
   final Racket racket;
@@ -16,6 +17,7 @@ class SelectedRacketWidget extends StatelessWidget {
   final double height;
   final bool ignorePointer;
   final int rotateSpeed;
+  final double textFontSize;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -25,11 +27,11 @@ class SelectedRacketWidget extends StatelessWidget {
         Positioned(
           top: textPosition, 
           child: Container(
-            width: 300,
+            width: 325,
             child: Text(
               racket.racketName,
-              style: const TextStyle(
-                fontSize: 60,
+              style: TextStyle(
+                fontSize: textFontSize,
                 fontWeight: FontWeight.w500
               ),
               maxLines: 2,

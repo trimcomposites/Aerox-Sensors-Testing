@@ -30,15 +30,20 @@ class HomePageAdminView extends StatelessWidget {
             children: [
               if (state.myRacket != null)
                 SelectedRacketWidget(
+                  textFontSize: 60,
                   racket: state.myRacket!,
                   ignorePointer: false,
-                  rotateSpeed: 25,
+                  rotateSpeed: 10,
+                  height: 780,
                   ),
     
               Positioned(
-                bottom: 180, 
+                bottom: 80, 
                 child: AppButton(
-                  text: 'CONFIGURA TU PALA',
+                  text: 
+                  state.myRacket!=null
+                  ? 'VER DETALLES'
+                  : 'ENCONTRAR MI PALA',
                   fontColor: Colors.black,
                   backgroundColor: appYellowColor,
                   showborder: false,
@@ -54,7 +59,9 @@ class HomePageAdminView extends StatelessWidget {
                   },
                 ),
               ),
-              BluetoothConnectButton()
+              BluetoothConnectButton(
+                position: 20,
+              )
             ]
           );
           },

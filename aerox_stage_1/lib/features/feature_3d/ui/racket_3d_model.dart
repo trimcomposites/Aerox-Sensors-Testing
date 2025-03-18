@@ -38,7 +38,7 @@ class Racket3dModel extends StatelessWidget {
     return IgnorePointer(
       ignoring: ignorePointer,
       child: Container(
-        height: 600,
+        height: height,
         width: modelWidth,
         child: BlocBuilder<Model3DBloc, Model3DState>(
           builder: (context, state) {

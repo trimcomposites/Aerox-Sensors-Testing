@@ -59,7 +59,7 @@ class DetailsScreenView extends StatelessWidget {
                           ignorePointer: true,
                           rotateSpeed: 100,
                           racket: rackets[index],
-                          textPosition: -20,
+                          textPosition: -10,
                           height: 600,
                           );
                       }

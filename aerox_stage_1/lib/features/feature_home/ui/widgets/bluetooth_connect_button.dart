@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BluetoothConnectButton extends StatelessWidget {
   const BluetoothConnectButton({
-    super.key,
+    super.key, required this.position,
   });
-
+  final double position;
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 50,
+      bottom: position,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
