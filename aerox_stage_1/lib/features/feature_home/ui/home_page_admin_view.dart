@@ -30,16 +30,17 @@ class HomePageAdminView extends StatelessWidget {
             children: [
               if (state.myRacket != null)
                 SelectedRacketWidget(
-                  textFontSize: 60,
+                  textFontSize: MediaQuery.of(context).size.width*0.14,
                   racket: state.myRacket!,
                   ignorePointer: false,
                   rotateSpeed: 10,
-                  height: 780,
+                  height: MediaQuery.of(context).size.height/1.25,
                   ),
     
               Positioned(
                 bottom: 80, 
                 child: AppButton(
+                  width: MediaQuery.of(context).size.width-40,
                   text: 
                   state.myRacket!=null
                   ? 'VER DETALLES'

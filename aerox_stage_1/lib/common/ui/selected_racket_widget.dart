@@ -9,7 +9,8 @@ class SelectedRacketWidget extends StatelessWidget {
     required this.racket,
     this.textPosition = -30,
     this.height = 700, required this.ignorePointer, required this.rotateSpeed,
-    this.textFontSize  = 40
+    this.textFontSize  = 40,
+    this.textSpacing = 1
   });
 
   final Racket racket;
@@ -18,6 +19,7 @@ class SelectedRacketWidget extends StatelessWidget {
   final bool ignorePointer;
   final int rotateSpeed;
   final double textFontSize;
+  final double textSpacing;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -27,12 +29,17 @@ class SelectedRacketWidget extends StatelessWidget {
         Positioned(
           top: textPosition, 
           child: Container(
-            width: 325,
+            width: MediaQuery.of(context).size.width*0.8,
+            height: height,
             child: Text(
               racket.racketName,
               style: TextStyle(
+                color: this.ignorePointer
+                ? Colors.grey.shade600
+                : Colors.black,
                 fontSize: textFontSize,
-                fontWeight: FontWeight.w500
+                fontWeight: FontWeight.w500,
+                height: textSpacing
               ),
               maxLines: 2,
               textAlign: TextAlign.center,
@@ -53,3 +60,4 @@ class SelectedRacketWidget extends StatelessWidget {
     );
   }
 }
+

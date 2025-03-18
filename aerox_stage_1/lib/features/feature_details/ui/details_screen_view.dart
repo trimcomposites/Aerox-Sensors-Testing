@@ -10,6 +10,7 @@ import 'package:aerox_stage_1/features/feature_3d/ui/racket_3d_model.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/widgets/racket_specs.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/widgets/upper_info_text.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DetailsScreenView extends StatelessWidget {
@@ -41,32 +42,38 @@ class DetailsScreenView extends StatelessWidget {
               Center(
                 child: UpperInfoText(),
               ),
-              SizedBox( height: 30, ),
+              SizedBox( height: 20, ),
               Stack(
                 alignment: Alignment.bottomCenter,
                 children:[
                   Container(
-                    margin: EdgeInsets.zero,
-                    height: 600,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemCount: isRacketSelected ? 1 : rackets.length,
-                      onPageChanged: (int index) {
-                        racketIndexNotifier.value = index; 
-                      },
-                      itemBuilder: (BuildContext context, int index) {
-                        return SelectedRacketWidget(
-                          ignorePointer: true,
-                          rotateSpeed: 100,
-                          racket: rackets[index],
-                          textPosition: -10,
-                          height: 600,
+                        margin: EdgeInsets.zero,
+                        height: Platform.isAndroid
+                            ? MediaQuery.of(context).size.height / 1.3 
+                            : MediaQuery.of(context).size.height * 0.7 ,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          itemCount: isRacketSelected ? 1 : rackets.length,
+                          onPageChanged: (int index) {
+                            racketIndexNotifier.value = index;
+                          },
+                          itemBuilder: (BuildContext context, int index) {
+                            return SelectedRacketWidget(
+                              ignorePointer: true,
+                              rotateSpeed: 100,
+                              racket: rackets[index],
+                              textPosition: 0,
+                              height: Platform.isAndroid
+                                  ? MediaQuery.of(context).size.height /1.3
+                                  : MediaQuery.of(context).size.height/1.5,
+                              textSpacing: 1.3,
+                              textFontSize: MediaQuery.of(context).size.width * 0.115,
                           );
                       }
                     ),
                   ),
                   Positioned(
-                    bottom: 125,
+                    bottom: 100,
                     child: SmallAppButton(
                     onTap: () {
                       if (isRacketSelected) {
