@@ -79,7 +79,7 @@ class Racket3dModel extends StatelessWidget {
                   src:
                   racket.model.isEmpty 
                   ? 'assets/3d/20250222_LABT003_3D_GLB_V2.glb'
-                  : 'assets/3d/${racket.model}.glbg',
+                  : 'assets/3d/${racket.model}.glb',
                   controller: controller,
                 ),
                 if (state.uiState.status == UIStatus.loading)

@@ -57,8 +57,8 @@ class _ExpansionSpecDataState extends State<ExpansionSpecData> {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 40, 
-                mainAxisSpacing: 20,
-                childAspectRatio: 3,
+                mainAxisSpacing: 10,
+                childAspectRatio: 1.8,
               ),
               itemCount: specs.length,
               itemBuilder: (context, index) {
