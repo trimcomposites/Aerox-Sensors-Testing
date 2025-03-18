@@ -18,8 +18,7 @@ class TechnicalSpecsSheet extends StatelessWidget {
         border: Border.all( color: Colors.black, width: 1 ),
         borderRadius: BorderRadius.circular(15)
       ),
-      width: 350,
-      height: 225,
+      height: MediaQuery.of(context).size.width/2,
       child: Container(
         padding: EdgeInsets.symmetric( 
           horizontal: 15,
@@ -31,7 +30,7 @@ class TechnicalSpecsSheet extends StatelessWidget {
             Text( 'Ficha técnica', style: TextStyle(
               fontSize: 11
             ), ),
-    
+            SizedBox( height: 10,  ),
             SpecsDataText( text: 'Weight', value: rackets[racketIndex].weightNumber, min: rackets[racketIndex].weightMin, max: rackets[racketIndex].weightMax ),
             SpecsDataText( text: 'Balance', value: rackets[racketIndex].balance, min: rackets[racketIndex].balanceMin, max: rackets[racketIndex].balanceMax),
             SpecsDataText( text: 'Swing Weight',  value: rackets[racketIndex].swingWeight,  min: rackets[racketIndex].swingWeightMin, max: rackets[racketIndex].swingWeightMax ),
