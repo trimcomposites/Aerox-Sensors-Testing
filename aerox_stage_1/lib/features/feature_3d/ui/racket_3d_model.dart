@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_3d/ui/custom_flutter_3d_viewert.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +52,10 @@ class Racket3dModel extends StatelessWidget {
             return Stack(
               alignment: Alignment.center,
               children: [
-                Flutter3DViewer(
+                CustomFlutter3DViewer(
+                  autoRotate: true,
+                  enableZoom: false,
+                  rotationSpeed: 20,
                   activeGestureInterceptor: ignorePointer,
                   progressBarColor: Colors.transparent,
                   enableTouch: true,
