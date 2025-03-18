@@ -60,7 +60,7 @@ class Racket3dModel extends StatelessWidget {
                   progressBarColor: Colors.transparent,
                   enableTouch: true,
                   onProgress: (double progressValue) {
-                    if (progressValue < 1.0) {
+                    if (progressValue < 1.0 && state.uiState.status != UIStatus.error ) {
                       model3dBloc.add(OnStartLoadingModel3d());
                     }
                     debugPrint('model loading progress: $progressValue');
@@ -79,7 +79,7 @@ class Racket3dModel extends StatelessWidget {
                   src:
                   racket.model.isEmpty 
                   ? 'assets/3d/20250222_LABT003_3D_GLB_V2.glb'
-                  : 'assets/3d/${racket.model}.glb',
+                  : 'assets/3d/${racket.model}.glbg',
                   controller: controller,
                 ),
                 if (state.uiState.status == UIStatus.loading)

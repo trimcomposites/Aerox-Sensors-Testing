@@ -24,7 +24,7 @@ class CustomFlutter3DViewer extends StatefulWidget {
   /// Eventos de carga
   final Function(double progressValue)? onProgress;
   final Function(String modelAddress)? onLoad;
-  final Function(String error)? onError;
+  final Function(String error) onError;
 
   /// Indica si se trata de un modelo OBJ
   final bool isObj;
@@ -43,7 +43,7 @@ class CustomFlutter3DViewer extends StatefulWidget {
     this.enablePan = true,
     this.onProgress,
     this.onLoad,
-    this.onError,
+    required this.onError,
   })  : isObj = false,
         scale = null,
         cameraX = null,
@@ -59,7 +59,7 @@ class CustomFlutter3DViewer extends StatefulWidget {
     this.cameraZ,
     this.onProgress,
     this.onLoad,
-    this.onError,
+    required this.onError,
   })  : progressBarColor = null,
         controller = null,
         activeGestureInterceptor = true,
@@ -108,13 +108,16 @@ class _CustomFlutter3DViewerState extends State<CustomFlutter3DViewer> {
   }
 
   void _handleError(String error) {
+    debugPrint('❌ Model Load Failed: $error');
+
     setState(() {
       _controller.onModelLoaded.value = false;
     });
-    if (widget.onError != null) {
-      widget.onError!(error);
-    }
-    debugPrint('❌ Model Load Failed: $error');
+
+
+
+        widget.onError!(error);
+
   }
 
   @override
