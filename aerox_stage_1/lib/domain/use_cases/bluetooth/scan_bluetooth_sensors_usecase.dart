@@ -1,0 +1,22 @@
+
+import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
+import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
+
+class ScanBluetoothSensorsUsecase extends AsyncUseCaseWithoutParams<List<RacketSensor>>{
+
+  const ScanBluetoothSensorsUsecase({ required this.bluetoothRepository  });
+
+  final BluetoothRepository bluetoothRepository;
+
+  @override
+  Future<EitherErr<List<RacketSensor>>> call() {
+    
+    final sensors = bluetoothRepository.scanAllRacketDevices( );
+    return sensors;
+
+  } 
+
+
+}
