@@ -50,6 +50,30 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(state.copyWith(user: null, uiState: UIState.success( next: '/' )));
         });
     });
+    on<OnAppleSignInUser>((event, emit) async {
+      emit( state.copyWith( uiState: UIState.loading() ) );
+      final result = await signInUsecase(SignInUserUsecaseParams(signInType: EmailSignInType.apple));
+      result.fold(
+        (l) {
+          emit( state.copyWith( uiState: UIState.error( '') ) );
+        },
+        (r) {
+          emit(state.copyWith(user: r, uiState: UIState.success( next: '/home' )));
+        },
+      );
+    });
+
+    on<OnAppleSignOutUser>((event, emit) async {
+      emit( state.copyWith( uiState: UIState.loading() ) );
+      final result  = await signOutUseCase(EmailSignInType.apple);
+      result.fold(
+        (l) {
+          emit( state.copyWith( uiState: UIState.error( l.errMsg) ) );
+        },
+        (r) {
+          emit(state.copyWith(user: null, uiState: UIState.success( next: '/' )));
+        });
+    });
 
     on<OnEmailSignInUser>((event, emit) async {
       emit( state.copyWith( uiState: UIState.loading() ) );

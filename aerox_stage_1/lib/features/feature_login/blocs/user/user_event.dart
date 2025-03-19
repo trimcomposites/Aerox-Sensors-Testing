@@ -10,6 +10,10 @@ class OnGoogleSignInUser extends UserEvent{
 }
 class OnGoogleSignOutUser extends UserEvent{
 }
+class OnAppleSignInUser extends UserEvent{
+}
+class OnAppleSignOutUser extends UserEvent{
+}
 
 class OnEmailSignInUser extends UserEvent{
   final String email;

@@ -21,6 +21,7 @@ import 'package:aerox_stage_1/features/feature_comments/repository/remote/firest
 import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/remote/apple_auth_service.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/remote_barrel.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
@@ -48,6 +49,7 @@ Future<void> dependencyInjectionInitialize() async {
     // Autenticación
     ..registerLazySingleton(() => EmailAuthService(firebaseAuth: sl()))
     ..registerLazySingleton(() => GoogleAuthService(auth: sl(), googleSignIn: sl()))
+    ..registerLazySingleton(() => AppleAuthService(auth: sl()))
 
     // Base de Datos Local
     ..registerLazySingleton(() => RacketsSQLiteDB())
@@ -63,6 +65,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => LoginRepository(
           firebaseAuth: sl(),
           emailAuthService: sl(),
+          appleAuthService: sl(),
           googleAuthService: sl(),
         ))
     ..registerLazySingleton(() => RacketRepository(

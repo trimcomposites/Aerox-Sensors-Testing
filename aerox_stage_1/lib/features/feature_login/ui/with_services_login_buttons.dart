@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/widgets/login_with_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WithServicesLoginButtons extends StatelessWidget {
   const WithServicesLoginButtons({
@@ -9,6 +10,7 @@ class WithServicesLoginButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userBloc = BlocProvider.of<UserBloc>(context);
     return Column(
       children: [
         Text(
@@ -25,10 +27,20 @@ class WithServicesLoginButtons extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            LoginWithButton( asset: 'assets/google_logo.png', ),
+            LoginWithButton( 
+              asset: 'assets/google_logo.png', 
+              onPressed: () {
+                userBloc.add( OnGoogleSignInUser() );
+              },
+              ),
             
             if( Platform.isIOS )
-            LoginWithButton( asset: 'assets/apple_logo.png', ),
+            LoginWithButton( 
+              asset: 'assets/apple_logo.png', 
+              onPressed: () {
+                userBloc.add( OnAppleSignInUser() );
+              },
+            ),
           ],
         ),
     

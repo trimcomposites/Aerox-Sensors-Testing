@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/common/utils/error/err/sign_in_err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/status_code.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/aerox_user.dart';
+import 'package:aerox_stage_1/features/feature_login/repository/remote/apple_auth_service.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/firebase_user_extension.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,10 +11,11 @@ import 'remote/remote_barrel.dart';
 
 class LoginRepository{
 
-  LoginRepository({ required this.firebaseAuth, required this.emailAuthService, required this.googleAuthService });
+  LoginRepository({ required this.firebaseAuth, required this.emailAuthService, required this.googleAuthService, required this.appleAuthService });
   final FirebaseAuth firebaseAuth;
   final EmailAuthService emailAuthService;
   final GoogleAuthService googleAuthService;
+  final AppleAuthService appleAuthService;
 
   Future<EitherErr<AeroxUser>>signInUser( { required EmailSignInType signInType, AeroxUser? aeroxUser }) async{
     switch( signInType ){
@@ -22,8 +24,7 @@ class LoginRepository{
       case EmailSignInType.google:
         return googleAuthService.signInWithGoogle();
       case EmailSignInType.apple:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return appleAuthService.signInWithApple();
       case EmailSignInType.meta:
         // TODO: Handle this case.
         throw UnimplementedError();
@@ -38,9 +39,8 @@ class LoginRepository{
       return emailAuthService.signOut();
       case EmailSignInType.google:
         return googleAuthService.signOut();
-        throw UnimplementedError();
       case EmailSignInType.apple:
-        // TODO: Handle this case.
+        appleAuthService.signOut();
         throw UnimplementedError();
       case EmailSignInType.meta:
         // TODO: Handle this case.

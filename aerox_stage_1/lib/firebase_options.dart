@@ -41,53 +41,51 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB4Iww_cFKDu5wnXhTXYYEVKEH3xvx7JLM',
-    appId: '1:293842013726:web:0578a7e8d5b82a54cc280f',
-    messagingSenderId: '293842013726',
-    projectId: 'aerox-1',
-    authDomain: 'aerox-1.firebaseapp.com',
-    storageBucket: 'aerox-1.firebasestorage.app',
-    measurementId: 'G-9057W4DTXD',
+    apiKey: 'AIzaSyCZdpc_aQcnSh5WNRgAai9QuiSxlD1QNUI',
+    appId: '1:300686522146:web:50f7fa5b86cfead548577b',
+    messagingSenderId: '300686522146',
+    projectId: 'aerox-stage1',
+    authDomain: 'aerox-stage1.firebaseapp.com',
+    storageBucket: 'aerox-stage1.firebasestorage.app',
+    measurementId: 'G-26G1K09S7J',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCoBZLTSwOeKDRA_TxVpOiqjjjut7J4PPE',
-    appId: '1:293842013726:android:70ed409487b67204cc280f',
-    messagingSenderId: '293842013726',
-    projectId: 'aerox-1',
-    storageBucket: 'aerox-1.firebasestorage.app',
+    apiKey: 'AIzaSyCq0QBGnbdyMWfLCJi2sdoqDNZfigbLPlo',
+    appId: '1:300686522146:android:adc15c3a2362217648577b',
+    messagingSenderId: '300686522146',
+    projectId: 'aerox-stage1',
+    storageBucket: 'aerox-stage1.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA5kziInLPEJOEbIZnn968YX1TFGbNzajQ',
-    appId: '1:293842013726:ios:590434cad3c4f67ecc280f',
-    messagingSenderId: '293842013726',
-    projectId: 'aerox-1',
-    storageBucket: 'aerox-1.firebasestorage.app',
-    androidClientId: '293842013726-tl96rs5t8k25ot5is38en5grqo1q613j.apps.googleusercontent.com',
-    iosClientId: '293842013726-u5f5qkc2278es3t9riliafqv6150hl7v.apps.googleusercontent.com',
-    iosBundleId: 'com.labtend.aerox',
+    apiKey: 'AIzaSyBkl13kogJtqN6k7vUnJtjB5yq7F7QbNd8',
+    appId: '1:300686522146:ios:ef8e930edcc38c6848577b',
+    messagingSenderId: '300686522146',
+    projectId: 'aerox-stage1',
+    storageBucket: 'aerox-stage1.firebasestorage.app',
+    iosClientId: '300686522146-qp9qu6rc5grtj32logdff36kfld5tvgl.apps.googleusercontent.com',
+    iosBundleId: 'com.labtend.aerox.stage1',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA5kziInLPEJOEbIZnn968YX1TFGbNzajQ',
-    appId: '1:293842013726:ios:04e35618b4031ac2cc280f',
-    messagingSenderId: '293842013726',
-    projectId: 'aerox-1',
-    storageBucket: 'aerox-1.firebasestorage.app',
-    androidClientId: '293842013726-tl96rs5t8k25ot5is38en5grqo1q613j.apps.googleusercontent.com',
-    iosClientId: '293842013726-ed1ie2r1mvlr0657arldsadeqjb5cc3d.apps.googleusercontent.com',
+    apiKey: 'AIzaSyBkl13kogJtqN6k7vUnJtjB5yq7F7QbNd8',
+    appId: '1:300686522146:ios:816152deb7236e2548577b',
+    messagingSenderId: '300686522146',
+    projectId: 'aerox-stage1',
+    storageBucket: 'aerox-stage1.firebasestorage.app',
+    iosClientId: '300686522146-hb4b68nh4iq98964dtsrcpn25f1u682r.apps.googleusercontent.com',
     iosBundleId: 'com.example.aeroxStage1',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyB4Iww_cFKDu5wnXhTXYYEVKEH3xvx7JLM',
-    appId: '1:293842013726:web:c8b8d0b766927f76cc280f',
-    messagingSenderId: '293842013726',
-    projectId: 'aerox-1',
-    authDomain: 'aerox-1.firebaseapp.com',
-    storageBucket: 'aerox-1.firebasestorage.app',
-    measurementId: 'G-MS3QP5Y7C9',
+    apiKey: 'AIzaSyCZdpc_aQcnSh5WNRgAai9QuiSxlD1QNUI',
+    appId: '1:300686522146:web:04e6aa5419f8609348577b',
+    messagingSenderId: '300686522146',
+    projectId: 'aerox-stage1',
+    authDomain: 'aerox-stage1.firebaseapp.com',
+    storageBucket: 'aerox-stage1.firebasestorage.app',
+    measurementId: 'G-FMQLD8HTS9',
   );
 
 }
