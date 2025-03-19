@@ -1,3 +1,5 @@
+import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_rackets_list.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,9 +30,20 @@ class BluetoothConnectButton extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
-            final userBloc = BlocProvider.of<UserBloc>(context);
-            userBloc.add( OnEmailSignOutUser() );
-            userBloc.add( OnGoogleSignOutUser() );
+            // final userBloc = BlocProvider.of<UserBloc>(context);
+            // userBloc.add( OnEmailSignOutUser() );
+            // userBloc.add( OnGoogleSignOutUser() );
+            final sensorsBloc = BlocProvider.of<SensorsBloc>(context);
+            sensorsBloc.add( OnScanBluetoothSensors() );
+            showModalBottomSheet(
+              context: context,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12)), // Bordes redondeados arriba
+              ),
+              builder: (BuildContext context) {
+                return BluetoothRacketsList();
+              },
+            );
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,5 +73,3 @@ class BluetoothConnectButton extends StatelessWidget {
     );
   }
 }
-
-

@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/common/services/aerox_asset_bundle.dart';
 import 'package:aerox_stage_1/common/services/injection_container.dart';
 import 'package:aerox_stage_1/common/services/router.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
 import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
@@ -42,6 +43,9 @@ void main() async{
           ),
           BlocProvider(
             create: ( context )=>sl<Model3DBloc>() 
+          ),
+          BlocProvider(
+            create: ( context )=>sl<SensorsBloc>() 
           ),
       ],
       child: const MyApp()),

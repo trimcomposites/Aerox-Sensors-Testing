@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/scan_bluetooth_sensors_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_city_location_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/hide_comment_usecase.dart';
@@ -14,6 +15,10 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecas
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_service.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/racket_bluetooth_service.dart';
 import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/comments_repository.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/local/comment_location_service.dart';
@@ -31,6 +36,7 @@ import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_g
 import 'package:aerox_stage_1/features/feature_select/blocs/select_screen/select_screen_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -54,11 +60,20 @@ Future<void> dependencyInjectionInitialize() async {
     // Base de Datos Local
     ..registerLazySingleton(() => RacketsSQLiteDB())
 
+    //BLuetooth
+    ..registerLazySingleton(() => BluetoothCustomService())
+    ..registerLazySingleton(() => RacketBluetoothService( bluetoothService: sl() ))
+
+
+
     // Servicios Externos
     ..registerLazySingleton(() => RemoteGetRackets())
     ..registerLazySingleton(() => FirestoreComments())
     ..registerLazySingleton(() => CommentLocationService())
     ..registerLazySingleton(() => DownloadFile());
+
+
+
 
   // Registro de Repositorios
   sl
@@ -76,7 +91,10 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => CommentsRepository(
           firestoreComments: sl(),
           commentLocationService: sl(),
-        ));
+        ))
+    ..registerLazySingleton(() => BluetoothRepository(
+      bluetoothService: sl()
+      ));
 
   // Registro de Casos de Uso (Use Cases)
   sl
@@ -98,7 +116,11 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => GetCommentsUsecase(commentsRepository: sl()))
     ..registerLazySingleton(() => SaveCommentUsecase(commentsRepository: sl()))
     ..registerLazySingleton(() => GetCityLocationUseCase(commentsRepository: sl()))
-    ..registerLazySingleton(() => HideCommentUsecase(commentsRepository: sl()));
+    ..registerLazySingleton(() => HideCommentUsecase(commentsRepository: sl()))
+
+    //Sensores bluetooth 
+    ..registerLazySingleton(() => ScanBluetoothSensorsUsecase(bluetoothRepository: sl()));
+
 
   // Registro de Blocs
   sl
@@ -135,5 +157,8 @@ Future<void> dependencyInjectionInitialize() async {
           getCityLocationUseCase: sl(),
           hideCommentUsecase: sl(),
         ))
-    ..registerFactory(() => Model3DBloc());
+    ..registerFactory(() => Model3DBloc())
+    ..registerFactory(() => SensorsBloc(
+      scanBluetoothSensorsUsecase: sl()
+    ));
 }

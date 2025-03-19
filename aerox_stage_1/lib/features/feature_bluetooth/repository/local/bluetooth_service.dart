@@ -1,22 +1,32 @@
+import 'dart:async';
+
 import 'package:aerox_stage_1/common/utils/either_catch.dart';
 import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 
-class BluetoothService {
-  /// 📡 Scan for nearby Bluetooth devices
+class BluetoothCustomService {
+  
+
   Future<EitherErr<List<BluetoothDevice>>> scanDevices({String? filterName}) async {
     return EitherCatch.catchAsync<List<BluetoothDevice>, BluetoothErr>(() async {
       List<BluetoothDevice> devices = [];
+      final Completer<void> scanComplete = Completer<void>();
 
-      // ✅ Corrected: Use static method correctly
-      FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+      if (FlutterBluePlus.adapterStateNow != BluetoothAdapterState.on) {
+        print("⛔ Bluetooth no está encendido. Esperando...");
+        await FlutterBluePlus.adapterState.firstWhere(
+          (state) => state == BluetoothAdapterState.on,
+        );
+        print("✅ Bluetooth encendido. Iniciando escaneo...");
+      }
 
-      // Wait for scan results
-      await Future.delayed(const Duration(seconds: 5));
+      // 📡 Iniciar escaneo
+      FlutterBluePlus.startScan(timeout: const Duration(seconds: 10));
 
-      FlutterBluePlus.scanResults.listen((results) {
+      // 🔄 Capturar dispositivos encontrados
+      final subscription = FlutterBluePlus.scanResults.listen((results) {
         for (ScanResult result in results) {
           if (filterName == null || result.device.platformName.contains(filterName)) {
             if (!devices.any((d) => d.remoteId == result.device.remoteId)) {
@@ -26,8 +36,18 @@ class BluetoothService {
         }
       });
 
-      FlutterBluePlus.stopScan(); // ✅ Corrected usage of stopScan()
+      // ⏳ Esperar el tiempo de escaneo antes de detenerlo
+      await Future.delayed(const Duration(seconds: 5));
+      await FlutterBluePlus.stopScan();
 
+      // ✅ Cancelar la suscripción al Stream
+      await subscription.cancel();
+      scanComplete.complete();
+
+      // 🔄 Esperar a que el escaneo finalice antes de retornar
+      await scanComplete.future;
+
+      print("✅ Escaneo completado. ${devices.length} dispositivos encontrados.");
       return devices;
     }, (exception) {
       return BluetoothErr(
@@ -36,7 +56,6 @@ class BluetoothService {
       );
     });
   }
-
   /// 🔗 Connect to a Bluetooth device
   Future<EitherErr<void>> connectToDevice(BluetoothDevice device) async {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {
@@ -54,17 +73,16 @@ class BluetoothService {
   Future<EitherErr<List<BluetoothService>>> discoverServices(BluetoothDevice device) async {
     return EitherCatch.catchAsync<List<BluetoothService>, BluetoothErr>(() async {
       List<BluetoothService> services = await device.discoverServices();
-      print("Discovered ${services.length} services on ${device.name}");
+      print("Discovered ${services.length} services on ${device.platformName}");
       return services;
     }, (exception) {
       return BluetoothErr(
-        errMsg: 'Error discovering services on ${device.name}: ${exception.toString()}',
+        errMsg: 'Error discovering services on ${device.platformName}: ${exception.toString()}',
         statusCode: 500,
       );
     });
   }
 
-  /// 📥 Read data from a specific characteristic
   Future<EitherErr<List<int>>> readCharacteristic(BluetoothCharacteristic characteristic) async {
     return EitherCatch.catchAsync<List<int>, BluetoothErr>(() async {
       List<int> value = await characteristic.read();
@@ -78,7 +96,6 @@ class BluetoothService {
     });
   }
 
-  /// 📡 Listen to characteristic notifications
   Future<EitherErr<void>> listenToCharacteristic(BluetoothCharacteristic characteristic) async {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {
       await characteristic.setNotifyValue(true);
@@ -92,11 +109,9 @@ class BluetoothService {
       );
     });
   }
-
-  /// 🔄 Monitor Bluetooth connection state
   void monitorConnection(BluetoothDevice device) {
     device.connectionState.listen((state) {
-      print("Connection state of ${device.name}: $state");
+      print("Connection state of ${device.platformName}: $state");
     });
   }
 }
