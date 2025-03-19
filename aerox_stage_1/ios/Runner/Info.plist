@@ -108,6 +108,8 @@
         </array>
     </dict>
 	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Esta aplicación requiere acceso a Bluetooth para conectar dispositivos.</string>
 
 </dict>
 </plist>
