@@ -11,5 +11,5 @@ class SensorsState extends Equatable {
     );
   }
   @override
-  List<Object> get props => [ SensorsState ];
+  List<Object> get props => [ sensors ];
 }

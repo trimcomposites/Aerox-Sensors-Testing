@@ -3,60 +3,85 @@ import 'dart:async';
 import 'package:aerox_stage_1/common/utils/either_catch.dart';
 import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
+import 'package:aerox_stage_1/domain/models/racket_sensor_extension.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 
 class BluetoothCustomService {
   
+  bool _isScanning = false;
+  final List<BluetoothDevice> _devices = [];
+  final StreamController<List<RacketSensor>> _devicesStreamController =
+      StreamController.broadcast();
 
-  Future<EitherErr<List<BluetoothDevice>>> scanDevices({String? filterName}) async {
-    return EitherCatch.catchAsync<List<BluetoothDevice>, BluetoothErr>(() async {
-      List<BluetoothDevice> devices = [];
-      final Completer<void> scanComplete = Completer<void>();
+
+  Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName})  {
+    return EitherCatch.catchAsync<Stream<List<RacketSensor>>, BluetoothErr>(() async {
+      if (_isScanning) return _devicesStreamController.stream;
+      _isScanning = true;
 
       if (FlutterBluePlus.adapterStateNow != BluetoothAdapterState.on) {
         print("⛔ Bluetooth no está encendido. Esperando...");
         await FlutterBluePlus.adapterState.firstWhere(
           (state) => state == BluetoothAdapterState.on,
         );
-        print("✅ Bluetooth encendido. Iniciando escaneo...");
+        print("Iniciando escaneo...");
       }
 
-      // 📡 Iniciar escaneo
-      FlutterBluePlus.startScan(timeout: const Duration(seconds: 10));
+      FlutterBluePlus.startScan();
 
-      // 🔄 Capturar dispositivos encontrados
-      final subscription = FlutterBluePlus.scanResults.listen((results) {
+      FlutterBluePlus.scanResults.listen((results) async {
+        bool hasChanged = false;
+
         for (ScanResult result in results) {
           if (filterName == null || result.device.platformName.contains(filterName)) {
-            if (!devices.any((d) => d.remoteId == result.device.remoteId)) {
-              devices.add(result.device);
+            if (!_devices.any((d) => d.remoteId == result.device.remoteId)) {
+              _devices.add(result.device);
+              hasChanged = true;
             }
           }
         }
-      });
 
-      // ⏳ Esperar el tiempo de escaneo antes de detenerlo
-      await Future.delayed(const Duration(seconds: 5));
-      await FlutterBluePlus.stopScan();
 
-      // ✅ Cancelar la suscripción al Stream
-      await subscription.cancel();
-      scanComplete.complete();
+    if (hasChanged) {
+      List<RacketSensor> racketSensors = await Future.wait(
+        _devices.map((device) async => await device.toRacketSensor(await device.connectionState.first))
+      );
 
-      // 🔄 Esperar a que el escaneo finalice antes de retornar
-      await scanComplete.future;
-
-      print("✅ Escaneo completado. ${devices.length} dispositivos encontrados.");
-      return devices;
+      _devicesStreamController.add(racketSensors);
+    }});
+      print("Escaneo iniciado.");
+      return _devicesStreamController.stream;
     }, (exception) {
-      return BluetoothErr(
-        errMsg: 'Error scanning devices: ${exception.toString()}',
+      throw BluetoothErr(
+        errMsg: 'Error iniciando el escaneo: ${exception.toString()}',
         statusCode: 500,
       );
     });
   }
-  /// 🔗 Connect to a Bluetooth device
+
+
+  Future<EitherErr<List<BluetoothDevice>>> stopScan() {
+    return EitherCatch.catchAsync<List<BluetoothDevice>, BluetoothErr>(() async {
+      if (!_isScanning) return _devices; 
+      _isScanning = false;
+
+      await FlutterBluePlus.stopScan();
+      _devicesStreamController.close();
+      print("Escaneo stopped.");
+      return _devices;
+    }, (exception) {
+      throw BluetoothErr(
+        errMsg: 'Error deteniendo el escaneo: ${exception.toString()}',
+        statusCode: 500,
+      );
+    });
+  }
+  
+  Stream<List<RacketSensor>> get devicesStream => _devicesStreamController.stream;
+
   Future<EitherErr<void>> connectToDevice(BluetoothDevice device) async {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {
       await device.connect();
@@ -69,49 +94,6 @@ class BluetoothCustomService {
     });
   }
 
-  /// 🔍 Discover services and characteristics
-  Future<EitherErr<List<BluetoothService>>> discoverServices(BluetoothDevice device) async {
-    return EitherCatch.catchAsync<List<BluetoothService>, BluetoothErr>(() async {
-      List<BluetoothService> services = await device.discoverServices();
-      print("Discovered ${services.length} services on ${device.platformName}");
-      return services;
-    }, (exception) {
-      return BluetoothErr(
-        errMsg: 'Error discovering services on ${device.platformName}: ${exception.toString()}',
-        statusCode: 500,
-      );
-    });
-  }
 
-  Future<EitherErr<List<int>>> readCharacteristic(BluetoothCharacteristic characteristic) async {
-    return EitherCatch.catchAsync<List<int>, BluetoothErr>(() async {
-      List<int> value = await characteristic.read();
-      print("Data read: $value");
-      return value;
-    }, (exception) {
-      return BluetoothErr(
-        errMsg: 'Error reading characteristic: ${exception.toString()}',
-        statusCode: 500,
-      );
-    });
-  }
 
-  Future<EitherErr<void>> listenToCharacteristic(BluetoothCharacteristic characteristic) async {
-    return EitherCatch.catchAsync<void, BluetoothErr>(() async {
-      await characteristic.setNotifyValue(true);
-      characteristic.value.listen((value) {
-        print("Notification received: $value");
-      });
-    }, (exception) {
-      return BluetoothErr(
-        errMsg: 'Error listening to characteristic: ${exception.toString()}',
-        statusCode: 500,
-      );
-    });
-  }
-  void monitorConnection(BluetoothDevice device) {
-    device.connectionState.listen((state) {
-      print("Connection state of ${device.platformName}: $state");
-    });
-  }
 }
