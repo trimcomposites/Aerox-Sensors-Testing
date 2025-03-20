@@ -7,6 +7,13 @@ class SensorsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class OnScanBluetoothSensors extends SensorsEvent {
+class OnStartScanBluetoothSensors extends SensorsEvent {
   
+}
+class OnStopScanBluetoothSensors extends SensorsEvent {
+  
+}
+class UpdateSensorsList extends SensorsEvent {
+  final List<RacketSensor> sensors;
+  UpdateSensorsList(this.sensors);
 }

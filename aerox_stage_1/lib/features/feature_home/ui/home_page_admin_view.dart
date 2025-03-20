@@ -1,6 +1,6 @@
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
-import 'package:aerox_stage_1/features/feature_home/ui/widgets/bluetooth_connect_button.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_connect_button.dart';
 import 'package:aerox_stage_1/common/ui/selected_racket_widget.dart';
 import 'package:aerox_stage_1/features/feature_details/ui/details_screen.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';

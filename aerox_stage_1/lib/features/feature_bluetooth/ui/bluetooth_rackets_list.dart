@@ -10,7 +10,7 @@ class BluetoothRacketsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sensorsBloc = BlocProvider.of<SensorsBloc>(context);
-    sensorsBloc.add( OnScanBluetoothSensors() );
+    sensorsBloc.add( OnStartScanBluetoothSensors() );
     return Container(
       padding: EdgeInsets.all(16),
       color: Colors.white, // Fondo blanco

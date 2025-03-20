@@ -33,8 +33,7 @@ class BluetoothConnectButton extends StatelessWidget {
             // final userBloc = BlocProvider.of<UserBloc>(context);
             // userBloc.add( OnEmailSignOutUser() );
             // userBloc.add( OnGoogleSignOutUser() );
-            final sensorsBloc = BlocProvider.of<SensorsBloc>(context);
-            sensorsBloc.add( OnScanBluetoothSensors() );
+
             showModalBottomSheet(
               context: context,
               shape: RoundedRectangleBorder(
@@ -43,7 +42,10 @@ class BluetoothConnectButton extends StatelessWidget {
               builder: (BuildContext context) {
                 return BluetoothRacketsList();
               },
-            );
+            ).whenComplete((){
+              final sensorsBloc = BlocProvider.of<SensorsBloc>(context);
+              sensorsBloc.add( OnStopScanBluetoothSensors() );
+            });
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

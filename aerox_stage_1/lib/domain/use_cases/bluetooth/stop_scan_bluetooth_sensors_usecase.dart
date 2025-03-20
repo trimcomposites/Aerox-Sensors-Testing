@@ -5,17 +5,17 @@ import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
-class ScanBluetoothSensorsUsecase extends AsyncUseCaseWithoutParams<Stream<List<RacketSensor>>>{
+class StoptScanBluetoothSensorsUsecase extends AsyncUseCaseWithoutParams<void>{
 
-  const ScanBluetoothSensorsUsecase({ required this.bluetoothRepository  });
+  const StoptScanBluetoothSensorsUsecase({ required this.bluetoothRepository  });
 
   final BluetoothRepository bluetoothRepository;
 
   @override
-  Future<EitherErr<Stream<List<RacketSensor>>>> call() {
+  Future<EitherErr<void>> call() {
     
-    final sensors = bluetoothRepository.scanAllRacketDevices( );
-    return sensors;
+    return bluetoothRepository.stopSensorsScan( );
+
 
   } 
 

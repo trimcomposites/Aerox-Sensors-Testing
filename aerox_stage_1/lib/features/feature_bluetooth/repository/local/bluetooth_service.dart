@@ -13,14 +13,14 @@ class BluetoothCustomService {
   
   bool _isScanning = false;
   final List<BluetoothDevice> _devices = [];
-  final StreamController<List<RacketSensor>> _devicesStreamController =
-      StreamController.broadcast();
+StreamController<List<RacketSensor>>? _devicesStreamController; 
 
 
   Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName})  {
     return EitherCatch.catchAsync<Stream<List<RacketSensor>>, BluetoothErr>(() async {
-      if (_isScanning) return _devicesStreamController.stream;
+      if (_isScanning) return _devicesStreamController!.stream;
       _isScanning = true;
+      _devicesStreamController = StreamController<List<RacketSensor>>.broadcast();
 
       if (FlutterBluePlus.adapterStateNow != BluetoothAdapterState.on) {
         print("⛔ Bluetooth no está encendido. Esperando...");
@@ -50,10 +50,10 @@ class BluetoothCustomService {
         _devices.map((device) async => await device.toRacketSensor(await device.connectionState.first))
       );
 
-      _devicesStreamController.add(racketSensors);
+      _devicesStreamController?.add(racketSensors);
     }});
       print("Escaneo iniciado.");
-      return _devicesStreamController.stream;
+      return _devicesStreamController!.stream;
     }, (exception) {
       throw BluetoothErr(
         errMsg: 'Error iniciando el escaneo: ${exception.toString()}',
@@ -62,16 +62,15 @@ class BluetoothCustomService {
     });
   }
 
-
-  Future<EitherErr<List<BluetoothDevice>>> stopScan() {
-    return EitherCatch.catchAsync<List<BluetoothDevice>, BluetoothErr>(() async {
-      if (!_isScanning) return _devices; 
+  Future<EitherErr<void>> stopScan() {
+    return EitherCatch.catchAsync<void, BluetoothErr>(() async {
+      if (!_isScanning) return; 
       _isScanning = false;
 
       await FlutterBluePlus.stopScan();
-      _devicesStreamController.close();
+      _devicesStreamController?.close();
+       _devicesStreamController = null;
       print("Escaneo stopped.");
-      return _devices;
     }, (exception) {
       throw BluetoothErr(
         errMsg: 'Error deteniendo el escaneo: ${exception.toString()}',
@@ -79,9 +78,8 @@ class BluetoothCustomService {
       );
     });
   }
-  
-  Stream<List<RacketSensor>> get devicesStream => _devicesStreamController.stream;
 
+ 
   Future<EitherErr<void>> connectToDevice(BluetoothDevice device) async {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {
       await device.connect();

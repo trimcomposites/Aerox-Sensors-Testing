@@ -1,25 +1,41 @@
 import 'dart:async';
 
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
-import 'package:aerox_stage_1/domain/use_cases/bluetooth/scan_bluetooth_sensors_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/start_scan_bluetooth_sensors_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/stop_scan_bluetooth_sensors_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 part 'sensors_event.dart';
 part 'sensors_state.dart';
 class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
-  final ScanBluetoothSensorsUsecase scanBluetoothSensorsUsecase;
+  final StartScanBluetoothSensorsUsecase startScanBluetoothSensorsUsecase;
+  final StoptScanBluetoothSensorsUsecase stopScanBluetoothSensorsUsecase;
   StreamSubscription<List<RacketSensor>>? _sensorSubscription;
 
-  SensorsBloc({required this.scanBluetoothSensorsUsecase}) : super(SensorsState()) {
-    on<OnScanBluetoothSensors>((event, emit) async {
-      final result = await scanBluetoothSensorsUsecase.call();
+  SensorsBloc({
+    required this.startScanBluetoothSensorsUsecase,
+    required this.stopScanBluetoothSensorsUsecase
+  }) : super(SensorsState()) {
+    on<OnStartScanBluetoothSensors>((event, emit) async {
+      final result = await startScanBluetoothSensorsUsecase.call();
       result.fold(
         (failure) {
-          //emit(state.copyWith(error: "Error al obtener sensores"));
+          //TODO: IMPLEMENTAR uistate en sensorsbloc
         },
         (stream) {
           _listenToSensorStream(stream);
+        },
+      );
+    });
+    on<OnStopScanBluetoothSensors>((event, emit) async {
+      final result = await stopScanBluetoothSensorsUsecase.call();
+      result.fold(
+        (failure) {
+          //TODO: IMPLEMENTAR uistate en sensorsbloc
+        },
+        (r) {
+          emit( state.copyWith( sensors: [] ) );
         },
       );
     });
@@ -29,25 +45,20 @@ class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
     });
   }
 
-  /// Escucha el stream y actualiza la lista de sensores mediante un nuevo evento
   void _listenToSensorStream(Stream<List<RacketSensor>> stream) async {
-    // Cancelar suscripción previa si existe
+
     await _sensorSubscription?.cancel();
 
     _sensorSubscription = stream.listen((devices) {
-      add(UpdateSensorsList(devices)); // ✅ Usar add() en lugar de emitir directamente
+      add(UpdateSensorsList(devices));
     });
   }
 
   @override
   Future<void> close() {
-    _sensorSubscription?.cancel(); // Cancelar la suscripción al cerrar el Bloc
+    _sensorSubscription?.cancel(); 
     return super.close();
   }
 }
 
-/// Evento para actualizar la lista de sensores
-class UpdateSensorsList extends SensorsEvent {
-  final List<RacketSensor> sensors;
-  UpdateSensorsList(this.sensors);
-}
+

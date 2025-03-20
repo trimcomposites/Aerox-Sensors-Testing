@@ -10,9 +10,13 @@ class BluetoothRepository {
   BluetoothRepository({required this.bluetoothService});
 
 
-  Future<EitherErr<Stream<List<RacketSensor>>>> scanAllRacketDevices() async {
+  Future<EitherErr<Stream<List<RacketSensor>>>> startSensorsScan() async {
       
       return await bluetoothService.scanAllRacketDevices();
+    } 
+  Future<EitherErr<void>> stopSensorsScan() async {
+      
+      return await bluetoothService.stopScanRacketDevices();
     } 
 
 }

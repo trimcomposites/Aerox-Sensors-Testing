@@ -14,8 +14,11 @@ class RacketBluetoothService {
 
   RacketBluetoothService({required this.bluetoothService});
 
-Future<EitherErr<Stream<List<RacketSensor>>>> scanAllRacketDevices() {
-  return bluetoothService.startScan();
-}
+  Future<EitherErr<Stream<List<RacketSensor>>>> scanAllRacketDevices() {
+    return bluetoothService.startScan();
+  }
+  Future<EitherErr<void>> stopScanRacketDevices() {
+    return bluetoothService.stopScan();
+  }
 
 }

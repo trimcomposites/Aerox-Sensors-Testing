@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
-import 'package:aerox_stage_1/domain/use_cases/bluetooth/scan_bluetooth_sensors_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/start_scan_bluetooth_sensors_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/stop_scan_bluetooth_sensors_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_city_location_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/hide_comment_usecase.dart';
@@ -119,7 +120,8 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => HideCommentUsecase(commentsRepository: sl()))
 
     //Sensores bluetooth 
-    ..registerLazySingleton(() => ScanBluetoothSensorsUsecase(bluetoothRepository: sl()));
+    ..registerLazySingleton(() => StartScanBluetoothSensorsUsecase(bluetoothRepository: sl()))
+    ..registerLazySingleton(() => StoptScanBluetoothSensorsUsecase(bluetoothRepository: sl()));
 
 
   // Registro de Blocs
@@ -159,6 +161,7 @@ Future<void> dependencyInjectionInitialize() async {
         ))
     ..registerFactory(() => Model3DBloc())
     ..registerFactory(() => SensorsBloc(
-      scanBluetoothSensorsUsecase: sl()
+      startScanBluetoothSensorsUsecase: sl(),
+      stopScanBluetoothSensorsUsecase: sl()
     ));
 }
