@@ -3,6 +3,7 @@ import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/comment_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
+import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_extension.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_service.dart';
 import 'package:dartz/dartz.dart';
@@ -14,8 +15,27 @@ class RacketBluetoothService {
 
   RacketBluetoothService({required this.bluetoothService});
 
-  Future<EitherErr<Stream<List<RacketSensor>>>> scanAllRacketDevices() {
-    return bluetoothService.startScan();
+Future<EitherErr<Stream<List<RacketSensorEntity>>>> scanAllRacketDevices() {
+    return bluetoothService.startScan(filterName: 'SmartInsole').then(
+      (result) => result.map((stream) => groupSensorsByNameStream(stream)),
+    );
+  }
+
+  Stream<List<RacketSensorEntity>> groupSensorsByNameStream(Stream<List<RacketSensor>> stream) {
+    return stream.map((sensors) {
+      List<RacketSensorEntity> entities = [];
+      for (var sensor in sensors) {
+        var existingEntity = entities.firstWhere(
+          (entity) => entity.name == sensor.name,
+          orElse: () => RacketSensorEntity(name: sensor.name, id: sensor.id, sensors: []),
+        );
+        if (!entities.contains(existingEntity)) {
+          entities.add(existingEntity);
+        }
+        existingEntity.sensors.add(sensor);
+      }
+      return entities;
+    });
   }
   Future<EitherErr<void>> stopScanRacketDevices() {
     return bluetoothService.stopScan();

@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
+import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/racket_bluetooth_service.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
@@ -10,7 +11,7 @@ class BluetoothRepository {
   BluetoothRepository({required this.bluetoothService});
 
 
-  Future<EitherErr<Stream<List<RacketSensor>>>> startSensorsScan() async {
+  Future<EitherErr<Stream<List<RacketSensorEntity>>>> startSensorsScan() async {
       
       return await bluetoothService.scanAllRacketDevices();
     } 

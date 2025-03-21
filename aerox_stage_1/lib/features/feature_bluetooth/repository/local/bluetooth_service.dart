@@ -39,14 +39,18 @@ class BluetoothCustomService {
       
       if (_isScanning) return _devicesStreamController!.stream;
       _isScanning = true;
-      _devicesStreamController = StreamController<List<RacketSensor>>.broadcast();
+      _devices.clear();
+    
+
+    _devicesStreamController?.close();
+    _devicesStreamController = StreamController<List<RacketSensor>>.broadcast();
 
       if (FlutterBluePlus.adapterStateNow != BluetoothAdapterState.on) {
         print("⛔ Bluetooth no está encendido. Esperando...");
         await FlutterBluePlus.adapterState.firstWhere(
           (state) => state == BluetoothAdapterState.on,
         );
-        print("Iniciando escaneo...");
+        print("Iniciando escaneo... ${ filterName }");
       }
 
       FlutterBluePlus.startScan();
@@ -54,14 +58,19 @@ class BluetoothCustomService {
       FlutterBluePlus.scanResults.listen((results) async {
         bool hasChanged = false;
 
-        for (ScanResult result in results) {
-          if (filterName == null || result.device.platformName.contains(filterName)) {
-            if (!_devices.any((d) => d.remoteId == result.device.remoteId)) {
-              _devices.add(result.device);
-              hasChanged = true;
-            }
+      for (ScanResult result in results) {
+        String deviceName = (result.device.platformName ?? '').toLowerCase();
+        String localName = (result.device.localName ?? '').toLowerCase();
+        String? filter = filterName?.toLowerCase();
+
+        if (filter == null || deviceName.contains(filter) || localName.contains(filter)) {
+          if (!_devices.any((d) => d.remoteId == result.device.remoteId)) {
+            _devices.add(result.device);
+            hasChanged = true;
           }
         }
+      }
+
 
         if (hasChanged) {
           List<RacketSensor> racketSensors = await Future.wait(
@@ -72,7 +81,7 @@ class BluetoothCustomService {
         }
       });
 
-      print("Escaneo iniciado.");
+      print("Escaneo iniciado. ${filterName} ");
       return _devicesStreamController!.stream;
     }, (exception) {
       throw BluetoothErr(
