@@ -73,6 +73,7 @@ class Racket3dModel extends StatelessWidget {
                     controller.playAnimation();
                   },
                   onError: (String error) {
+                    //TODO: Custom 3d viewer no implementa bien OnError
                     model3dBloc.add(OnStartErrorModel3d( errormsg: error ) );
                     debugPrint('model failed to load: $error');
                   },
