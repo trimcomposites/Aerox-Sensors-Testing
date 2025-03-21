@@ -5,19 +5,38 @@ import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_extension.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_permission_handler.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-
-
 class BluetoothCustomService {
-  
+  final BluetoothPermissionHandler permissionHandler;
   bool _isScanning = false;
   final List<BluetoothDevice> _devices = [];
-StreamController<List<RacketSensor>>? _devicesStreamController; 
+  StreamController<List<RacketSensor>>? _devicesStreamController;
 
+  BluetoothCustomService({ required this.permissionHandler });
 
-  Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName})  {
+  Future<bool> checkPermissions() async {
+    if (await permissionHandler.hasPermissions()) {
+      print("Permisos concedidos");
+      return true;
+    } else {
+      print("Permisos denegados");
+      await permissionHandler.requestPermissions();
+      return false;
+    }
+  }
+
+  Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
     return EitherCatch.catchAsync<Stream<List<RacketSensor>>, BluetoothErr>(() async {
+      bool hasPermission = await checkPermissions();
+      if (!hasPermission) {
+        throw BluetoothErr(
+          errMsg: 'No se puede iniciar el escaneo sin permisos.',
+          statusCode: 403,
+        );
+      }
+      
       if (_isScanning) return _devicesStreamController!.stream;
       _isScanning = true;
       _devicesStreamController = StreamController<List<RacketSensor>>.broadcast();
@@ -44,14 +63,15 @@ StreamController<List<RacketSensor>>? _devicesStreamController;
           }
         }
 
+        if (hasChanged) {
+          List<RacketSensor> racketSensors = await Future.wait(
+            _devices.map((device) async => await device.toRacketSensor(await device.connectionState.first))
+          );
 
-    if (hasChanged) {
-      List<RacketSensor> racketSensors = await Future.wait(
-        _devices.map((device) async => await device.toRacketSensor(await device.connectionState.first))
-      );
+          _devicesStreamController?.add(racketSensors);
+        }
+      });
 
-      _devicesStreamController?.add(racketSensors);
-    }});
       print("Escaneo iniciado.");
       return _devicesStreamController!.stream;
     }, (exception) {
@@ -64,12 +84,12 @@ StreamController<List<RacketSensor>>? _devicesStreamController;
 
   Future<EitherErr<void>> stopScan() {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {
-      if (!_isScanning) return; 
+      if (!_isScanning) return;
       _isScanning = false;
 
       await FlutterBluePlus.stopScan();
       _devicesStreamController?.close();
-       _devicesStreamController = null;
+      _devicesStreamController = null;
       print("Escaneo stopped.");
     }, (exception) {
       throw BluetoothErr(
@@ -79,7 +99,6 @@ StreamController<List<RacketSensor>>? _devicesStreamController;
     });
   }
 
- 
   Future<EitherErr<void>> connectToDevice(BluetoothDevice device) async {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {
       await device.connect();
@@ -91,7 +110,4 @@ StreamController<List<RacketSensor>>? _devicesStreamController;
       );
     });
   }
-
-
-
 }

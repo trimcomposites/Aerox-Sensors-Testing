@@ -18,6 +18,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.da
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_permission_handler.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_service.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/racket_bluetooth_service.dart';
 import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
@@ -62,7 +63,8 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => RacketsSQLiteDB())
 
     //BLuetooth
-    ..registerLazySingleton(() => BluetoothCustomService())
+    ..registerLazySingleton(() => BluetoothPermissionHandler())
+    ..registerLazySingleton(() => BluetoothCustomService( permissionHandler: sl() ))
     ..registerLazySingleton(() => RacketBluetoothService( bluetoothService: sl() ))
 
 
