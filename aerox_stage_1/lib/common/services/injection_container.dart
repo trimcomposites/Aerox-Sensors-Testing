@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/connect_to_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/start_scan_bluetooth_sensors_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/stop_scan_bluetooth_sensors_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
@@ -123,6 +124,7 @@ Future<void> dependencyInjectionInitialize() async {
 
     //Sensores bluetooth 
     ..registerLazySingleton(() => StartScanBluetoothSensorsUsecase(bluetoothRepository: sl()))
+    ..registerLazySingleton(() => ConnectToRacketSensorUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => StoptScanBluetoothSensorsUsecase(bluetoothRepository: sl()));
 
 
@@ -163,6 +165,7 @@ Future<void> dependencyInjectionInitialize() async {
         ))
     ..registerFactory(() => Model3DBloc())
     ..registerFactory(() => SensorsBloc(
+      connectToRacketSensorUsecase: sl(),
       startScanBluetoothSensorsUsecase: sl(),
       stopScanBluetoothSensorsUsecase: sl()
     ));

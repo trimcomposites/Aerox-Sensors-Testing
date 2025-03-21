@@ -1,6 +1,9 @@
+import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/ui/racket_entity_list_item.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BluetoothRacketsList extends StatelessWidget {
   const BluetoothRacketsList({
@@ -27,29 +30,8 @@ class BluetoothRacketsList extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: state.sensors.length,
                   itemBuilder: (BuildContext context, int index1) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.sports_tennis_outlined),
-                            SizedBox(width: 10),
-                            Text(state.sensors[index1].name),
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        SizedBox(
-                          height: 100, 
-                          child: ListView.builder(
-                            itemCount: state.sensors[index1].sensors.length,
-                            itemBuilder: (BuildContext context, int index2) {
-                              return Text('Sensor: ${state.sensors[index1].sensors[index2].id}');
-                            },
-                          ),
-                        ),
-                        Divider(),
-                      ],
-                    );
+                    final entity = state.sensors[index1];
+                    return RacketEntityListItem( entity: entity,);
                   },
                 ),
               ),

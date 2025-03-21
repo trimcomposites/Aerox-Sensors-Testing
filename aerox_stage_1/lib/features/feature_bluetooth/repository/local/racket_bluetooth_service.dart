@@ -41,4 +41,18 @@ Future<EitherErr<Stream<List<RacketSensorEntity>>>> scanAllRacketDevices() {
     return bluetoothService.stopScan();
   }
 
+  Future<EitherErr<void>> connectRacketSensorEntity(RacketSensorEntity entity) async {
+    final sensors = entity.sensors;
+
+    for (RacketSensor sensor in sensors) {
+      final result = await bluetoothService.connectToDevice(sensor);
+      if (result.isLeft()) {
+        return result;
+      }
+    }
+
+    return Right(null);
+  }
+
+
 }

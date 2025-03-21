@@ -18,6 +18,10 @@ class BluetoothRepository {
   Future<EitherErr<void>> stopSensorsScan() async {
       
       return await bluetoothService.stopScanRacketDevices();
-    } 
+    }
+
+  Future<EitherErr<void>> connectRacketSensorEntity( RacketSensorEntity entity ) async {
+    return await bluetoothService.connectRacketSensorEntity( entity );
+  } 
 
 }

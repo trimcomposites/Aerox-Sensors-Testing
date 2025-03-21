@@ -6,10 +6,10 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 extension RacketSensorExtension on BluetoothDevice {
   /// Convert a BluetoothDevice into a RacketSensor con manejo de errores
-  RacketSensor toRacketSensor( BluetoothConnectionState state ) {
+  RacketSensor toRacketSensor({required  BluetoothConnectionState state, String? customName }) {
       return RacketSensor(
         device: this,
-        name: platformName.isNotEmpty ? platformName : name.isNotEmpty ? name : remoteId.toString(),
+        name: platformName.isNotEmpty ? platformName : customName ?? remoteId.toString(),
         id: remoteId.toString(),
         connectionState: state,
       );
