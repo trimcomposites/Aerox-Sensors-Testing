@@ -12,9 +12,9 @@ import 'package:flutter/scheduler.dart';
 class BluetoothRacketsList extends StatelessWidget {
   const BluetoothRacketsList({super.key});
 
-  void _startRescanTimer(BuildContext context) {
+  void startRescanTimer(BuildContext context, SensorsBloc sensorsBloc) {
     Timer.periodic(Duration(seconds: 10), (_) {
-      final sensorsBloc = BlocProvider.of<SensorsBloc>(context, listen: false);
+      //TODO COmprobar si no esta cargando  para  evitar que se  desactualice la lista mientras se esta conectando.
       sensorsBloc.add(OnReScanBluetoothSensors());
     });
   }
@@ -25,10 +25,11 @@ class BluetoothRacketsList extends StatelessWidget {
     sensorsBloc.add(OnStartScanBluetoothSensors());
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _startRescanTimer(context);
+      startRescanTimer(context, sensorsBloc);
     });
 
     return Container(
+      height: MediaQuery.of(context).size.height,
       padding: EdgeInsets.all(16),
       color: Colors.white,
       child: BlocListener<SensorsBloc, SensorsState>(
@@ -40,30 +41,30 @@ class BluetoothRacketsList extends StatelessWidget {
         },
         child: BlocBuilder<SensorsBloc, SensorsState>(
           builder: (context, state) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("Dispositivos Encontrados:"),
-                SizedBox(height: 10),
-                SizedBox(
-                  height: 400,
-                  child: ListView.builder(
-                    itemCount: state.sensors.length,
-                    itemBuilder: (BuildContext context, int index1) {
-                      final entity = state.sensors[index1];
-                      return RacketEntityListItem(entity: entity);
-                    },
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Dispositivos Encontrados:"),
+                  SizedBox(height: 10),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height/4,
+                    child: ListView.builder(
+                      itemCount: state.sensors.length,
+                      itemBuilder: (BuildContext context, int index1) {
+                        final entity = state.sensors[index1];
+                        return RacketEntityListItem(entity: entity);
+                      },
+                    ),
                   ),
-                ),
-                state.uiState.status == UIStatus.loading
-                    ? LoadingIndicator()
-                    : Container(),
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text("Cerrar"),
-                ),
-              ],
-            );
+                  state.uiState.status == UIStatus.loading
+                      ? LoadingIndicator( showBackGround: false, )
+                      : Container(),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text("Cerrar"),
+                  ),
+                ],
+              );
           },
         ),
       ),
