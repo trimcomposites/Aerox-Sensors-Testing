@@ -36,7 +36,7 @@ class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
     }
     /// **Iniciar escaneo**
     on<OnStartScanBluetoothSensors>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.loading(), selectedRacketEntity: state.selectedRacketEntity ));
+      emit(state.copyWith(uiState: UIState.loading(), sensors: [], selectedRacketEntity: state.selectedRacketEntity ));
 
       final result = await startScanBluetoothSensorsUsecase.call();
       result.fold(
@@ -106,6 +106,5 @@ class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
     });
 
 
-
-}
+  }
 }

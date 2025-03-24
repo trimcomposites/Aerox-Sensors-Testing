@@ -23,6 +23,7 @@ class BluetoothRacketsList extends StatelessWidget {
       child: BlocListener<SensorsBloc, SensorsState>(
         listener: (context, state) {
           if( state.selectedRacketEntity != null && state.uiState.next != null ){
+            Navigator.pop(context);
             Navigator.pushNamed(context, state.uiState.next!);
           }
         },

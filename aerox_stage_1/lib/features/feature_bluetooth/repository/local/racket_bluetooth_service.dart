@@ -20,23 +20,27 @@ Future<EitherErr<Stream<List<RacketSensorEntity>>>> scanAllRacketDevices() {
       (result) => result.map((stream) => groupSensorsByNameStream(stream)),
     );
   }
+Stream<List<RacketSensorEntity>> groupSensorsByNameStream(Stream<List<RacketSensor>> stream) {
+  return stream.map((sensors) {
+    Map<String, RacketSensorEntity> entityMap = {};
 
-  Stream<List<RacketSensorEntity>> groupSensorsByNameStream(Stream<List<RacketSensor>> stream) {
-    return stream.map((sensors) {
-      List<RacketSensorEntity> entities = [];
-      for (var sensor in sensors) {
-        var existingEntity = entities.firstWhere(
-          (entity) => entity.name == sensor.name,
-          orElse: () => RacketSensorEntity(name: sensor.name, id: sensor.id, sensors: []),
-        );
-        if (!entities.contains(existingEntity)) {
-          entities.add(existingEntity);
-        }
-        existingEntity.sensors.add(sensor);
+    for (var sensor in sensors) {
+      if (!entityMap.containsKey(sensor.name)) {
+        entityMap[sensor.name] = RacketSensorEntity(name: sensor.name, id: sensor.id, sensors: []);
       }
-      return entities;
-    });
-  }
+
+      // 🔹 Añadir solo sensores que siguen en el alcance
+      if (!entityMap[sensor.name]!.sensors.contains(sensor)) {
+        entityMap[sensor.name]!.sensors.add(sensor);
+      }
+    }
+
+    // 🔹 Eliminar entidades que no tengan sensores activos
+    return entityMap.values.where((entity) => entity.sensors.isNotEmpty).toList();
+  });
+}
+
+
   Future<EitherErr<void>> stopScanRacketDevices() {
     return bluetoothService.stopScan();
   }
@@ -59,6 +63,7 @@ Future<EitherErr<Stream<List<RacketSensorEntity>>>> scanAllRacketDevices() {
 
     for (RacketSensor sensor in sensors) {
       final result = await bluetoothService.disconnectFromDevice(sensor);
+
       if (result.isLeft()) {
         return result; 
       }

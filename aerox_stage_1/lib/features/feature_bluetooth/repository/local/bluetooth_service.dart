@@ -7,11 +7,12 @@ import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_extension.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_permission_handler.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 class BluetoothCustomService {
   final BluetoothPermissionHandler permissionHandler;
   bool _isScanning = false;
-  final List<BluetoothDevice> _devices = [];
+  List<BluetoothDevice> _devices = [];
   StreamController<List<RacketSensor>>? _devicesStreamController;
 
   BluetoothCustomService({ required this.permissionHandler });
@@ -26,37 +27,39 @@ class BluetoothCustomService {
       return false;
     }
   }
+Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
+  return EitherCatch.catchAsync<Stream<List<RacketSensor>>, BluetoothErr>(() async {
+    bool hasPermission = await checkPermissions();
+    if (!hasPermission) {
+      throw BluetoothErr(
+        errMsg: 'No se puede iniciar el escaneo sin permisos.',
+        statusCode: 403,
+      );
+    }
 
-  Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
-    return EitherCatch.catchAsync<Stream<List<RacketSensor>>, BluetoothErr>(() async {
-      bool hasPermission = await checkPermissions();
-      if (!hasPermission) {
-        throw BluetoothErr(
-          errMsg: 'No se puede iniciar el escaneo sin permisos.',
-          statusCode: 403,
-        );
-      }
-      
-      if (_isScanning) return _devicesStreamController!.stream;
-      _isScanning = true;
-      _devices.clear();
-    
+    if (_isScanning) return _devicesStreamController!.stream;
+    _isScanning = true;
+    _devices.clear();
 
     _devicesStreamController?.close();
     _devicesStreamController = StreamController<List<RacketSensor>>.broadcast();
 
-      if (FlutterBluePlus.adapterStateNow != BluetoothAdapterState.on) {
-        print("⛔ Bluetooth no está encendido. Esperando...");
-        await FlutterBluePlus.adapterState.firstWhere(
-          (state) => state == BluetoothAdapterState.on,
-        );
-        print("Iniciando escaneo... ${ filterName }");
-      }
+    if (FlutterBluePlus.adapterStateNow != BluetoothAdapterState.on) {
+      print("⛔ Bluetooth no está encendido. Esperando...");
+      await FlutterBluePlus.adapterState.firstWhere(
+        (state) => state == BluetoothAdapterState.on,
+      );
+    }
 
-      FlutterBluePlus.startScan();
+    FlutterBluePlus.startScan();
 
-      FlutterBluePlus.scanResults.listen((results) async {
-        bool hasChanged = false;
+    StreamSubscription? scanSubscription;
+    bool isRestartingScan = false;  
+
+    scanSubscription = FlutterBluePlus.onScanResults.listen((results) async {
+      List<BluetoothDevice> detectedDevices = results.map((r) => r.device).toList();
+
+      _devices.removeWhere((device) => !detectedDevices.any((d) => d.remoteId == device.remoteId));
 
       for (ScanResult result in results) {
         String deviceName = (result.device.platformName ?? '').toLowerCase();
@@ -66,30 +69,43 @@ class BluetoothCustomService {
         if (filter == null || deviceName.contains(filter) || localName.contains(filter)) {
           if (!_devices.any((d) => d.remoteId == result.device.remoteId)) {
             _devices.add(result.device);
-            hasChanged = true;
           }
         }
       }
-      //addFakeDevices();
 
-        if (hasChanged) {
-          List<RacketSensor> racketSensors = await Future.wait(
-            _devices.map((device) async => await device.toRacketSensor( state:  await device.connectionState.first))
-          );
-
-          _devicesStreamController?.add(racketSensors);
-        }
-      });
-
-      print("Escaneo iniciado. ${filterName} ");
-      return _devicesStreamController!.stream;
-    }, (exception) {
-      throw BluetoothErr(
-        errMsg: 'Error iniciando el escaneo: ${exception.toString()}',
-        statusCode: 500,
+      List<RacketSensor> racketSensors = await Future.wait(
+        _devices.map((device) async => await device.toRacketSensor(state: await device.connectionState.first)),
       );
+
+      _devicesStreamController?.add(racketSensors);
+
+      if (_isScanning && !isRestartingScan) {
+        isRestartingScan = true;
+        await Future.delayed(Duration(seconds: 10));
+        
+        if (_isScanning) { 
+          print("♻ Reiniciando escaneo...");
+          await FlutterBluePlus.stopScan();
+          await Future.delayed(Duration(milliseconds: 500));
+          FlutterBluePlus.startScan();
+        }
+
+        isRestartingScan = false; 
+      }
     });
-  }
+
+    print("🔍 Escaneo iniciado: ${filterName} ");
+    return _devicesStreamController!.stream;
+  }, (exception) {
+    throw BluetoothErr(
+      errMsg: 'Error iniciando el escaneo: ${exception.toString()}',
+      statusCode: 500,
+    );
+  });
+}
+
+
+
 
   Future<EitherErr<void>> stopScan() {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {

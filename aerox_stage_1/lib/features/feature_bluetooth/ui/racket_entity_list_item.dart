@@ -38,13 +38,7 @@ class RacketEntityListItem extends StatelessWidget {
       ],
     );
   }
-  void showCustomDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: false, // Impide que el usuario lo cierre tocando fuera
-    builder: (BuildContext context) {
-      return ConnectingSensorsDialog();
-    },
-  );
-}
+
+
+
 }

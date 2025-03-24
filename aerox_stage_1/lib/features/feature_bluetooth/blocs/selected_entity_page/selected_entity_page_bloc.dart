@@ -18,7 +18,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     required this.getSelectedBluetoothRacketUsecase
     }) : super(SelectedEntityPageState( uiState: UIState.idle() )) {
     on<OnDisconnectSelectedRacketSelectedEntityPage>((event, emit) async{
-      emit(state.copyWith(uiState: UIState.loading()));
+      emit(state.copyWith(uiState: UIState.loading(), selectedRacketEntity: state.selectedRacketEntity));
       final selectedRacket = state.selectedRacketEntity;
       if( selectedRacket != null ){
         // ignore: avoid_single_cascade_in_expression_statements
@@ -32,7 +32,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
       }
     });
     on<OnGetSelectedRacketSelectedEntityPage>((event, emit) async{
-        emit(state.copyWith(uiState: UIState.loading()));
+        emit(state.copyWith(uiState: UIState.loading(), selectedRacketEntity: state.selectedRacketEntity));
         // ignore: avoid_single_cascade_in_expression_statements
         await getSelectedBluetoothRacketUsecase.call()..fold(
         (failure) {
