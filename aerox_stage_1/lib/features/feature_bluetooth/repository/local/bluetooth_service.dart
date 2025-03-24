@@ -119,38 +119,43 @@ class BluetoothCustomService {
       );
     });
   }
+  Future<EitherErr<void>> disconnectFromDevice(RacketSensor racketSensor) async {
+    return EitherCatch.catchAsync<void, BluetoothErr>(() async {
+      if (racketSensor.device.isConnected) {
+        await racketSensor.device.disconnect();
+        print("Disconnected from ${racketSensor.name}");
+      } else {
+        print("${racketSensor.name} ya está desconectado.");
+      }
+    }, (exception) {
+      return BluetoothErr(
+        errMsg: 'Error desconectando de ${racketSensor.name}: ${exception.toString()}',
+        statusCode: 500,
+      );
+    });
+  }
+Future<EitherErr<List<RacketSensor>>> getConnectedSensors() async {
+  return EitherCatch.catchAsync<List<RacketSensor>, BluetoothErr>(() async {
+    List<RacketSensor> connectedSensors = [];
 
-// void addFakeDevices() {
-//   // Mapa de direcciones MAC simuladas y sus nombres correspondientes
-//   final Map<String, String> fakeDevices = {
-//     "00:11:22:33:44:55": "SmartInsole123",
-//     "00:11:22:33:44:42": "SmartInsole123",
-//     "00:11:22:33:22:55": "Altavoz Falso",
-//     "66:77:88:99:AA:BB": "Auriculares Falsos",
-//     "CC:DD:EE:FF:00:11": "Controlador de Juego Falso",
-//   };
+    List<BluetoothDevice> devicesCopy = List.from(_devices);
 
-//   // Crear y agregar dispositivos falsos a la lista `_devices`
-//   fakeDevices.forEach((mac, name) {
-//     final device = BluetoothDevice(remoteId: DeviceIdentifier(mac));
-//         if (name.contains('SmartInsole') ) {
-//           //if (!_devices.any((d) => d.remoteId == device.remoteId)) {
-//             _devices.add(device);
-//           //}
-//         }
-//     print("Dispositivo falso agregado: $name con MAC $mac");
-//   });
+    for (BluetoothDevice device in devicesCopy) {
+      BluetoothConnectionState state = await device.connectionState.first;
+      if (state == BluetoothConnectionState.connected) {
+        connectedSensors.add(await device.toRacketSensor(state: state));
+      }
+    }
 
-//   // Notificar al Stream que hay nuevos dispositivos falsos
-//   Future.delayed(Duration(seconds: 1), () async {
-//     final racketSensors = await Future.wait(
-//       _devices.map((device) async {
-//         final name = fakeDevices[device.remoteId.toString()] ?? "Dispositivo Desconocido";
-//         return await device.toRacketSensor( state: await device.connectionState.first, customName: name);
-//       }),
-//     );
-//     _devicesStreamController?.add(racketSensors);
-//   });
-// }
+    return connectedSensors;
+  }, (exception) {
+    return BluetoothErr(
+      errMsg: 'Error obteniendo sensores conectados: ${exception.toString()}',
+      statusCode: 500,
+    );
+  });
+}
+
+
 
 }

@@ -23,5 +23,11 @@ class BluetoothRepository {
   Future<EitherErr<void>> connectRacketSensorEntity( RacketSensorEntity entity ) async {
     return await bluetoothService.connectRacketSensorEntity( entity );
   } 
+  Future<EitherErr<void>> disconnectRacketSensorEntity( RacketSensorEntity entity ) async {
+    return await bluetoothService.disconnectRacketSensorEntity( entity );
+  } 
+  Future<EitherErr<RacketSensorEntity?>> getSelectedRacketEntity( ) async {
+    return await bluetoothService.getConnectedRacketEntity( );
+  } 
 
 }

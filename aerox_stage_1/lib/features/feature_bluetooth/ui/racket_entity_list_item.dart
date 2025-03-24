@@ -1,6 +1,7 @@
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_rackets_list.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/ui/connecting_sensors_dialog.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/racket_entity_sensor_list.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +25,7 @@ class RacketEntityListItem extends StatelessWidget {
           TextButton.icon(
               onPressed: () {
                 sensorsBloc.add(OnConnectRacketSensorEntity(id: entity.id));
-                showCustomDialog(context);
+              
               },
               icon: Icon(Icons.sports_tennis_outlined),
               label: Text( entity.name ),
@@ -42,18 +43,7 @@ class RacketEntityListItem extends StatelessWidget {
     context: context,
     barrierDismissible: false, // Impide que el usuario lo cierre tocando fuera
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Mensaje Importante'),
-        content: Text('Este es un diálogo modal que no se puede cerrar.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Aceptar'),
-          ),
-        ],
-      );
+      return ConnectingSensorsDialog();
     },
   );
 }

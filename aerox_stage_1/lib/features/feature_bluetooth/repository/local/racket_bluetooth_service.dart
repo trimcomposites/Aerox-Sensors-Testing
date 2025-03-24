@@ -54,5 +54,30 @@ Future<EitherErr<Stream<List<RacketSensorEntity>>>> scanAllRacketDevices() {
     return Right(null);
   }
 
+  Future<EitherErr<void>> disconnectRacketSensorEntity(RacketSensorEntity entity) async {
+    final sensors = entity.sensors;
+
+    for (RacketSensor sensor in sensors) {
+      final result = await bluetoothService.disconnectFromDevice(sensor);
+      if (result.isLeft()) {
+        return result; 
+      }
+    }
+
+    return Right(null); 
+  }
+  Future<EitherErr<RacketSensorEntity?>> getConnectedRacketEntity() async {
+    return bluetoothService.getConnectedSensors().then((result) {
+      return result.map((connectedSensors) {
+        if (connectedSensors.isEmpty) {
+          return null;
+        }
+        String entityName = connectedSensors.first.name;
+        String entityId = connectedSensors.first.id;
+        return RacketSensorEntity(name: entityName, id: entityId, sensors: connectedSensors);
+      });
+    });
+  }
+
 
 }

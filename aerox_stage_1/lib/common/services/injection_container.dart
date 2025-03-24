@@ -1,5 +1,7 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/connect_to_racket_sensor_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/start_scan_bluetooth_sensors_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/stop_scan_bluetooth_sensors_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
@@ -17,6 +19,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecas
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_permission_handler.dart';
@@ -125,6 +128,8 @@ Future<void> dependencyInjectionInitialize() async {
     //Sensores bluetooth 
     ..registerLazySingleton(() => StartScanBluetoothSensorsUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => ConnectToRacketSensorUsecase(bluetoothRepository: sl()))
+    ..registerLazySingleton(() => DisconnectFromRacketSensorUsecase(bluetoothRepository: sl()))
+    ..registerLazySingleton(() => GetSelectedBluetoothRacketUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => StoptScanBluetoothSensorsUsecase(bluetoothRepository: sl()));
 
 
@@ -167,6 +172,11 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerFactory(() => SensorsBloc(
       connectToRacketSensorUsecase: sl(),
       startScanBluetoothSensorsUsecase: sl(),
-      stopScanBluetoothSensorsUsecase: sl()
+      stopScanBluetoothSensorsUsecase: sl(),
+      disconnectFromRacketSensorUsecase: sl()
+    ))
+    ..registerFactory(() => SelectedEntityPageBloc(
+      disconnectFromRacketSensorUsecase: sl(),
+      getSelectedBluetoothRacketUsecase: sl()
     ));
 }

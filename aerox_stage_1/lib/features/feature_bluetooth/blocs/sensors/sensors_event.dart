@@ -13,6 +13,9 @@ class OnStartScanBluetoothSensors extends SensorsEvent {
 class OnStopScanBluetoothSensors extends SensorsEvent {
   
 }
+class OnDisconnectSelectedRacket extends SensorsEvent {
+  
+}
 class OnConnectRacketSensorEntity extends SensorsEvent {
   final String id;
 
@@ -21,11 +24,4 @@ class OnConnectRacketSensorEntity extends SensorsEvent {
 class OnUpdateSensorsList extends SensorsEvent {
   final List<RacketSensorEntity> sensors;
   OnUpdateSensorsList(this.sensors);
-}
-class OnRemoveDisconnectedSensor extends SensorsEvent {
-  final String id;
-
-  OnRemoveDisconnectedSensor({required this.id});
-
-
 }
