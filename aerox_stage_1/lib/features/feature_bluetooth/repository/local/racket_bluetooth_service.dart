@@ -44,6 +44,9 @@ Stream<List<RacketSensorEntity>> groupSensorsByNameStream(Stream<List<RacketSens
   Future<EitherErr<void>> stopScanRacketDevices() {
     return bluetoothService.stopScan();
   }
+  Future<EitherErr<void>> reScan() {
+    return bluetoothService.reScan();
+  }
 
   Future<EitherErr<void>> connectRacketSensorEntity(RacketSensorEntity entity) async {
     final sensors = entity.sensors;

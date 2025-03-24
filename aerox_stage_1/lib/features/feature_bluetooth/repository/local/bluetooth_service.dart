@@ -14,7 +14,7 @@ class BluetoothCustomService {
   bool _isScanning = false;
   List<BluetoothDevice> _devices = [];
   StreamController<List<RacketSensor>>? _devicesStreamController;
-
+  bool isRestartingScan = false;
   BluetoothCustomService({ required this.permissionHandler });
 
   Future<bool> checkPermissions() async {
@@ -54,7 +54,6 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
     FlutterBluePlus.startScan();
 
     StreamSubscription? scanSubscription;
-    bool isRestartingScan = false;  
 
     scanSubscription = FlutterBluePlus.onScanResults.listen((results) async {
       List<BluetoothDevice> detectedDevices = results.map((r) => r.device).toList();
@@ -78,21 +77,8 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
       );
 
       _devicesStreamController?.add(racketSensors);
-
-      if (_isScanning && !isRestartingScan) {
-        isRestartingScan = true;
-        await Future.delayed(Duration(seconds: 10));
-        
-        if (_isScanning) { 
-          print("♻ Reiniciando escaneo...");
-          await FlutterBluePlus.stopScan();
-          await Future.delayed(Duration(milliseconds: 500));
-          FlutterBluePlus.startScan();
-        }
-
-        isRestartingScan = false; 
-      }
     });
+
 
     print("🔍 Escaneo iniciado: ${filterName} ");
     return _devicesStreamController!.stream;
@@ -105,7 +91,26 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
 }
 
 
+Future<EitherErr<void>> reScan() {
+  return EitherCatch.catchAsync<void, BluetoothErr>(() async {
+    if (!_isScanning || isRestartingScan) return;
 
+    isRestartingScan = true;
+
+    if (_isScanning) { 
+      await FlutterBluePlus.stopScan();
+      await Future.delayed(Duration(milliseconds: 500));
+      FlutterBluePlus.startScan();
+    }
+
+    isRestartingScan = false;
+  }, (exception) {
+    return BluetoothErr(
+      errMsg: 'Error reiniciando el escaneo: ${exception.toString()}',
+      statusCode: 500,
+    );
+  });
+}
 
   Future<EitherErr<void>> stopScan() {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {

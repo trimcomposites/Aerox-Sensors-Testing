@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/common/services/download_file.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/connect_to_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/rescan_racket_sensors_use_case.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/start_scan_bluetooth_sensors_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/stop_scan_bluetooth_sensors_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
@@ -130,7 +131,8 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => ConnectToRacketSensorUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => DisconnectFromRacketSensorUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => GetSelectedBluetoothRacketUsecase(bluetoothRepository: sl()))
-    ..registerLazySingleton(() => StoptScanBluetoothSensorsUsecase(bluetoothRepository: sl()));
+    ..registerLazySingleton(() => StoptScanBluetoothSensorsUsecase(bluetoothRepository: sl()))
+    ..registerLazySingleton(() => ReScanRacketSensorsUseCase(bluetoothRepository: sl()));
 
 
   // Registro de Blocs
@@ -173,7 +175,8 @@ Future<void> dependencyInjectionInitialize() async {
       connectToRacketSensorUsecase: sl(),
       startScanBluetoothSensorsUsecase: sl(),
       stopScanBluetoothSensorsUsecase: sl(),
-      disconnectFromRacketSensorUsecase: sl()
+      disconnectFromRacketSensorUsecase: sl(),
+      reScanRacketSensorsUseCase: sl()
     ))
     ..registerFactory(() => SelectedEntityPageBloc(
       disconnectFromRacketSensorUsecase: sl(),

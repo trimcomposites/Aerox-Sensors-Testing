@@ -10,6 +10,9 @@ class SensorsEvent extends Equatable {
 class OnStartScanBluetoothSensors extends SensorsEvent {
   
 }
+class OnReScanBluetoothSensors extends SensorsEvent {
+  
+}
 class OnStopScanBluetoothSensors extends SensorsEvent {
   
 }

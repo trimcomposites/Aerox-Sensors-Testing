@@ -5,6 +5,7 @@ import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/connect_to_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/bluetooth/rescan_racket_sensors_use_case.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/start_scan_bluetooth_sensors_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/stop_scan_bluetooth_sensors_usecase.dart';
 import 'package:equatable/equatable.dart';
@@ -18,13 +19,15 @@ class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
   final StoptScanBluetoothSensorsUsecase stopScanBluetoothSensorsUsecase;
   final ConnectToRacketSensorUsecase connectToRacketSensorUsecase;
   final DisconnectFromRacketSensorUsecase disconnectFromRacketSensorUsecase;
+  final ReScanRacketSensorsUseCase reScanRacketSensorsUseCase;
   StreamSubscription<List<RacketSensorEntity>>? _sensorSubscription;
 
   SensorsBloc({
     required this.startScanBluetoothSensorsUsecase,
     required this.stopScanBluetoothSensorsUsecase,
     required this.connectToRacketSensorUsecase,
-    required this.disconnectFromRacketSensorUsecase
+    required this.disconnectFromRacketSensorUsecase,
+    required this.reScanRacketSensorsUseCase
   }) : super(SensorsState(uiState: UIState.idle())) {
     
   void _listenToSensorStream(Stream<List<RacketSensorEntity>> stream) async {
@@ -60,6 +63,19 @@ class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
         },
         (r) {
           emit(state.copyWith(sensors: [], selectedRacketEntity: state.selectedRacketEntity ));
+        },
+      );
+    });
+    on<OnReScanBluetoothSensors>((event, emit) async {
+      emit(state.copyWith(uiState: UIState.loading(), selectedRacketEntity: state.selectedRacketEntity ));
+
+      final result = await reScanRacketSensorsUseCase.call();
+      result.fold(
+        (failure) {
+          emit(state.copyWith(uiState: UIState.error(failure.errMsg), selectedRacketEntity: state.selectedRacketEntity ));
+        },
+        (r) {
+          emit(state.copyWith( selectedRacketEntity: state.selectedRacketEntity ));
         },
       );
     });
