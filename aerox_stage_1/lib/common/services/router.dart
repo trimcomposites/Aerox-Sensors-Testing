@@ -15,5 +15,5 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/login/email': (context) => const LoginMainScreen(),
   '/login/register': (context) => const LoginMainScreen(),
   '/login/password': (context) => const ResetPasswordScreen(),
-  '/bluetooth' : (context) => const BluetoothSelectedRacketPage(),
+  '/bluetooth' : (context) =>  BluetoothSelectedRacketPage(),
 };

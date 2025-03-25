@@ -51,15 +51,19 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
         );
       });
     });
+  
+    on<OnShowConnectionError>((event, emit) async {
+
+      emit(state.copyWith(uiState: UIState.error( event.errorMsg ) ));
+    });
   }
 
   void monitorSelectedRacketConnection() {
-    //TODO Comprobar si funciona enuna desconexion real
-    
     state.selectedRacketEntity?.sensors.forEach((sensor) {
       sensor.device.connectionState.listen((connectionState) {
         if (connectionState == BluetoothConnectionState.disconnected) {
           add(OnDisconnectSelectedRacketSelectedEntityPage());
+          add( OnShowConnectionError(errorMsg: 'Ha habido un problema de Conexión, comprueba los sensores y vuelve a intentarlo.') );
         }
       });
     });

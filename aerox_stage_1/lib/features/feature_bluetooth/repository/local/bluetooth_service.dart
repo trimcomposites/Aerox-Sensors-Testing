@@ -37,7 +37,7 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
       );
     }
 
-    if (_isScanning) return _devicesStreamController!.stream;
+    if (_isScanning && _devicesStreamController != null ) return _devicesStreamController!.stream;
     _isScanning = true;
     _devices.clear();
 
