@@ -47,6 +47,7 @@ class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
           emit(state.copyWith(uiState: UIState.error(failure.errMsg), selectedRacketEntity: state.selectedRacketEntity ));
         },
         (stream) {
+          
           _listenToSensorStream(stream);
         },
       );
@@ -62,7 +63,7 @@ class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
           emit(state.copyWith(uiState: UIState.error(failure.errMsg), selectedRacketEntity: state.selectedRacketEntity ));
         },
         (r) {
-          emit(state.copyWith(sensors: [], selectedRacketEntity: state.selectedRacketEntity ));
+          emit(state.copyWith(sensors: [], selectedRacketEntity: state.selectedRacketEntity, uiState: UIState.idle() ));
         },
       );
     });
@@ -75,7 +76,7 @@ class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
           emit(state.copyWith(uiState: UIState.error(failure.errMsg), selectedRacketEntity: state.selectedRacketEntity ));
         },
         (r) {
-          emit(state.copyWith( selectedRacketEntity: state.selectedRacketEntity ));
+          emit(state.copyWith( selectedRacketEntity: state.selectedRacketEntity, uiState: UIState.idle() ));
         },
       );
     });
@@ -93,7 +94,7 @@ class SensorsBloc extends Bloc<SensorsEvent, SensorsState> {
           emit(state.copyWith(uiState: UIState.error(failure.errMsg), selectedRacketEntity: state.selectedRacketEntity ));
         },
         (r) {
-          emit(state.copyWith(selectedRacketEntity: null ));
+          emit(state.copyWith(selectedRacketEntity: null, uiState: UIState.idle() ));
         },);
       }
     });

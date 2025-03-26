@@ -14,6 +14,7 @@ import 'package:aerox_stage_1/features/feature_racket/repository/racket_reposito
 import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -47,3 +48,5 @@ class MockGetRacketsUseCase extends Mock implements GetRacketsUseCase{}
 class MockGetSelectedRacketUseCase extends Mock implements GetSelectedRacketUseCase{}
 class MockUnSelectRacketUseCase extends Mock implements UnSelectRacketUseCase{}
 class MockSelectRacketUseCase extends Mock implements SelectRacketUseCase{}
+
+class MockBluetoothDevice extends Mock implements BluetoothDevice{}
