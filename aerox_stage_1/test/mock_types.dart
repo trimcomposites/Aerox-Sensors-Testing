@@ -13,6 +13,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecas
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
+import 'package:aerox_stage_1/features/feature_comments/repository/comments_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/apple_auth_service.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
@@ -47,6 +48,7 @@ class MockAuthCredential extends Mock implements AuthCredential{}
 class MockDownloadFile extends Mock implements DownloadFile{}
 
 class MockRacketRepository extends Mock implements RacketRepository{}
+class MockCommentsRepository extends Mock implements CommentsRepository{}
 class MockSQLiteDB extends Mock implements RacketsSQLiteDB{}
 class MockRemoteGetRackets extends Mock implements RemoteGetRackets{}
 
