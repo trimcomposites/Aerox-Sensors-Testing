@@ -49,8 +49,10 @@ group(' sign in with google method ', () {
     when(() => googleSignInAuthentication.idToken).thenReturn( idToken);
 
     when(() => firebaseAuth.signInWithCredential( any() )).thenAnswer((_) async => userCredential);
-    
-    
+      when(() => user.uid).thenReturn('1');
+
+    when(() => user.displayName).thenReturn('name');
+when(() => user.email).thenReturn('email');   
     when(() => userCredential.user).thenReturn( user );
 
     final result = await googleAuthService.signInWithGoogle();

@@ -41,7 +41,7 @@ void main() {
     final Racket racket = Racket( acorMax: 1, acorMin: 1, balanceMax: 1, balanceMin: 1, maneuverabilityMax: 1, maneuverabilityMin: 1,
    swingWeightMax: 1, swingWeightMin: 1, weightMax: 1, weightMin: 1, isSelected: true, id: 1, hit: '', 
    frame: '', racketName: '', color: '', weightNumber: 1, weightName: '', weightType: '', balance: 1, headType: '', swingWeight: 1,
-   powerType: '', acor: 1, acorType: '', maneuverability: 1, maneuverabilityType: '', image: ''  );
+   powerType: '', acor: 1, acorType: '', maneuverability: 1, maneuverabilityType: '', image: '', model: ''  );
 
   final List<Racket> rackets = [ racket, racket ];
 group('on get racket event', () {

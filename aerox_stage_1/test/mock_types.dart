@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/services/download_file.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
@@ -7,9 +8,10 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/remote/mock_racket_datasource.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
@@ -31,9 +33,11 @@ class MockGoogleSignInAccount extends Mock implements GoogleSignInAccount{}
 class MockGoogleSignInAuthentication extends Mock implements GoogleSignInAuthentication{}
 class MockGoogleAuthProvider extends Mock implements GoogleAuthProvider{}
 class MockAuthCredential extends Mock implements AuthCredential{}
+class MockDownloadFile extends Mock implements DownloadFile{}
 
-class MockMockRacketDataSource extends Mock implements MockRacketDatasource{}
 class MockRacketRepository extends Mock implements RacketRepository{}
+class MockSQLiteDB extends Mock implements RacketsSQLiteDB{}
+class MockRemoteGetRackets extends Mock implements RemoteGetRackets{}
 
 class MockGetRacketsUseCase extends Mock implements GetRacketsUseCase{}
 class MockGetSelectedRacketUseCase extends Mock implements GetSelectedRacketUseCase{}

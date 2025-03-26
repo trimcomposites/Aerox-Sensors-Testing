@@ -37,6 +37,7 @@ void main() {
       when(() => user.uid).thenReturn(aeroxUser.id);
       when(() => user.email).thenReturn(aeroxUser.email);
       when(() => user.updateDisplayName(any())).thenAnswer((_) async => Future.value());
+        when(() => user.reload()).thenAnswer((_) async => Future.value());
       final result = await emailAuthService.signInWithEmail(aeroxUser: aeroxUser);
 
       expect(result, isA<Right<Err, AeroxUser>>());
