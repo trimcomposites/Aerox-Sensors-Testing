@@ -1,4 +1,8 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
+import 'package:aerox_stage_1/domain/use_cases/comments/get_city_location_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/comments/get_comments_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/comments/hide_comment_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/comments/save_comment_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/check_user_signed_in_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/register_user_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/login/reset_password_usecase.dart';
@@ -50,3 +54,8 @@ class MockUnSelectRacketUseCase extends Mock implements UnSelectRacketUseCase{}
 class MockSelectRacketUseCase extends Mock implements SelectRacketUseCase{}
 
 class MockBluetoothDevice extends Mock implements BluetoothDevice{}
+class MockGetCommentsUsecase extends Mock implements GetCommentsUsecase {}
+class MockCheckUserSignedInUseCase extends Mock implements CheckUserSignedInUseCase {}
+class MockSaveCommentUsecase extends Mock implements SaveCommentUsecase {}
+class MockHideCommentUsecase extends Mock implements HideCommentUsecase {}
+class MockGetCityLocationUseCase extends Mock implements GetCityLocationUseCase {}
