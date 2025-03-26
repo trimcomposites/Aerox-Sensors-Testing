@@ -12,6 +12,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/apple_auth_service.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
@@ -40,6 +41,7 @@ class MockGoogleSignInAuthentication extends Mock implements GoogleSignInAuthent
 class MockGoogleAuthProvider extends Mock implements GoogleAuthProvider{}
 class MockAppleAuthService extends Mock implements AppleAuthService{}
 class MockAppleAuthProvider extends Mock implements AppleAuthProvider {}
+class MockBluetoothRepository extends Mock implements BluetoothRepository {}
 
 class MockAuthCredential extends Mock implements AuthCredential{}
 class MockDownloadFile extends Mock implements DownloadFile{}
