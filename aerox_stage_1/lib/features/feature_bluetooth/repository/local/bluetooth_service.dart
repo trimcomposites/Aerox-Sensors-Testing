@@ -12,7 +12,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 class BluetoothCustomService {
   final BluetoothPermissionHandler permissionHandler;
   bool _isScanning = false;
-  List<BluetoothDevice> _devices = [];
+  final List<BluetoothDevice> devices = [];
   StreamController<List<RacketSensor>>? _devicesStreamController;
   bool isRestartingScan = false;
   BluetoothCustomService({ required this.permissionHandler });
@@ -39,7 +39,7 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
 
     if (_isScanning && _devicesStreamController != null ) return _devicesStreamController!.stream;
     _isScanning = true;
-    _devices.clear();
+    devices.clear();
 
     _devicesStreamController?.close();
     _devicesStreamController = StreamController<List<RacketSensor>>.broadcast();
@@ -58,7 +58,7 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
     scanSubscription = FlutterBluePlus.onScanResults.listen((results) async {
       List<BluetoothDevice> detectedDevices = results.map((r) => r.device).toList();
 
-      _devices.removeWhere((device) => !detectedDevices.any((d) => d.remoteId == device.remoteId));
+      devices.removeWhere((device) => !detectedDevices.any((d) => d.remoteId == device.remoteId));
 
       for (ScanResult result in results) {
         String deviceName = (result.device.platformName ?? '').toLowerCase();
@@ -66,14 +66,14 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
         String? filter = filterName?.toLowerCase();
 
         if (filter == null || deviceName.contains(filter) || localName.contains(filter)) {
-          if (!_devices.any((d) => d.remoteId == result.device.remoteId)) {
-            _devices.add(result.device);
+          if (!devices.any((d) => d.remoteId == result.device.remoteId)) {
+            devices.add(result.device);
           }
         }
       }
 
       List<RacketSensor> racketSensors = await Future.wait(
-        _devices.map((device) async => await device.toRacketSensor(state: await device.connectionState.first)),
+        devices.map((device) async => await device.toRacketSensor(state: await device.connectionState.first)),
       );
 
       _devicesStreamController?.add(racketSensors);
@@ -159,7 +159,7 @@ Future<EitherErr<List<RacketSensor>>> getConnectedSensors() async {
   return EitherCatch.catchAsync<List<RacketSensor>, BluetoothErr>(() async {
     List<RacketSensor> connectedSensors = [];
 
-    List<BluetoothDevice> devicesCopy = List.from(_devices);
+    List<BluetoothDevice> devicesCopy = List.from(devices);
 
     for (BluetoothDevice device in devicesCopy) {
       BluetoothConnectionState state = await device.connectionState.first;

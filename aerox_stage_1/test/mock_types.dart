@@ -13,6 +13,9 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecas
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_permission_handler.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_service.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/racket_bluetooth_service.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/comments_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/apple_auth_service.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
@@ -23,6 +26,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MockLoginRepo extends Mock implements LoginRepository{}
 
@@ -63,3 +67,8 @@ class MockCheckUserSignedInUseCase extends Mock implements CheckUserSignedInUseC
 class MockSaveCommentUsecase extends Mock implements SaveCommentUsecase {}
 class MockHideCommentUsecase extends Mock implements HideCommentUsecase {}
 class MockGetCityLocationUseCase extends Mock implements GetCityLocationUseCase {}
+
+class MockRacketBluetoothService extends Mock implements RacketBluetoothService {}
+class MockBluetoothCustomService extends Mock implements BluetoothCustomService {}
+class MockBluetoothPermissionHandler extends Mock implements BluetoothPermissionHandler {}
+class MockFlutterBluePlus extends Mock implements FlutterBluePlus {}
