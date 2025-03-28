@@ -17,11 +17,14 @@ import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/blueto
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_service.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/racket_bluetooth_service.dart';
 import 'package:aerox_stage_1/features/feature_comments/repository/comments_repository.dart';
+import 'package:aerox_stage_1/features/feature_comments/repository/local/comment_location_service.dart';
+import 'package:aerox_stage_1/features/feature_comments/repository/remote/firestore_comments.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/remote/apple_auth_service.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_login/repository/login_repository.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -72,3 +75,10 @@ class MockRacketBluetoothService extends Mock implements RacketBluetoothService 
 class MockBluetoothCustomService extends Mock implements BluetoothCustomService {}
 class MockBluetoothPermissionHandler extends Mock implements BluetoothPermissionHandler {}
 class MockFlutterBluePlus extends Mock implements FlutterBluePlus {}
+class MockFirestoreComments extends Mock implements FirestoreComments {}
+class MockCommentLocationService extends Mock implements CommentLocationService {}
+class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
+class MockCollectionReference extends Mock implements CollectionReference<Map<String, dynamic>> {}
+class MockDocumentReference extends Mock implements DocumentReference<Map<String, dynamic>> {}
+class MockQuerySnapshot extends Mock implements QuerySnapshot<Map<String, dynamic>> {}
+class MockQueryDocumentSnapshot extends Mock implements QueryDocumentSnapshot<Map<String, dynamic>> {}

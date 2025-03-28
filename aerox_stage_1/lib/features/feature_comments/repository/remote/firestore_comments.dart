@@ -7,7 +7,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 
 class FirestoreComments {
-  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firebaseFirestore;
+
+  FirestoreComments({FirebaseFirestore? firebaseFirestore})
+      : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
 
 Future<EitherErr<void>> saveComment(Comment comment) async {
   return EitherCatch.catchAsync<void, CommentErr>(() async {
