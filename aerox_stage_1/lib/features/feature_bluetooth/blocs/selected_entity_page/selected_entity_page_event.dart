@@ -13,3 +13,18 @@ class OnShowConnectionError extends SelectedEntityPageEvent {
 class OnGetSelectedRacketSelectedEntityPage extends SelectedEntityPageEvent {
   
 }
+class OnStartHSBlob extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnStartHSBlob({required this.sensor});
+}
+class OnStopHSBlob extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnStopHSBlob({required this.sensor});
+}
+class OnReadCharacteristicsFromSensor extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnReadCharacteristicsFromSensor({required this.sensor});
+}

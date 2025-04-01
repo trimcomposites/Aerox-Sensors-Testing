@@ -28,6 +28,7 @@ void main() {
     selectedEntityPageBloc = SelectedEntityPageBloc(
       disconnectFromRacketSensorUsecase: disconnectUsecase,
       getSelectedBluetoothRacketUsecase: getSelectedRacketUsecase,
+      
     );
   });
 

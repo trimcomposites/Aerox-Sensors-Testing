@@ -68,6 +68,7 @@ dependencies:
   model_viewer_plus: ^1.9.1
   webview_flutter: ^4.10.0
   flutter_blue_plus: ^1.35.3
+  csv: ^6.0.0
 
 dev_dependencies:
   flutter_test:

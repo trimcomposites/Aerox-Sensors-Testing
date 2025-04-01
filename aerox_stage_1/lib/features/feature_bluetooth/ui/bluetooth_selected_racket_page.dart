@@ -35,12 +35,30 @@ Widget build(BuildContext context) {
                     Text(  state.selectedRacketEntity?.name ??
                       'No hay raqueta BLuetooth Seleccionada.'
                     ),
+                    Text(  state.selectedRacketEntity?.sensors[0].name ??
+                      'No hay raqueta BLuetooth Seleccionada.'
+                    ),
                     IconButton(onPressed: () => {
                         selectedEntityPageBloc.add( OnDisconnectSelectedRacketSelectedEntityPage() )
                       }, 
                       icon: Icon( Icons.logout_outlined,),
                       color: Colors.red,
-                    )
+                    ),
+                    Text('Desconectar Pala'),
+                    IconButton(onPressed: () => {
+                        selectedEntityPageBloc.add( OnStartHSBlob( sensor: state.selectedRacketEntity!.sensors[0] ) )
+                      }, 
+                      icon: Icon( Icons.send,),
+                      color: Colors.blue,
+                    ),
+                    Text('Start Offline RTSOS'),
+                    IconButton(onPressed: () => {
+                        selectedEntityPageBloc.add( OnStopHSBlob( sensor: state.selectedRacketEntity!.sensors[0] ) )
+                      }, 
+                      icon: Icon( Icons.stop,),
+                      color: Colors.red,
+                    ),
+                    Text('Stop Offline RTSOS'),
                   ],
                 ));
           },

@@ -1,4 +1,6 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/connect_to_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
@@ -20,6 +22,8 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecas
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_repository.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
@@ -71,6 +75,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => BluetoothPermissionHandler())
     ..registerLazySingleton(() => BluetoothCustomService( permissionHandler: sl() ))
     ..registerLazySingleton(() => RacketBluetoothService( bluetoothService: sl() ))
+    ..registerLazySingleton(() => BleService())
 
 
 
@@ -102,6 +107,9 @@ Future<void> dependencyInjectionInitialize() async {
         ))
     ..registerLazySingleton(() => BluetoothRepository(
       bluetoothService: sl()
+      ))
+    ..registerLazySingleton(() => BleRepository(
+       bleService: sl()
       ));
 
   // Registro de Casos de Uso (Use Cases)
@@ -132,8 +140,11 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => DisconnectFromRacketSensorUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => GetSelectedBluetoothRacketUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => StoptScanBluetoothSensorsUsecase(bluetoothRepository: sl()))
-    ..registerLazySingleton(() => ReScanRacketSensorsUseCase(bluetoothRepository: sl()));
+    ..registerLazySingleton(() => ReScanRacketSensorsUseCase(bluetoothRepository: sl()))
 
+    //ble
+    ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
+    ..registerLazySingleton(() => StoptOfflineRTSOSUseCase( bleRepository : sl()));
 
   // Registro de Blocs
   sl
@@ -180,6 +191,8 @@ Future<void> dependencyInjectionInitialize() async {
     ))
     ..registerFactory(() => SelectedEntityPageBloc(
       disconnectFromRacketSensorUsecase: sl(),
-      getSelectedBluetoothRacketUsecase: sl()
+      getSelectedBluetoothRacketUsecase: sl(),
+      startOfflineRTSOSUseCase: sl(),
+      stopOfflineRTSOSUseCase: sl()
     ));
 }

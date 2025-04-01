@@ -1,5 +1,8 @@
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
+import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
 import 'package:bloc/bloc.dart';
@@ -12,10 +15,14 @@ part 'selected_entity_page_state.dart';
 class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntityPageState> {
   final DisconnectFromRacketSensorUsecase disconnectFromRacketSensorUsecase;
   final GetSelectedBluetoothRacketUsecase getSelectedBluetoothRacketUsecase;
+  final StartOfflineRTSOSUseCase startOfflineRTSOSUseCase; 
+  final  StoptOfflineRTSOSUseCase stopOfflineRTSOSUseCase;
 
   SelectedEntityPageBloc({ 
     required this.disconnectFromRacketSensorUsecase,
-    required this.getSelectedBluetoothRacketUsecase
+    required this.getSelectedBluetoothRacketUsecase,
+    required this.startOfflineRTSOSUseCase,
+    required this.stopOfflineRTSOSUseCase
   }) : super(SelectedEntityPageState(uiState: UIState.idle())) {
     
     on<OnDisconnectSelectedRacketSelectedEntityPage>((event, emit) async {
@@ -56,6 +63,17 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
 
       emit(state.copyWith(uiState: UIState.error( event.errorMsg ) ));
     });
+    on<OnStartHSBlob>((event, emit) async {
+
+      await startOfflineRTSOSUseCase.call( event.sensor );
+    });
+    
+  
+    on<OnStopHSBlob>((event, emit) async {
+
+      await stopOfflineRTSOSUseCase.call( event.sensor );
+    });
+    
   }
 
   void monitorSelectedRacketConnection() {

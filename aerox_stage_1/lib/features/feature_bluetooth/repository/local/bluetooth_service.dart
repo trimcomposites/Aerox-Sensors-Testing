@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:aerox_stage_1/common/utils/either_catch.dart';
 import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
+import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_extension.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_data_logger.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_permission_handler.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
@@ -175,8 +179,42 @@ Future<EitherErr<List<RacketSensor>>> getConnectedSensors() async {
       statusCode: 500,
     );
   });
+  
 }
 
+Future<Either<Err, Stream<List<int>>>> subscribeToCharacteristic({
+    required BluetoothDevice device,
+    required Guid serviceUuid,
+    required Guid characteristicUuid,
+  }) {
+    return EitherCatch.catchAsync<Stream<List<int>>, BluetoothErr>(
+      () async {
+        final services = await device.discoverServices();
+        final targetService = services.firstWhere(
+          (service) => service.uuid == serviceUuid,
+          orElse: () => throw BluetoothErr(
+            errMsg: 'Service no encontrado con UUID: $serviceUuid',
+            statusCode: 404,
+          ),
+        );
 
+        final targetCharacteristic = targetService.characteristics.firstWhere(
+          (char) => char.uuid == characteristicUuid,
+          orElse: () => throw BluetoothErr(
+            errMsg: 'Characteristic no encontrada con UUID: $characteristicUuid',
+            statusCode: 404,
+          ),
+        );
+
+        await targetCharacteristic.setNotifyValue(true);
+
+        return targetCharacteristic.onValueReceived;
+      },
+      (exception) => BluetoothErr(
+        errMsg: 'Error al suscribirse a la característica: ${exception.toString()}',
+        statusCode: 500,
+      ),
+    );
+  }
 
 }
