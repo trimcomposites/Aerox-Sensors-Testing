@@ -23,6 +23,16 @@ class OnStopHSBlob extends SelectedEntityPageEvent {
 
   OnStopHSBlob({required this.sensor});
 }
+class OnReadStorageData extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnReadStorageData({required this.sensor});
+}
+class OnStartStreamRTSOS extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnStartStreamRTSOS({required this.sensor});
+}
 class OnReadCharacteristicsFromSensor extends SelectedEntityPageEvent {
   final RacketSensor sensor;
 

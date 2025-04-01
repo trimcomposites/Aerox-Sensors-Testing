@@ -53,12 +53,19 @@ Widget build(BuildContext context) {
                     ),
                     Text('Start Offline RTSOS'),
                     IconButton(onPressed: () => {
-                        selectedEntityPageBloc.add( OnStopHSBlob( sensor: state.selectedRacketEntity!.sensors[0] ) )
+                        selectedEntityPageBloc.add( OnReadStorageData( sensor: state.selectedRacketEntity!.sensors[0] ) )
                       }, 
-                      icon: Icon( Icons.stop,),
-                      color: Colors.red,
+                      icon: Icon( Icons.read_more_outlined,),
+                      color: Colors.green,
                     ),
-                    Text('Stop Offline RTSOS'),
+                    Text('Read storage data'),
+                    IconButton(onPressed: () => {
+                        selectedEntityPageBloc.add( OnStartStreamRTSOS( sensor: state.selectedRacketEntity!.sensors[0] ) )
+                      }, 
+                      icon: Icon( Icons.wifi,),
+                      color: Colors.yellow,
+                    ),
+                    Text('STREAM RTSOS'),
                   ],
                 ));
           },

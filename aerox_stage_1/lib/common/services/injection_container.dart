@@ -1,6 +1,8 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stream_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/connect_to_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
@@ -144,6 +146,8 @@ Future<void> dependencyInjectionInitialize() async {
 
     //ble
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
+    ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl()))
+    ..registerLazySingleton(() => StreamRTSOSUsecase( bleRepository : sl()))
     ..registerLazySingleton(() => StoptOfflineRTSOSUseCase( bleRepository : sl()));
 
   // Registro de Blocs
@@ -193,6 +197,8 @@ Future<void> dependencyInjectionInitialize() async {
       disconnectFromRacketSensorUsecase: sl(),
       getSelectedBluetoothRacketUsecase: sl(),
       startOfflineRTSOSUseCase: sl(),
-      stopOfflineRTSOSUseCase: sl()
+      stopOfflineRTSOSUseCase: sl(),
+      readStorageDataUsecase: sl(),
+      startStreamRTSOS: sl()
     ));
 }

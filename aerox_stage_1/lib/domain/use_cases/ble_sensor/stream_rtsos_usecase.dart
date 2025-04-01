@@ -7,15 +7,15 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_reposit
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
-class StoptOfflineRTSOSUseCase extends AsyncUseCaseWithParams<void,  RacketSensor>{
+class StreamRTSOSUsecase extends AsyncUseCaseWithParams<void,  RacketSensor>{
 
   final BleRepository bleRepository;
 
-  StoptOfflineRTSOSUseCase({required this.bleRepository});
+  StreamRTSOSUsecase({required this.bleRepository});
   @override
   Future<EitherErr<void>> call( sensor ) {
     
-    final sensors = bleRepository.sendStopOfflineRSTOS( sensor );
+    final sensors = bleRepository.sendStartStreamRSTOS( sensor );
     return sensors;
 
   } 

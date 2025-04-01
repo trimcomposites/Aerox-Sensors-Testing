@@ -5,9 +5,7 @@ class BleService {
     required BluetoothDevice device,
     required Guid serviceUuid,
     required Guid characteristicUuid,
-    required int commandCode,
-    required int sampleRate,
-    required int inactivityTimeout,
+    required List<int> cmd,
   }) async {
     try {
       final services = await device.discoverServices();
@@ -19,33 +17,30 @@ class BleService {
         (c) => c.uuid == characteristicUuid,
       );
 
-      int sampleRateData = 0;
-
-      if( sampleRate == 1 ){
-        sampleRateData = 0;
-      }else if(sampleRate == 0x68 ){
-        sampleRateData = 4;
-      }
-
-      final cmd = [
-        commandCode, 
-        sampleRateData,  
-        1,
-        6,
-        6,
-        inactivityTimeout
-      ];
-
       await characteristic.write(cmd);
       print("Command sent: $cmd");
+
+
+      await subscribeToCharacteristic(characteristic); 
+      
 
     } catch (e) {
       print("Error sending command: $e");
     }
   }
 
+  Future<void> subscribeToCharacteristic(BluetoothCharacteristic characteristic) async {
+    try {
+      await characteristic.setNotifyValue(true);
 
+      characteristic.value.listen((value) {
+        print("Received value: $value");
+      });
 
+      print("Subscribed to characteristic notifications");
 
-
+    } catch (e) {
+      print("Error subscribing to characteristic: $e");
+    }
+  }
 }

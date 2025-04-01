@@ -1,8 +1,10 @@
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stream_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
 import 'package:bloc/bloc.dart';
@@ -17,12 +19,16 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
   final GetSelectedBluetoothRacketUsecase getSelectedBluetoothRacketUsecase;
   final StartOfflineRTSOSUseCase startOfflineRTSOSUseCase; 
   final  StoptOfflineRTSOSUseCase stopOfflineRTSOSUseCase;
+  final  ReadStorageDataUsecase readStorageDataUsecase;
+  final StreamRTSOSUsecase startStreamRTSOS;
 
   SelectedEntityPageBloc({ 
     required this.disconnectFromRacketSensorUsecase,
     required this.getSelectedBluetoothRacketUsecase,
     required this.startOfflineRTSOSUseCase,
-    required this.stopOfflineRTSOSUseCase
+    required this.stopOfflineRTSOSUseCase,
+    required this.readStorageDataUsecase,
+    required this.startStreamRTSOS
   }) : super(SelectedEntityPageState(uiState: UIState.idle())) {
     
     on<OnDisconnectSelectedRacketSelectedEntityPage>((event, emit) async {
@@ -72,6 +78,16 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     on<OnStopHSBlob>((event, emit) async {
 
       await stopOfflineRTSOSUseCase.call( event.sensor );
+    });
+    
+  
+    on<OnReadStorageData>((event, emit) async {
+
+      await readStorageDataUsecase.call( event.sensor );
+    });
+    on<OnStartStreamRTSOS>((event, emit) async {
+
+      await startStreamRTSOS.call( event.sensor );
     });
     
   }
