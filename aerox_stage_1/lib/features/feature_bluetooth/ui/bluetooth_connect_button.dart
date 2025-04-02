@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_b
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_rackets_list.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BluetoothConnectButton extends StatelessWidget {
   const BluetoothConnectButton({
@@ -29,23 +30,28 @@ class BluetoothConnectButton extends StatelessWidget {
         height: 100,
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          onTap: () {
-            // final userBloc = BlocProvider.of<UserBloc>(context);
-            // userBloc.add( OnEmailSignOutUser() );
-            // userBloc.add( OnGoogleSignOutUser() );
+          onTap: () async {
+            final state = await FlutterBluePlus.adapterState.first;
 
-            showModalBottomSheet(
-              context: context,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)), // Bordes redondeados arriba
-              ),
-              builder: (BuildContext context) {
-                return BluetoothRacketsList();
-              },
-            ).whenComplete((){
-              final sensorsBloc = BlocProvider.of<SensorsBloc>(context);
-              sensorsBloc.add( OnStopScanBluetoothSensors() );
-            });
+            if (state == BluetoothAdapterState.on) {
+              showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                ),
+                builder: (BuildContext context) {
+                  return const BluetoothRacketsList();
+                },
+              ).whenComplete(() {
+                final sensorsBloc = BlocProvider.of<SensorsBloc>(context);
+                sensorsBloc.add(OnStopScanBluetoothSensors());
+              });
+            } else {
+              // Opcional: mostrar un mensaje de error
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Activa el Bluetooth para conectar.")),
+              );
+            }
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
