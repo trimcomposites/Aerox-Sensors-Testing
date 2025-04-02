@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'package:aerox_stage_1/common/ui/loading_indicator.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/racket_entity_list_item.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
-import 'package:aerox_stage_1/features/feature_login/ui/widgets/loading_indicator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter/scheduler.dart';

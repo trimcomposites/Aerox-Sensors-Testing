@@ -15,7 +15,7 @@ class BluetoothConnectButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Colors.white,
+          color: Colors.grey,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha( 60 ), 
@@ -25,8 +25,8 @@ class BluetoothConnectButton extends StatelessWidget {
             ),
           ]
         ),
-        width: 150,
-        height: 40,
+        width: 250,
+        height: 100,
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
@@ -48,14 +48,16 @@ class BluetoothConnectButton extends StatelessWidget {
             });
           },
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Padding(
                 padding: const EdgeInsets.only( left: 25 ),
                 child: Text( 
                   'CONECTA', 
                   style: TextStyle( 
-                    fontSize: 12
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white
                   ), 
                 ),
               ),

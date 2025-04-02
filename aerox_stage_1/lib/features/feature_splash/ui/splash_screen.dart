@@ -1,4 +1,5 @@
 
+import 'package:aerox_stage_1/features/feature_home/ui/home_page_admin.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_splash/ui/splash_background_image.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if(mounted){
       Navigator.pushReplacement(
      context,
-     MaterialPageRoute(builder: (context) => UserCheckScreen()), 
+     MaterialPageRoute(builder: (context) => HomePageAdmin()), 
     );
     }
     

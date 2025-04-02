@@ -65,7 +65,7 @@ class RacketsSQLiteDB {
         maneuverabilityMax TEXT NOT NULL,
         acorMin TEXT NOT NULL,
         acorMax TEXT NOT NULL,
-        isSelected INTEGER DEFAULT 0
+        isSelected INTEGER DEFAULT 1
       )
     ''');
   }
