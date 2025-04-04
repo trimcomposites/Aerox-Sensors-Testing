@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/fetch_blob_packages_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
@@ -98,7 +99,8 @@ Future<void> dependencyInjectionInitialize() async {
     //ble
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
     ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl()))
-    ..registerLazySingleton(() => StreamRTSOSUsecase( bleRepository : sl()))
+    ..registerLazySingleton(() => StreamRTSOSUsecase( bleRepository : sl())) 
+    ..registerLazySingleton(() => FetchBlobPackagesUsecase( bleRepository : sl())) 
     ..registerLazySingleton(() => StoptOfflineRTSOSUseCase( bleRepository : sl()));
 
   // Registro de Blocs
@@ -126,6 +128,7 @@ Future<void> dependencyInjectionInitialize() async {
       startOfflineRTSOSUseCase: sl(),
       stopOfflineRTSOSUseCase: sl(),
       readStorageDataUsecase: sl(),
-      startStreamRTSOS: sl()
+      startStreamRTSOS: sl(),
+      fetchBlobPackagesUsecase: sl()
     ));
 }

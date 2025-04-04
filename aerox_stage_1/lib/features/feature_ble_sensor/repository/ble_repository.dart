@@ -1,5 +1,8 @@
 import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:aerox_stage_1/domain/models/blob.dart';
+import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
+import 'package:aerox_stage_1/domain/models/blob_extension.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_service.dart';
@@ -57,7 +60,7 @@ class BleRepository {
       );
       print(characteristic);
 
-    await bleService.subscribeToCharacteristic(characteristic);
+    await bleService.subscribeToCharacteristic(characteristic, closeAfterFirst: false, expectedOpcode: 123123123);
 
     return Right(null);
   }
@@ -75,24 +78,125 @@ class BleRepository {
 
     return Right(null);
   }
-
-  // Función para leer los datos del dispositivo BLE
-  Future<EitherErr<List<int>>> readData(RacketSensor sensor) async {
+ Future<EitherErr<List<Blob>>> readAllBlobs(RacketSensor sensor) async {
     try {
       final serviceUuid = Guid('71d713ef-799e-42af-9d57-9803e36b0f93');
       final characteristicUuid = Guid('a84ce035-60ed-4b24-99c9-8683052aa48b');
-      await bleService.sendCommand(
+
+
+      final numBlobsResp = await getBlobNumber(sensor, serviceUuid, characteristicUuid);
+
+      if (numBlobsResp == null || numBlobsResp.isEmpty || numBlobsResp.first != 0x09) {
+        return Left(BluetoothErr(errMsg: "Error leyendo número de blobs", statusCode: 2));
+      }
+
+      final numBlobs = numBlobsResp[2]; 
+
+      if (numBlobs == 0) return Right([]);
+
+      List<Blob> allBlobResponses = [];
+
+      // RECOGER PRIMER BLOBS
+      final firstBlob = await bleService.sendCommand(
         device: sensor.device,
         serviceUuid: serviceUuid,
         characteristicUuid: characteristicUuid,
-        cmd: [0x03]
+        cmd: [0x03], // STORAGE_CP_OP_FETCH_FIRST_BLOB
+        closeAfterResponse: false
       );
+      if (firstBlob != null) {
+        final blob = await firstBlob.toBlob();
+          if (blob != null) {
+            allBlobResponses.add(blob);
+          }
 
+      }
 
-      return Right([]);
+      // TODOS LOS BLOBS RESTANTES 
+      for (int i = 1; i < numBlobs; i++) {
+        final nextBlob = await bleService.sendCommand(
+          device: sensor.device,
+          serviceUuid: serviceUuid,
+          characteristicUuid: characteristicUuid,
+          cmd: [0x04, 0x01], // STORAGE_CP_OP_FETCH_NEXT_BLOB, 1
+        );
+        if (nextBlob == null) break;
+        final blob = await nextBlob.toBlob();
+        if (blob != null) {
+          allBlobResponses.add(blob);
+        }
+      }
+      print( 'all blobs: ${allBlobResponses}' );
+      return Right(allBlobResponses);
     } catch (e) {
-      print("Error reading data: $e");
+      print("Error reading blobs: $e");
       return Left(BluetoothErr(errMsg: e.toString(), statusCode: 1));
     }
   }
+
+
+
+  Future<List<int>?> getBlobNumber(RacketSensor sensor, Guid serviceUuid, Guid characteristicUuid) {
+    return bleService.sendCommand(
+      device: sensor.device,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      cmd: [9], 
+    );
+  }
+  List<int> _toLEBytes(int value, int byteCount) {
+  return List.generate(byteCount, (i) => (value >> (8 * i)) & 0xFF);
 }
+Future<EitherErr<List<BlobPacket>>> fetchBlobPackets(RacketSensor sensor) async {
+  try {
+    var serviceUuid = Guid('71d713ef-799e-42af-9d57-9803e36b0f93');
+    var characteristicUuid = Guid('a84ce035-60ed-4b24-99c9-8683052aa48b');
+
+    final packets = <BlobPacket>[];
+
+    final firstPacketRaw = await bleService.sendCommand(
+      device: sensor.device,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      cmd: [0x05], // STORAGE_CP_OP_FETCH_FIRST_PACKET
+      closeAfterResponse: false,
+    );
+
+    if (firstPacketRaw == null || firstPacketRaw.isEmpty) {
+      return Left(BluetoothErr(errMsg: "No se recibió el primer paquete", statusCode: 10));
+    }
+
+    final firstInfo = firstPacketRaw.toPacketInfo();
+    if (firstInfo == null) {
+      return Left(BluetoothErr(errMsg: "Error parseando el primer paquete", statusCode: 11));
+    }
+
+    packets.add(BlobPacket(packetInfo: firstInfo, packetData: const []));
+
+    // Obtener los siguientes paquetes
+    while (true) {
+      final nextPacketRaw = await bleService.sendCommand(
+        device: sensor.device,
+        serviceUuid: serviceUuid,
+        characteristicUuid: characteristicUuid,
+        cmd: [0x06, 0x01], // STORAGE_CP_OP_FETCH_NEXT_PACKET, 1
+      );
+
+      if (nextPacketRaw == null || nextPacketRaw.length < 15) break;
+
+      final nextInfo = nextPacketRaw.toPacketInfo();
+      if (nextInfo == null) break;
+
+      packets.add(BlobPacket(packetInfo: nextInfo, packetData: const []));
+    }
+
+    return Right(packets);
+  } catch (e) {
+    return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
+  }
+}
+
+
+}
+
+

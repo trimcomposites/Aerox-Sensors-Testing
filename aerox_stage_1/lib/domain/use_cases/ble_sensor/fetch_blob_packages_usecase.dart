@@ -5,15 +5,15 @@ import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_repository.dart';
 
-class ReadStorageDataUsecase extends AsyncUseCaseWithParams<void,  RacketSensor>{
+class FetchBlobPackagesUsecase extends AsyncUseCaseWithParams<void,  RacketSensor>{
 
   final BleRepository bleRepository;
 
-  ReadStorageDataUsecase({required this.bleRepository});
+  FetchBlobPackagesUsecase({required this.bleRepository});
   @override
-  Future<EitherErr<List<Blob>>> call( sensor ) async {
+  Future<EitherErr<List<BlobPacket>>> call( sensor ) async {
     
-    final blobs = bleRepository.readAllBlobs( sensor );
+    final blobs = bleRepository.fetchBlobPackets( sensor );
     return blobs;
 
   } 
