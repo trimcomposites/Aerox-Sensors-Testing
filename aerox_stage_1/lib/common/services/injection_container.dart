@@ -100,7 +100,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
     ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl()))
     ..registerLazySingleton(() => StreamRTSOSUsecase( bleRepository : sl())) 
-    ..registerLazySingleton(() => FetchBlobPackagesUsecase( bleRepository : sl())) 
+    //..registerLazySingleton(() => FetchBlobPackagesUsecase( bleRepository : sl())) 
     ..registerLazySingleton(() => StoptOfflineRTSOSUseCase( bleRepository : sl()));
 
   // Registro de Blocs
@@ -129,6 +129,6 @@ Future<void> dependencyInjectionInitialize() async {
       stopOfflineRTSOSUseCase: sl(),
       readStorageDataUsecase: sl(),
       startStreamRTSOS: sl(),
-      fetchBlobPackagesUsecase: sl()
+      //fetchBlobPackagesUsecase: sl()
     ));
 }

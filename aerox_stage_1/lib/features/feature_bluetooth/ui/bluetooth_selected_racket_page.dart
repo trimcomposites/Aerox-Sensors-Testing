@@ -35,34 +35,34 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                   builder: (context, state) {
                     return Container(
                       height: 300,
-                      width: 300,
+                      width: MediaQuery.of(context).size.width,
                       child: ListView.builder(
                         itemCount: state.blobs.length,
                         itemBuilder: (BuildContext context, int index) {
                           final blob = state.blobs[index];
-                          final parsed = blob.parseHs1kHzBlob();
+                         // final parsed = blob.parseHs1kHzBlob();
                           return Row(
                             children: [
-                              Text(blob.toString()),
+                              Container(child: Text(blob.toString(), maxLines: 10,)),
                               IconButton(onPressed: () {
                                 selectedEntityPageBloc.add( OnGetBlobPackets(sensor: state.selectedRacketEntity!.sensors[0]) );
-                                showDialog(context: context, builder: ( _ ) {
-                                  return BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
-                                    builder: (context, state) {
-                                      return ListView.builder(
-                                        itemCount: state.packets.length,
-                                        itemBuilder: (BuildContext context, int index) {
-                                          return Container(
-                                            color: Colors.white,
-                                            height: 300,
-                                            width: 300,
-                                            child: Text( state.packets[index].toString() )
-                                            );
-                                        },
-                                      );
-                                    },
-                                  );
-                                });
+                                // showDialog(context: context, builder: ( _ ) {
+                                //   return BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
+                                //     builder: (context, state) {
+                                //       return ListView.builder(
+                                //         itemCount: state.packets.length,
+                                //         itemBuilder: (BuildContext context, int index) {
+                                //           return Container(
+                                //             color: Colors.white,
+                                //             height: 300,
+                                //             width: 300,
+                                //             child: Text( state.packets[index].toString() )
+                                //             );
+                                //         },
+                                //       );
+                                //     },
+                                //   );
+                                // });
                               }, icon: Icon( Icons.arrow_circle_up )
                               )
                             ],

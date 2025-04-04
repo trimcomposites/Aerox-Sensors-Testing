@@ -23,7 +23,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
   final  StoptOfflineRTSOSUseCase stopOfflineRTSOSUseCase;
   final  ReadStorageDataUsecase readStorageDataUsecase;
   final StreamRTSOSUsecase startStreamRTSOS;
-  final FetchBlobPackagesUsecase fetchBlobPackagesUsecase;
+  //final FetchBlobPackagesUsecase fetchBlobPackagesUsecase;
 
   SelectedEntityPageBloc({ 
     required this.disconnectFromRacketSensorUsecase,
@@ -32,7 +32,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     required this.stopOfflineRTSOSUseCase,
     required this.readStorageDataUsecase,
     required this.startStreamRTSOS,
-    required this.fetchBlobPackagesUsecase
+    //required this.fetchBlobPackagesUsecase
   }) : super(SelectedEntityPageState(uiState: UIState.idle())) {
     
     on<OnDisconnectSelectedRacketSelectedEntityPage>((event, emit) async {
@@ -92,13 +92,13 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
         (l) =>  emit(state.copyWith(uiState: UIState.error(l.errMsg))), 
         (r) => emit(state.copyWith(blobs: r)));
     });
-    on<OnGetBlobPackets>((event, emit) async {
+    // on<OnGetBlobPackets>((event, emit) async {
 
-      // ignore: avoid_single_cascade_in_expression_statements
-      await fetchBlobPackagesUsecase.call( event.sensor )..fold(
-        (l) =>  emit(state.copyWith(uiState: UIState.error(l.errMsg))), 
-        (r) => emit(state.copyWith( packets: r )));
-    });
+    //   // ignore: avoid_single_cascade_in_expression_statements
+    //   await fetchBlobPackagesUsecase.call( event.sensor )..fold(
+    //     (l) =>  emit(state.copyWith(uiState: UIState.error(l.errMsg))), 
+    //     (r) => emit(state.copyWith( packets: r )));
+    // });
     on<OnStartStreamRTSOS>((event, emit) async {
 
       await startStreamRTSOS.call( event.sensor );
