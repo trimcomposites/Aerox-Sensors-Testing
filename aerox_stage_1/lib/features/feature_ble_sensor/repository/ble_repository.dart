@@ -136,17 +136,7 @@ class BleRepository {
 
 
 
-  Future<List<int>?> getBlobNumber(RacketSensor sensor, Guid serviceUuid, Guid characteristicUuid) {
-    return bleService.sendCommand(
-      device: sensor.device,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-      cmd: [9], 
-    );
-  }
-  List<int> _toLEBytes(int value, int byteCount) {
-  return List.generate(byteCount, (i) => (value >> (8 * i)) & 0xFF);
-}
+
 Future<EitherErr<List<BlobPacket>>> fetchBlobPackets(RacketSensor sensor) async {
   try {
     var serviceUuid = Guid('71d713ef-799e-42af-9d57-9803e36b0f93');
@@ -160,6 +150,7 @@ Future<EitherErr<List<BlobPacket>>> fetchBlobPackets(RacketSensor sensor) async 
       characteristicUuid: characteristicUuid,
       cmd: [0x05], // STORAGE_CP_OP_FETCH_FIRST_PACKET
       closeAfterResponse: false,
+      requireStatusOk: false
     );
 
     if (firstPacketRaw == null || firstPacketRaw.isEmpty) {
@@ -173,13 +164,15 @@ Future<EitherErr<List<BlobPacket>>> fetchBlobPackets(RacketSensor sensor) async 
 
     packets.add(BlobPacket(packetInfo: firstInfo, packetData: const []));
 
-    // Obtener los siguientes paquetes
+
     while (true) {
       final nextPacketRaw = await bleService.sendCommand(
         device: sensor.device,
         serviceUuid: serviceUuid,
         characteristicUuid: characteristicUuid,
-        cmd: [0x06, 0x01], // STORAGE_CP_OP_FETCH_NEXT_PACKET, 1
+        cmd: [0x06, 0x01], 
+        requireStatusOk: false
+        
       );
 
       if (nextPacketRaw == null || nextPacketRaw.length < 15) break;
@@ -195,6 +188,14 @@ Future<EitherErr<List<BlobPacket>>> fetchBlobPackets(RacketSensor sensor) async 
     return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
   }
 }
+  Future<List<int>?> getBlobNumber(RacketSensor sensor, Guid serviceUuid, Guid characteristicUuid) {
+    return bleService.sendCommand(
+      device: sensor.device,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      cmd: [9], 
+    );
+  }
 
 
 }

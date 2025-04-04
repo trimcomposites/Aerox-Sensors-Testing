@@ -9,6 +9,7 @@ Future<List<int>?> sendCommand({
   required Guid characteristicUuid,
   required List<int> cmd,
   bool closeAfterResponse = true,
+    bool requireStatusOk = true, 
 }) async {
   try {
     final services = await device.discoverServices();
@@ -20,7 +21,8 @@ Future<List<int>?> sendCommand({
       characteristic,
       expectedOpcode: cmd[0],
       closeAfterFirst: closeAfterResponse,
-      sentCommand: cmd
+      sentCommand: cmd,
+      requireStatusOk: requireStatusOk
     );
 
     // Enviar comando
@@ -39,6 +41,7 @@ Future<List<int>?> subscribeToCharacteristic(
   required int expectedOpcode,
   List<int>? sentCommand,
   bool closeAfterFirst = true,
+  bool requireStatusOk = true, 
 }) async {
   try {
     final completer = Completer<List<int>>();
@@ -48,14 +51,16 @@ Future<List<int>?> subscribeToCharacteristic(
 
     subscription = characteristic.value.listen((value) async {
       print("Received value: $value");
+      print("Expected opcode: $expectedOpcode |");
 
-      final isEcho = sentCommand != null && value.length == sentCommand.length && _listsEqual(value, sentCommand);
-      final isValidResponse = value.length >= 2 && value[0] == expectedOpcode && value[1] == 0x00;
+      final isEcho = sentCommand != null && _listsEqual(value, sentCommand);
+      final isValidResponse = value.isNotEmpty &&
+          value[0] == expectedOpcode &&
+          (!requireStatusOk || (value.length > 1 && value[1] == 0x00));
 
       if (isValidResponse && !isEcho) {
         if (!completer.isCompleted) {
           completer.complete(value);
-
           if (closeAfterFirst) {
             await subscription?.cancel();
             await characteristic.setNotifyValue(false);
@@ -79,6 +84,7 @@ Future<List<int>?> subscribeToCharacteristic(
     return null;
   }
 }
+
 
 bool _listsEqual(List<int> a, List<int> b) {
   if (a.length != b.length) return false;

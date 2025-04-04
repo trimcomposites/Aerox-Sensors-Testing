@@ -44,7 +44,8 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                           return Row(
                             children: [
                               Text(blob.toString()),
-                              IconButton(onPressed: () =>{
+                              IconButton(onPressed: () {
+                                selectedEntityPageBloc.add( OnGetBlobPackets(sensor: state.selectedRacketEntity!.sensors[0]) );
                                 showDialog(context: context, builder: ( _ ) {
                                   return BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
                                     builder: (context, state) {
@@ -61,7 +62,7 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                                       );
                                     },
                                   );
-                                })
+                                });
                               }, icon: Icon( Icons.arrow_circle_up )
                               )
                             ],
