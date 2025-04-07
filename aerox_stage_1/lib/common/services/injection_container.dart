@@ -18,6 +18,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.da
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_repository.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_controller.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
@@ -75,8 +76,12 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => BluetoothRepository(
       bluetoothService: sl()
       ))
+    ..registerLazySingleton(() => StorageServiceController(
+        bleService: sl()
+      ))
     ..registerLazySingleton(() => BleRepository(
-       bleService: sl()
+       bleService: sl(),
+       storageServiceController: sl()
       ));
 
   // Registro de Casos de Uso (Use Cases)

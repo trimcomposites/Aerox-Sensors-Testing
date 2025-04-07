@@ -43,7 +43,7 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                          // final parsed = blob.parseHs1kHzBlob();
                           return Row(
                             children: [
-                              Container(child: Text(blob.toString(), maxLines: 10,)),
+                              SingleChildScrollView( scrollDirection: Axis.horizontal,  child: Container(child: Text(blob.toString(), maxLines: 10,))),
                               IconButton(onPressed: () {
                                 selectedEntityPageBloc.add( OnGetBlobPackets(sensor: state.selectedRacketEntity!.sensors[0]) );
                                 // showDialog(context: context, builder: ( _ ) {

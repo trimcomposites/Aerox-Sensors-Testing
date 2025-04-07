@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:aerox_stage_1/domain/models/blob.dart';
 
 extension BlobDataExtension on Blob {
@@ -29,18 +31,18 @@ extension BlobDataExtension on Blob {
 
     final parsedData = <Map<String, dynamic>>[];
 
-    final values = _parsePacketData(
+    /*final values = _parsePacketData(
       data: packetData,
       scales: scales,
       varNames: nameVars,
       startTime: packetInfo.createdAt,
       delta: deltaTime,
-    );
+    );*/
 
-    for (var sample in values) {
+    /*for (var sample in values) {
       sample['packet_addr'] = packetInfo.address.toRadixString(16);
       parsedData.add(sample);
-    }
+    }*/
 
     return parsedData;
   }
@@ -82,5 +84,11 @@ extension BlobDataExtension on Blob {
 extension PacketInfoParser on List<int> {
   PacketInfo? toPacketInfo() {
     return PacketInfo.fromRaw(this);
+  }
+}
+
+extension BlobInfoParser on List<int> {
+  BlobInfo? toBlobInfo() {
+    return BlobInfo.parseValue(this);
   }
 }

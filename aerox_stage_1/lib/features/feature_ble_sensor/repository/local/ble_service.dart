@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:typed_data';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BleService {
@@ -44,7 +44,7 @@ Future<List<int>?> subscribeToCharacteristic(
   bool requireStatusOk = true, 
 }) async {
   try {
-    final completer = Completer<List<int>>();
+    final completer = Completer<List<int>?>();
     StreamSubscription<List<int>>? subscription;
 
     await characteristic.setNotifyValue(true);
@@ -52,7 +52,8 @@ Future<List<int>?> subscribeToCharacteristic(
     subscription = characteristic.value.listen((value) async {
       print("Received value: $value");
       print("Expected opcode: $expectedOpcode |");
-
+      print("as Un8List, ${  Uint8List.fromList(value)}");
+      
       final isEcho = sentCommand != null && _listsEqual(value, sentCommand);
       final isValidResponse = value.isNotEmpty &&
           value[0] == expectedOpcode &&
@@ -73,10 +74,10 @@ Future<List<int>?> subscribeToCharacteristic(
     });
 
     return await completer.future.timeout(
-      const Duration(seconds: 5),
+      const Duration(seconds: 1),
       onTimeout: () {
         print("Timeout waiting for expected response ($expectedOpcode)");
-        return [];
+        return null;
       },
     );
   } catch (e) {

@@ -1,0 +1,2 @@
+/Users/roberto.pavon/Documents/GitHub/Aerox-Sensor-Testing/aerox_stage_1/android/app/.cxx/Debug/1o6qp25l/x86_64/CMakeFiles/edit_cache.dir
+/Users/roberto.pavon/Documents/GitHub/Aerox-Sensor-Testing/aerox_stage_1/android/app/.cxx/Debug/1o6qp25l/x86_64/CMakeFiles/rebuild_cache.dir

@@ -2,17 +2,18 @@ import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
-import 'package:aerox_stage_1/domain/models/blob_extension.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_controller.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BleRepository {
   final BleService bleService;
+  final StorageServiceController storageServiceController;
 
-  BleRepository({required this.bleService});
+  BleRepository({required this.bleService, required this.storageServiceController});
 
   Future<EitherErr<void>> sendStartOfflineRSTOS(RacketSensor sensor) async {
     final serviceUuid = Guid('71d713ef-799e-42af-9d57-9803e36b0f93');
@@ -80,97 +81,10 @@ class BleRepository {
   }
 Future<EitherErr<List<Blob>>> readAllBlobs(RacketSensor sensor) async {
   try {
-    final serviceUuid = Guid('71d713ef-799e-42af-9d57-9803e36b0f93');
-    final characteristicUuid = Guid('a84ce035-60ed-4b24-99c9-8683052aa48b');
-
-    final numBlobsResp = await getBlobNumber(sensor, serviceUuid, characteristicUuid);
-    if (numBlobsResp == null || numBlobsResp.length < 3 || numBlobsResp.first != 0x09) {
-      return Left(BluetoothErr(errMsg: "Error leyendo número de blobs", statusCode: 2));
+      final blobs = await storageServiceController.fetchBlobs(sensor.device, fetchData: false);
+      return Right(blobs ?? []);
+    } catch (e) {
+      return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
     }
-
-    final numBlobs = numBlobsResp[2];
-    if (numBlobs == 0) return Right([]);
-
-    final allBlobs = <Blob>[];
-
-    for (int i = 0; i < numBlobs; i++) {
-      final selectBlobCmd = (i == 0) ? [0x03] : [0x04, 0x01];
-      final blobHeaderRaw = await bleService.sendCommand(
-        device: sensor.device,
-        serviceUuid: serviceUuid,
-        characteristicUuid: characteristicUuid,
-        cmd: selectBlobCmd,
-        closeAfterResponse: false,
-      );
-
-      if (blobHeaderRaw == null) break;
-
-      final blobHeader = blobHeaderRaw.toPacketInfo();
-      if (blobHeader == null) continue;
-
-      final data = await _readPacketData(sensor: sensor, packetInfo: blobHeader);
-      if (data == null) continue;
-
-      allBlobs.add(Blob(
-        packetInfo: blobHeader,
-        packetData: data,
-      ));
-    }
-
-    return Right(allBlobs);
-  } catch (e) {
-    print("Error reading all blobs: $e");
-    return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
   }
 }
-Future<List<int>?> _readPacketData({
-  required RacketSensor sensor,
-  required PacketInfo packetInfo,
-}) async {
-  try {
-    final serviceUuid = Guid('71d713ef-799e-42af-9d57-9803e36b0f93');
-    final characteristicUuid = Guid('a84ce035-60ed-4b24-99c9-8683052aa48b');
-
-    final address = packetInfo.dataAddress;
-    final length = packetInfo.dataSize;
-
-    final addressBytes = [
-      address & 0xFF,
-      (address >> 8) & 0xFF,
-      (address >> 16) & 0xFF,
-    ];
-
-    final cmd = [0x01, ...addressBytes, length];
-
-    final rawData = await bleService.sendCommand(
-      device: sensor.device,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-      cmd: cmd,
-      requireStatusOk: true,
-    );
-
-    if (rawData == null || rawData.length < 2) return null;
-
-    // Exclude opcode and status (first 2 bytes)
-    return rawData.sublist(2);
-  } catch (e) {
-    print("Error reading packet data: $e");
-    return null;
-  }
-}
-
-
-  Future<List<int>?> getBlobNumber(RacketSensor sensor, Guid serviceUuid, Guid characteristicUuid) {
-    return bleService.sendCommand(
-      device: sensor.device,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-      cmd: [9], 
-    );
-  }
-
-
-}
-
-
