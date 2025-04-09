@@ -48,3 +48,9 @@ class OnParseBlob extends SelectedEntityPageEvent {
 
   OnParseBlob({required this.blob});
 }
+class OnEraseStorageData extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnEraseStorageData({required this.sensor});
+
+}

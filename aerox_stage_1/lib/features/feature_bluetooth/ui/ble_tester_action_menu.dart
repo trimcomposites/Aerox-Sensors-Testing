@@ -63,6 +63,16 @@ class BleTesterActionMenu extends StatelessWidget {
                   ),
                   color: Colors.yellow,
                 ),
+                IconButton(
+                  onPressed: () => {
+                    selectedEntityPageBloc.add(OnEraseStorageData(
+                        sensor: state.selectedRacketEntity!.sensors[0]))
+                  },
+                  icon: Icon(
+                    Icons.delete_forever,
+                  ),
+                  color: Colors.red,
+                ),
               ],
             ),
             

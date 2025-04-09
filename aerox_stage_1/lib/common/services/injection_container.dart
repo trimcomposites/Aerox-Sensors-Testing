@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/erase_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
@@ -19,6 +20,7 @@ import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_repository.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/blob_data_parser.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/to_csv_blob.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_controller.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
@@ -58,6 +60,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => RacketBluetoothService( bluetoothService: sl() ))
     ..registerLazySingleton(() => BleService())
     ..registerLazySingleton(() => BlobDataParser())
+    ..registerLazySingleton(() => ToCsvBlob())
 
 
 
@@ -84,7 +87,8 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => BleRepository(
        bleService: sl(),
        storageServiceController: sl(),
-       blobDataParser: sl()
+       blobDataParser: sl(),
+       toCsvBlob: sl()
       ));
 
   // Registro de Casos de Uso (Use Cases)
@@ -103,6 +107,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => GetSelectedBluetoothRacketUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => StoptScanBluetoothSensorsUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => ReScanRacketSensorsUseCase(bluetoothRepository: sl()))
+    ..registerLazySingleton(() => EraseStorageDataUsecase(bleRepository: sl()))
 
     //ble
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
@@ -137,6 +142,7 @@ Future<void> dependencyInjectionInitialize() async {
       stopOfflineRTSOSUseCase: sl(),
       readStorageDataUsecase: sl(),
       startStreamRTSOS: sl(),
-      parseBlobUsecase: sl()
+      parseBlobUsecase: sl(),
+      eraseStorageDataUsecase: sl()
     ));
 }

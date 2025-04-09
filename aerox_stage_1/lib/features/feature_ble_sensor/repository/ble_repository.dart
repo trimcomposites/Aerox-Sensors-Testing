@@ -5,6 +5,7 @@ import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/blob_data_parser.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/to_csv_blob.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_constants.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_controller.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_service.dart';
@@ -15,7 +16,13 @@ class BleRepository {
   final BleService bleService;
   final StorageServiceController storageServiceController;
   final BlobDataParser blobDataParser;
-  BleRepository({required this.bleService, required this.storageServiceController, required this.blobDataParser});
+  final ToCsvBlob toCsvBlob;
+  BleRepository({
+    required this.bleService, 
+    required this.storageServiceController, 
+    required this.blobDataParser,
+    required this.toCsvBlob
+    });
 
   Future<EitherErr<void>> sendStartOfflineRSTOS(RacketSensor sensor) async {
     final serviceUuid = Guid('71d713ef-799e-42af-9d57-9803e36b0f93');
@@ -34,13 +41,12 @@ class BleRepository {
 
     final cmd = [
       commandCode,
-      sampleRateData,
-      1,
-      6,
-      6,
-      inactivityTimeout
-    ];
-
+      0x03,         
+      0x03,      
+      0x03,     
+      0x06,      
+      0x05           
+      ];
     await bleService.sendCommand(
       device: sensor.device,
       serviceUuid: serviceUuid,
@@ -103,6 +109,7 @@ Future<EitherErr<List<Map<String, dynamic>>>> parseBlob(Blob blob) async {
     if (blobType == StorageServiceConstants.HS_1KHZ_RTSOS_BLOB_REGISTER_TYPE) {
       final parsed = blobDataParser.parseHs1kzRtsosBlob(blob);
       print( " PARSED BLOB: ${parsed} " );
+      toCsvBlob.exportParsedBlobToCsv( parsed, fileName: "${blob.createdAt}" );
       return Right(parsed);
     }
 
@@ -117,4 +124,31 @@ Future<EitherErr<List<Map<String, dynamic>>>> parseBlob(Blob blob) async {
     ));
   }
 }
+Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) async {
+  try {
+    final serviceUuid = Guid(StorageServiceConstants.STORAGE_SERVICE_UUID);
+    final characteristicUuid = Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID);
+
+    const eraseCommand = [StorageServiceConstants.STORAGE_CP_OP_ERASE_MEMORY];
+
+    final response = await bleService.sendCommand(
+      device: sensor.device,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      cmd: eraseCommand,
+    );
+
+    if (response == null || response.length < 2 || response[1] != 0) {
+      return Left(BluetoothErr(
+        errMsg: 'Failed to erase memory. Response: $response',
+        statusCode: 97,
+      ));
+    }
+
+    return Right(null);
+  } catch (e) {
+    return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
+  }
+}
+
 }

@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:aerox_stage_1/common/utils/either_catch.dart';
+import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
+import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
@@ -16,8 +19,10 @@ class StorageServiceController {
   StorageServiceController({required this.bleService});
 
   Future<EitherErr<List<Blob>>> getBlobs(BluetoothDevice device) async {
-    final blobs = _devicesBlobs[device.remoteId.str] ?? await fetchBlobs(device);
-    return Right(blobs ?? []);
+    return EitherCatch.catchAsync<List<Blob>, BluetoothErr>(() async {
+      final blobs = _devicesBlobs[device.remoteId.str] ?? await fetchBlobs(device);
+      return blobs ?? [];
+    }, (e) => BluetoothErr(errMsg: e.toString(), statusCode: 101));
   }
 
   Future<List<Blob>?> fetchBlobs(BluetoothDevice device, {bool fetchData = false}) async {
@@ -26,18 +31,14 @@ class StorageServiceController {
 
     final blobs = <Blob>[];
     var blobInfo = await fetchFirstBlob(device);
-    
+
     while (blobInfo != null) {
-      final blob = Blob(
-        blobInfo: blobInfo,
-        packets: await fetchBlobPacketsFast(device, fetchPacketData: fetchData),
-      );
-      
-      if (blob.packets.isNotEmpty) {
-        blob.createdAt = blob.packets.first.packetInfo?.createdAt;
-        blob.closedAt = blob.packets.last.packetInfo?.closedAt;
+      final packets = await fetchBlobPacketsFast(device, fetchPacketData: fetchData);
+      final blob = Blob(blobInfo: blobInfo, packets: packets);
+      if (packets.isNotEmpty) {
+        blob.createdAt = packets.first.packetInfo?.createdAt;
+        blob.closedAt = packets.last.packetInfo?.closedAt;
       }
-      
       blobs.add(blob);
       blobInfo = await fetchNextBlob(device);
     }
@@ -52,12 +53,11 @@ class StorageServiceController {
     }
   }
 
-  Future<Uint8List?> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet) async {
-    if (packet.packetInfo != null){
+  Future<List<int>?> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet) async {
+    if (packet.packetInfo == null) return null;
     final headerSize = packet.packetInfo!.dataAddress - packet.packetInfo!.address;
     final dataSize = packet.packetInfo!.packetSize - headerSize;
-    return _readRangeData(device, packet.packetInfo!.dataAddress, dataSize);
-    } else { return null; }
+    return _readRangeData(device, packet.packetInfo!.dataAddress, dataSize) ?? null;
   }
 
   Future<Uint8List?> _readRangeData(BluetoothDevice device, int startAddress, int dataLen) async {
@@ -84,34 +84,32 @@ class StorageServiceController {
         return null;
       }
     }
-
     return rawData.toBytes();
   }
 
+  Future<Either<Err, List<BlobPacket>>> fetchBlobPackets(BluetoothDevice device, {bool fetchPacketData = false}) {
+    return EitherCatch.catchAsync<List<BlobPacket>, BluetoothErr>(() async {
+      final packets = <BlobPacket>[];
+      var packetInfo = await fetchFirstPacket(device);
 
-  Future<List<BlobPacket>> fetchBlobPackets(BluetoothDevice device, {bool fetchPacketData = false}) async {
-    final packets = <BlobPacket>[];
-    var packetInfo = await fetchFirstPacket(device);
-    
-    while (packetInfo != null) {
-      final packet = BlobPacket(packetInfo: packetInfo);
-      if (fetchPacketData) {
-        packet.packetData = await fetchBlobPacketData(device, packet);
+      while (packetInfo != null) {
+        final packet = BlobPacket(packetInfo: packetInfo);
+        if (fetchPacketData) {
+          packet.packetData = await fetchBlobPacketData(device, packet);
+        }
+        packets.add(packet);
+        packetInfo = await fetchNextPacket(device);
       }
-      packets.add(packet);
-      packetInfo = await fetchNextPacket(device);
-    }
-    
-    return packets;
+
+      return packets;
+    }, (e) => BluetoothErr(errMsg: e.toString(), statusCode: 103));
   }
 
-  // Métodos de operación básicos
   Future<Uint8List?> readData(BluetoothDevice device, int address, int dataLen) async {
- final cmd = BytesBuilder()
-    ..addByte(StorageServiceConstants.STORAGE_CP_OP_READ_DATA)
-    ..add(_intTo3Bytes(address))
-    ..addByte(dataLen);
-
+    final cmd = BytesBuilder()
+      ..addByte(StorageServiceConstants.STORAGE_CP_OP_READ_DATA)
+      ..add(_intTo3Bytes(address))
+      ..addByte(dataLen);
 
     final response = await bleService.sendCommand(
       device: device,
@@ -119,14 +117,9 @@ class StorageServiceController {
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
       cmd: cmd.toBytes(),
     );
-      final raw = response;
-      print('RAW: $raw');
-      print('Offset 0: ${PacketInfo.fromRaw(raw!)}');
-      print('Offset 1: ${PacketInfo.fromRaw(raw.sublist(1))}');
-      print('Offset 2: ${PacketInfo.fromRaw(raw.sublist(2))}');
-      // etc.
-    if(response!=null){
-      return  Uint8List.fromList( response.sublist(2) ); // Skip opcode and status
+
+    if (response != null) {
+      return Uint8List.fromList(response.sublist(2)); // Skip opcode and status
     }
     return null;
   }
@@ -154,7 +147,6 @@ class StorageServiceController {
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
       cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_FIRST_BLOB],
     );
-    
     return response?.toBlobInfo();
   }
 
@@ -165,7 +157,6 @@ class StorageServiceController {
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
       cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_NEXT_BLOB, numBlobs],
     );
-    
     return response?.toBlobInfo();
   }
 
@@ -176,7 +167,6 @@ class StorageServiceController {
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
       cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_FIRST_PACKET],
     );
-    
     return PacketInfo.fromRaw(response!.sublist(2));
   }
 
@@ -187,7 +177,6 @@ class StorageServiceController {
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
       cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_NEXT_PACKET, numPackets],
     );
-    
     return response?.toPacketInfo();
   }
 
@@ -198,52 +187,51 @@ class StorageServiceController {
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
       cmd: [StorageServiceConstants.STORAGE_CP_OP_GET_NUM_BLOBS],
     );
-    
     return response?[2]; // [opcode, status, num_blobs]
   }
-Future<List<PacketInfo>> fetchAllPacketInfos(BluetoothDevice device) async {
-  final first = await fetchFirstPacket(device);
-  if (first == null) return [];
 
-  final allPackets = <PacketInfo>[first];
+  Future<List<PacketInfo>> fetchAllPacketInfos(BluetoothDevice device) async {
+    final first = await fetchFirstPacket(device);
+    if (first == null) return [];
 
-  while (true) {
-    final response = await bleService.sendCommand(
-      device: device,
-      serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
-      characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
-      cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_NEXT_PACKET, 255], // máximo permitido
-    );
+    final allPackets = <PacketInfo>[first];
 
-    if (response == null || response.length < 2) break;
+    while (true) {
+      final response = await bleService.sendCommand(
+        device: device,
+        serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
+        characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
+        cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_NEXT_PACKET, 255],
+      );
 
-    final packetInfos = PacketInfo.fromMultipleRaw(response.sublist(2));
-    if (packetInfos.isEmpty) break;
+      if (response == null || response.length < 2) break;
 
-    allPackets.addAll(packetInfos);
+      final packetInfos = PacketInfo.fromMultipleRaw(response.sublist(2));
+      if (packetInfos.isEmpty) break;
 
-    if (packetInfos.length < 255) break;
-  }
-
-  return allPackets;
-}
-Future<List<BlobPacket>> fetchBlobPacketsFast(BluetoothDevice device, {bool fetchPacketData = false}) async {
-  final packetInfos = await fetchAllPacketInfos(device);
-
-  final packets = <BlobPacket>[];
-
-  for (final packetInfo in packetInfos) {
-    final packet = BlobPacket(packetInfo: packetInfo);
-    if (fetchPacketData) {
-      packet.packetData = await fetchBlobPacketData(device, packet);
+      allPackets.addAll(packetInfos);
+      if (packetInfos.length < 255) break;
     }
-    packets.add(packet);
+
+    return allPackets;
   }
 
-  return packets;
-}
+  Future<List<BlobPacket>> fetchBlobPacketsFast(BluetoothDevice device, {bool fetchPacketData = false}) async {
+    final packetInfos = await fetchAllPacketInfos(device);
 
-  // Helpers
+    final packets = <BlobPacket>[];
+
+    for (final packetInfo in packetInfos) {
+      final packet = BlobPacket(packetInfo: packetInfo);
+      if (fetchPacketData) {
+        packet.packetData = await fetchBlobPacketData(device, packet);
+      }
+      packets.add(packet);
+    }
+
+    return packets;
+  }
+
   Uint8List _intTo3Bytes(int value) {
     return Uint8List(3)
       ..[0] = value & 0xFF
