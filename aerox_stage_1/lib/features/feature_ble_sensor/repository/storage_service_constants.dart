@@ -1,3 +1,4 @@
+
 class StorageServiceConstants {
   static const String STORAGE_SERVICE_UUID = '71d713ef-799e-42af-9d57-9803e36b0f93';
   static const String STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID = 'a84ce035-60ed-4b24-99c9-8683052aa48b';
@@ -15,6 +16,14 @@ class StorageServiceConstants {
   static const int STORAGE_CP_OP_ERASE_MEMORY = 0x10;
   static const int STORAGE_CP_OP_GET_MEM_STATUS = 0x11;
   static const int STORAGE_CP_OP_GENERATE_FAKE_BLOB = 0x1F;
+ // Máscaras de datos RTSOS
+  static const int RTSOS_GYRO_DATA_MASK = 0x02;
+  static const int RTSOS_ACCEL_DATA_MASK = 0x04;
+  static const int RTSOS_ANGLE_DATA_MASK = 0x08;
+  static const int RTSOS_USE_IMU_REFERENCE_MASK = 0x40;
+
+static const int HS_RTSOS_BLOB_REGISTER_TYPE = 0x08;
+static const int HS_1KHZ_RTSOS_BLOB_REGISTER_TYPE = 1;
 
   static const int STORAGE_MAX_DATA_LEN = 242;
 }

@@ -43,3 +43,8 @@ class OnGetBlobPackets extends SelectedEntityPageEvent {
 
   OnGetBlobPackets({required this.sensor});
 }
+class OnParseBlob extends SelectedEntityPageEvent {
+  final Blob blob;
+
+  OnParseBlob({required this.blob});
+}

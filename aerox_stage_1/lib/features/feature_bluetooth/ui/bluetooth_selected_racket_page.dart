@@ -43,26 +43,9 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                          // final parsed = blob.parseHs1kHzBlob();
                           return Row(
                             children: [
-                              SingleChildScrollView( scrollDirection: Axis.horizontal,  child: Container(child: Text(blob.toString(), maxLines: 10,))),
+                              SingleChildScrollView( scrollDirection: Axis.horizontal,  child: Container(child: Text("blob ${ blob.createdAt }", maxLines: 10,))),
                               IconButton(onPressed: () {
-                                selectedEntityPageBloc.add( OnGetBlobPackets(sensor: state.selectedRacketEntity!.sensors[0]) );
-                                // showDialog(context: context, builder: ( _ ) {
-                                //   return BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
-                                //     builder: (context, state) {
-                                //       return ListView.builder(
-                                //         itemCount: state.packets.length,
-                                //         itemBuilder: (BuildContext context, int index) {
-                                //           return Container(
-                                //             color: Colors.white,
-                                //             height: 300,
-                                //             width: 300,
-                                //             child: Text( state.packets[index].toString() )
-                                //             );
-                                //         },
-                                //       );
-                                //     },
-                                //   );
-                                // });
+                                selectedEntityPageBloc.add( OnParseBlob(blob: blob) );
                               }, icon: Icon( Icons.arrow_circle_up )
                               )
                             ],

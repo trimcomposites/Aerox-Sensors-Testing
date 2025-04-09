@@ -74,7 +74,7 @@ Future<List<int>?> subscribeToCharacteristic(
     });
 
     return await completer.future.timeout(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 300),
       onTimeout: () {
         print("Timeout waiting for expected response ($expectedOpcode)");
         return null;

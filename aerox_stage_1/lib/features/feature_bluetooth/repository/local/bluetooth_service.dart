@@ -136,6 +136,8 @@ Future<EitherErr<void>> reScan() {
   Future<EitherErr<void>> connectToDevice(RacketSensor racketSensor) async {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {
       await racketSensor.device.connect();
+      //await racketSensor.device.requestMtu(247); // máximo recomendado
+
       print("Connected to ${racketSensor.name}");
     }, (exception) {
       return BluetoothErr(

@@ -30,7 +30,7 @@ class StorageServiceController {
     while (blobInfo != null) {
       final blob = Blob(
         blobInfo: blobInfo,
-        packets: await fetchBlobPackets(device, fetchPacketData: fetchData),
+        packets: await fetchBlobPacketsFast(device, fetchPacketData: fetchData),
       );
       
       if (blob.packets.isNotEmpty) {
@@ -63,7 +63,7 @@ class StorageServiceController {
   Future<Uint8List?> _readRangeData(BluetoothDevice device, int startAddress, int dataLen) async {
     var readAddress = startAddress;
     var bytesToRead = dataLen;
-    final rawData = BytesBuilder();
+    var rawData = BytesBuilder();
     var retryCount = 0;
 
     while (bytesToRead > 0) {
@@ -71,7 +71,7 @@ class StorageServiceController {
           ? StorageServiceConstants.STORAGE_MAX_DATA_LEN 
           : bytesToRead;
 
-      final data = await readData(device, readAddress, chunkSize);
+      var data = await readData(device, readAddress, chunkSize);
       if (data != null) {
         rawData.add(data);
         bytesToRead -= chunkSize;
@@ -87,6 +87,7 @@ class StorageServiceController {
 
     return rawData.toBytes();
   }
+
 
   Future<List<BlobPacket>> fetchBlobPackets(BluetoothDevice device, {bool fetchPacketData = false}) async {
     final packets = <BlobPacket>[];
@@ -106,16 +107,17 @@ class StorageServiceController {
 
   // Métodos de operación básicos
   Future<Uint8List?> readData(BluetoothDevice device, int address, int dataLen) async {
-    final cmd = Uint8List(4)
-      ..[0] = StorageServiceConstants.STORAGE_CP_OP_READ_DATA
-      ..setRange(1, 4, _intTo3Bytes(address));
-    cmd.add(dataLen);
+ final cmd = BytesBuilder()
+    ..addByte(StorageServiceConstants.STORAGE_CP_OP_READ_DATA)
+    ..add(_intTo3Bytes(address))
+    ..addByte(dataLen);
+
 
     final response = await bleService.sendCommand(
       device: device,
       serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
-      cmd: cmd,
+      cmd: cmd.toBytes(),
     );
       final raw = response;
       print('RAW: $raw');
@@ -123,8 +125,10 @@ class StorageServiceController {
       print('Offset 1: ${PacketInfo.fromRaw(raw.sublist(1))}');
       print('Offset 2: ${PacketInfo.fromRaw(raw.sublist(2))}');
       // etc.
-
-    return response?.sublist(2) as Uint8List; // Skip opcode and status
+    if(response!=null){
+      return  Uint8List.fromList( response.sublist(2) ); // Skip opcode and status
+    }
+    return null;
   }
 
   Future<int?> writeData(BluetoothDevice device, int address, Uint8List data) async {
@@ -197,6 +201,47 @@ class StorageServiceController {
     
     return response?[2]; // [opcode, status, num_blobs]
   }
+Future<List<PacketInfo>> fetchAllPacketInfos(BluetoothDevice device) async {
+  final first = await fetchFirstPacket(device);
+  if (first == null) return [];
+
+  final allPackets = <PacketInfo>[first];
+
+  while (true) {
+    final response = await bleService.sendCommand(
+      device: device,
+      serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
+      characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
+      cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_NEXT_PACKET, 255], // máximo permitido
+    );
+
+    if (response == null || response.length < 2) break;
+
+    final packetInfos = PacketInfo.fromMultipleRaw(response.sublist(2));
+    if (packetInfos.isEmpty) break;
+
+    allPackets.addAll(packetInfos);
+
+    if (packetInfos.length < 255) break;
+  }
+
+  return allPackets;
+}
+Future<List<BlobPacket>> fetchBlobPacketsFast(BluetoothDevice device, {bool fetchPacketData = false}) async {
+  final packetInfos = await fetchAllPacketInfos(device);
+
+  final packets = <BlobPacket>[];
+
+  for (final packetInfo in packetInfos) {
+    final packet = BlobPacket(packetInfo: packetInfo);
+    if (fetchPacketData) {
+      packet.packetData = await fetchBlobPacketData(device, packet);
+    }
+    packets.add(packet);
+  }
+
+  return packets;
+}
 
   // Helpers
   Uint8List _intTo3Bytes(int value) {

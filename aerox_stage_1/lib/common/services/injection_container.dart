@@ -1,5 +1,5 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
-import 'package:aerox_stage_1/domain/use_cases/ble_sensor/fetch_blob_packages_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
@@ -17,6 +17,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_repository.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/repository/blob_data_parser.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_controller.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
@@ -56,6 +57,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => BluetoothCustomService( permissionHandler: sl() ))
     ..registerLazySingleton(() => RacketBluetoothService( bluetoothService: sl() ))
     ..registerLazySingleton(() => BleService())
+    ..registerLazySingleton(() => BlobDataParser())
 
 
 
@@ -81,7 +83,8 @@ Future<void> dependencyInjectionInitialize() async {
       ))
     ..registerLazySingleton(() => BleRepository(
        bleService: sl(),
-       storageServiceController: sl()
+       storageServiceController: sl(),
+       blobDataParser: sl()
       ));
 
   // Registro de Casos de Uso (Use Cases)
@@ -105,7 +108,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
     ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl()))
     ..registerLazySingleton(() => StreamRTSOSUsecase( bleRepository : sl())) 
-    //..registerLazySingleton(() => FetchBlobPackagesUsecase( bleRepository : sl())) 
+    ..registerLazySingleton(() => ParseBlobUsecase( bleRepository : sl())) 
     ..registerLazySingleton(() => StoptOfflineRTSOSUseCase( bleRepository : sl()));
 
   // Registro de Blocs
@@ -134,6 +137,6 @@ Future<void> dependencyInjectionInitialize() async {
       stopOfflineRTSOSUseCase: sl(),
       readStorageDataUsecase: sl(),
       startStreamRTSOS: sl(),
-      //fetchBlobPackagesUsecase: sl()
+      parseBlobUsecase: sl()
     ));
 }

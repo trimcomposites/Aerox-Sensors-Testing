@@ -2,7 +2,7 @@ import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
-import 'package:aerox_stage_1/domain/use_cases/ble_sensor/fetch_blob_packages_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
@@ -23,6 +23,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
   final  StoptOfflineRTSOSUseCase stopOfflineRTSOSUseCase;
   final  ReadStorageDataUsecase readStorageDataUsecase;
   final StreamRTSOSUsecase startStreamRTSOS;
+  final ParseBlobUsecase parseBlobUsecase;
   //final FetchBlobPackagesUsecase fetchBlobPackagesUsecase;
 
   SelectedEntityPageBloc({ 
@@ -32,6 +33,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     required this.stopOfflineRTSOSUseCase,
     required this.readStorageDataUsecase,
     required this.startStreamRTSOS,
+    required this.parseBlobUsecase
     //required this.fetchBlobPackagesUsecase
   }) : super(SelectedEntityPageState(uiState: UIState.idle())) {
     
@@ -92,13 +94,14 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
         (l) =>  emit(state.copyWith(uiState: UIState.error(l.errMsg))), 
         (r) => emit(state.copyWith(blobs: r)));
     });
-    // on<OnGetBlobPackets>((event, emit) async {
+    on<OnParseBlob>((event, emit) async {
 
-    //   // ignore: avoid_single_cascade_in_expression_statements
-    //   await fetchBlobPackagesUsecase.call( event.sensor )..fold(
-    //     (l) =>  emit(state.copyWith(uiState: UIState.error(l.errMsg))), 
-    //     (r) => emit(state.copyWith( packets: r )));
-    // });
+      // ignore: avoid_single_cascade_in_expression_statements
+      await parseBlobUsecase.call( event.blob )..fold(
+        (l) =>  emit(state.copyWith(uiState: UIState.error(l.errMsg))), 
+        (r) =>{});
+        // (r) => emit(state.copyWith(blobs: r)));
+    });
     on<OnStartStreamRTSOS>((event, emit) async {
 
       await startStreamRTSOS.call( event.sensor );

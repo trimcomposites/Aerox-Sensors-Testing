@@ -281,6 +281,28 @@ class PacketInfo extends Equatable {
       closedAt: closedAt ?? this.closedAt,
     );
   }
+  static List<PacketInfo> fromMultipleRaw(List<int> data) {
+    final result = <PacketInfo>[];
+    int offset = 0;
+
+    while (offset + 15 <= data.length) {
+      // Intentamos parsear desde la posición actual
+      final sub = data.sublist(offset);
+      final packet = PacketInfo.fromRaw(sub);
+
+      if (packet == null) break;
+
+      result.add(packet);
+
+      // Avanzamos el offset al siguiente bloque
+      offset += packet.packetSize;
+
+      // Prevención por si el tamaño no tiene sentido
+      if (packet.packetSize <= 0 || offset > data.length) break;
+    }
+
+    return result;
+  }
 
   @override
   List<Object?> get props => [
