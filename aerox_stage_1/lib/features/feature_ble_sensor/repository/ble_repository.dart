@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/utils/either_catch.dart';
 import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/blob.dart';
@@ -124,31 +125,27 @@ Future<EitherErr<List<Map<String, dynamic>>>> parseBlob(Blob blob) async {
     ));
   }
 }
-Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) async {
-  try {
-    final serviceUuid = Guid(StorageServiceConstants.STORAGE_SERVICE_UUID);
-    final characteristicUuid = Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID);
+Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
+  final serviceUuid = Guid(StorageServiceConstants.STORAGE_SERVICE_UUID);
+  final characteristicUuid = Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID);
+  const eraseCommand = [StorageServiceConstants.STORAGE_CP_OP_ERASE_MEMORY];
 
-    const eraseCommand = [StorageServiceConstants.STORAGE_CP_OP_ERASE_MEMORY];
-
-    final response = await bleService.sendCommand(
-      device: sensor.device,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-      cmd: eraseCommand,
-    );
-
-    if (response == null || response.length < 2 || response[1] != 0) {
-      return Left(BluetoothErr(
-        errMsg: 'Failed to erase memory. Response: $response',
-        statusCode: 97,
-      ));
-    }
-
-    return Right(null);
-  } catch (e) {
-    return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
-  }
+  return bleService
+      .sendCommand(
+        device: sensor.device,
+        serviceUuid: serviceUuid,
+        characteristicUuid: characteristicUuid,
+        cmd: eraseCommand,
+      )
+      .flatMap((response) async {
+        if (response.length < 2 || response[1] != 0) {
+          return Left(BluetoothErr(
+            errMsg: 'Failed to erase memory. Response: $response',
+            statusCode: 97,
+          ));
+        }
+        return Right(null);
+      });
 }
 
 }
