@@ -1,84 +1,68 @@
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/ui/ble_action_button.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BleTesterActionMenu extends StatelessWidget {
-  const BleTesterActionMenu({
-    super.key,
-  });
+  const BleTesterActionMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final selectedEntityPageBloc = BlocProvider.of<SelectedEntityPageBloc>(context);
-    return BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
-      builder: (context, state) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text('Pala seleccionada:'),
-            Text(state.selectedRacketEntity?.name ??
-                'No hay raqueta BLuetooth Seleccionada.'),
-            Text(state.selectedRacketEntity?.sensors[0].name ??
-                'No hay raqueta BLuetooth Seleccionada.'),
-            Row(
+    return Drawer(
+      child: BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
+        builder: (context, state) {
+          final sensor = state.selectedRacketEntity?.sensors[0];
+
+          return Padding(
+            padding: const EdgeInsets.all(0),
+            child: Column(
               children: [
-                IconButton(
-                  onPressed: () => {
-                    selectedEntityPageBloc
-                        .add(OnDisconnectSelectedRacketSelectedEntityPage())
-                  },
-                  icon: Icon(
-                    Icons.logout_outlined,
-                  ),
-                  color: Colors.red,
-                ),
-                IconButton(
-                  onPressed: () => {
-                    selectedEntityPageBloc.add(OnStartHSBlob(
-                        sensor: state.selectedRacketEntity!.sensors[0]))
-                  },
-                  icon: Icon(
-                    Icons.send,
-                  ),
-                  color: Colors.blue,
-                ),
-                IconButton(
-                  onPressed: () => {
-                    selectedEntityPageBloc.add(OnReadStorageData(
-                        sensor: state.selectedRacketEntity!.sensors[0]))
-                  },
-                  icon: Icon(
-                    Icons.read_more_outlined,
-                  ),
-                  color: Colors.green,
-                ),
-                IconButton(
-                  onPressed: () => {
-                    selectedEntityPageBloc.add(OnStartStreamRTSOS(
-                        sensor: state.selectedRacketEntity!.sensors[0]))
-                  },
-                  icon: Icon(
-                    Icons.wifi,
-                  ),
-                  color: Colors.yellow,
-                ),
-                IconButton(
-                  onPressed: () => {
-                    selectedEntityPageBloc.add(OnEraseStorageData(
-                        sensor: state.selectedRacketEntity!.sensors[0]))
-                  },
-                  icon: Icon(
-                    Icons.delete_forever,
-                  ),
-                  color: Colors.red,
-                ),
+                const SizedBox(height: 32),
+
+                if (sensor != null)
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        BleActionButton(
+                          text: 'Desconectar Raqueta',
+                          icon: Icons.logout_outlined,
+                          iconColor: Colors.red,
+                          event: OnDisconnectSelectedRacketSelectedEntityPage(),
+                        ),
+                        BleActionButton(
+                          text: 'Iniciar HS Blob',
+                          icon: Icons.send,
+                          iconColor: Colors.blue,
+                          event: OnStartHSBlob(sensor: sensor),
+                        ),
+                        BleActionButton(
+                          text: 'Leer Memoria',
+                          icon: Icons.read_more_outlined,
+                          iconColor: Colors.green,
+                          event: OnReadStorageData(sensor: sensor),
+                        ),
+                        BleActionButton(
+                          text: 'Stream RTSOS',
+                          icon: Icons.wifi,
+                          iconColor: Colors.yellow,
+                          event: OnStartStreamRTSOS(sensor: sensor),
+                        ),
+                        BleActionButton(
+                          text: 'Borrar Memoria',
+                          icon: Icons.delete_forever,
+                          iconColor: Colors.red,
+                          event: OnEraseStorageData(sensor: sensor),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  const Center(child: Text("No hay sensor seleccionado")),
               ],
             ),
-            
-          ],
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
