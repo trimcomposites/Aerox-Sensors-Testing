@@ -17,6 +17,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecas
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_repository.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/blob_data_parser.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
@@ -144,5 +145,7 @@ Future<void> dependencyInjectionInitialize() async {
       startStreamRTSOS: sl(),
       parseBlobUsecase: sl(),
       eraseStorageDataUsecase: sl()
+    ))
+    ..registerFactory(() => RtsosLobbyBloc(
     ));
 }

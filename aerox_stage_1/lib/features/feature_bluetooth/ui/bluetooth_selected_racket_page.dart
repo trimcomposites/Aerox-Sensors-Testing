@@ -1,6 +1,7 @@
 import 'package:aerox_stage_1/common/ui/error_dialog.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_recording_lobby.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/ble_record_with_button.dart';
@@ -48,8 +49,16 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                       return Column(
                         children: [
                           SelectedRacketName(),
-                          BleRecordWithButton( text: 'Grabación con Cámaras', color: Colors.red, onPressed: (){}, ),
-                          BleRecordWithButton( text: 'Grabación SIN Cámaras', color: Colors.blue, onPressed: (){}, ),
+                          BleRecordWithButton( 
+                            text: 'Grabación con Cámaras', 
+                            color: Colors.red,
+                            onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: 1, ))); }, 
+                            ),
+                          BleRecordWithButton( 
+                            text: 'Grabación SIN Cámaras',
+                            color: Colors.blue, 
+                            onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: 104, ))); }, 
+                          ),
                         ],
                       );
                     },
