@@ -1,3 +1,5 @@
+import 'package:aerox_stage_1/common/ui/error_dialog.dart';
+import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/duration_selector_with_input.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/hit_type_select_drop_down.dart';
@@ -25,37 +27,48 @@ class RTSOSRecordingLobby extends StatelessWidget {
         leading: Container(),
       ),
       body: Center(
-        child: BlocBuilder<RtsosLobbyBloc, RtsosLobbyState>(
-          builder: (context, state) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-              RTSOSRecordParams(sampleRate: sampleRate),
-                 
-              const SizedBox(height: 16),
-              
-                sampleRate!= 1
-                ? HitTypeSelectDropDown()
-                : Container(),
-                DurationSelectorWithInput(),
-                BleRecordWithButton(
-                  text: 'INICIAR GRABACIÓN',
-                  color: sampleRate==1 || sampleRate!=1 && state.selectedHitType != null
-                  ? Colors.red
-                  : Colors.grey,
-                  onPressed: () {
-                    if(sampleRate==1 || sampleRate!=1 && state.selectedHitType != null){
-                      rtsosLobbyBloc.add( OnStartHSBlobOnLobby(duration: state.durationSeconds, sampleRate: sampleRate) );
-                      Navigator.push(
-                        context, 
-                        MaterialPageRoute(builder: (context) => OnRTSOSRecordingPlaceHolderScreen(durationSeconds: state.durationSeconds))
-                      );
-                    }
-                  },
-                )
-              ],
-            );
+        child: BlocListener<RtsosLobbyBloc, RtsosLobbyState>(
+          listener: (context, state) {
+            if (state.sensorEntity == null &&
+                state.uiState.status == UIStatus.error) {
+              ErrorDialog.showErrorDialog(context, state.uiState.errorMessage);
+            }
           },
+          child: BlocBuilder<RtsosLobbyBloc, RtsosLobbyState>(
+            builder: (context, state) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RTSOSRecordParams(sampleRate: sampleRate),
+                  const SizedBox(height: 16),
+                  sampleRate != 1 ? HitTypeSelectDropDown() : Container(),
+                  DurationSelectorWithInput(),
+                  BleRecordWithButton(
+                    text: 'INICIAR GRABACIÓN',
+                    color: sampleRate == 1 ||
+                            sampleRate != 1 && state.selectedHitType != null
+                        ? Colors.red
+                        : Colors.grey,
+                    onPressed: () {
+                      if (sampleRate == 1 ||
+                          sampleRate != 1 && state.selectedHitType != null) {
+                        rtsosLobbyBloc.add(OnStartHSBlobOnLobby(
+                            duration: state.durationSeconds,
+                            sampleRate: sampleRate));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    OnRTSOSRecordingPlaceHolderScreen(
+                                        durationSeconds:
+                                            state.durationSeconds)));
+                      }
+                    },
+                  )
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

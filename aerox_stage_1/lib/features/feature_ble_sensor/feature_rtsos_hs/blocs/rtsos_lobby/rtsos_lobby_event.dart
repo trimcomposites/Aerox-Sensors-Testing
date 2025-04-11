@@ -21,3 +21,8 @@ class OnStartHSBlobOnLobby extends RtsosLobbyEvent {
 
   OnStartHSBlobOnLobby({required this.duration, required this.sampleRate});
 }
+class OnAutoDisconnectSelectedRacketLobby extends RtsosLobbyEvent {
+  final String  errorMsg;
+
+  OnAutoDisconnectSelectedRacketLobby({required this.errorMsg});
+}

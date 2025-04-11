@@ -148,6 +148,7 @@ Future<void> dependencyInjectionInitialize() async {
     ))
     ..registerFactory(() => RtsosLobbyBloc(
       getSelectedBluetoothRacketUsecase: sl(),
-      startOfflineRTSOSUseCase: sl()
+      startOfflineRTSOSUseCase: sl(),
+      disconnectFromRacketSensorUsecase: sl()
     ));
 }
