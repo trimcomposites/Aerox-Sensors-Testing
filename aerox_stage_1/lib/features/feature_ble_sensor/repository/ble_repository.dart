@@ -125,6 +125,45 @@ Future<EitherErr<List<Map<String, dynamic>>>> parseBlob(Blob blob) async {
     ));
   }
 }
+Future<EitherErr<void>> setTimestamp(RacketSensor sensor, {DateTime? dateTime}) async {
+  return EitherCatch.catchAsync<void, BluetoothErr>(() async {
+    final now = (dateTime ?? DateTime.now().toUtc());
+
+    final int timestamp = now.millisecondsSinceEpoch ~/ 1000;
+    final int ms = (now.microsecond ~/ 1000);
+
+    final List<int> value = []
+      ..addAll(_toBytes(timestamp, 4)) // timestamp in seconds
+      ..addAll(_toBytes(ms, 2));       // milliseconds
+
+    final services = await sensor.device.discoverServices();
+
+    final targetService = services.firstWhere(
+      (s) => s.uuid == Guid(StorageServiceConstants.CURRENT_TIME_SERVICE_UUID),
+      orElse: () => throw BluetoothErr(
+        errMsg: 'Servicio 1805 (Current Time) no encontrado.',
+        statusCode: 404,
+      ),
+    );
+
+    final characteristic = targetService.characteristics.firstWhere(
+      (c) => c.uuid == Guid(StorageServiceConstants.TIMESTAMP_CHARACTERISTIC_UUID),
+      orElse: () => throw BluetoothErr(
+        errMsg: 'Característica de timestamp no encontrada.',
+        statusCode: 404,
+      ),
+    );
+
+    await characteristic.write(value, withoutResponse: false);
+    print("✅ Timestamp enviado: $timestamp s + $ms ms");
+  }, (e) {
+    return BluetoothErr(
+      errMsg: 'Error al establecer el timestamp: ${e.toString()}',
+      statusCode: 500,
+    );
+  });
+}
+
 Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
   final serviceUuid = Guid(StorageServiceConstants.STORAGE_SERVICE_UUID);
   final characteristicUuid = Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID);
@@ -146,6 +185,13 @@ Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
         }
         return Right(null);
       });
+}
+List<int> _toBytes(int value, int length) {
+  final result = <int>[];
+  for (int i = 0; i < length; i++) {
+    result.add((value >> (8 * i)) & 0xFF);
+  }
+  return result;
 }
 
 }

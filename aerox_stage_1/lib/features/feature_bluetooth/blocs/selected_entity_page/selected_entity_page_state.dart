@@ -21,7 +21,7 @@ class SelectedEntityPageState extends Equatable {
   }) {
     return SelectedEntityPageState(
       uiState: uiState ?? this.uiState,
-      selectedRacketEntity: selectedRacketEntity ?? this.selectedRacketEntity,
+      selectedRacketEntity: selectedRacketEntity,
       blobs: blobs ?? this.blobs,
       //packets: packets?? this.packets
     );

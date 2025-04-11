@@ -19,6 +19,7 @@ class BluetoothCustomService {
   List<BluetoothDevice> devices = [];
   StreamController<List<RacketSensor>>? _devicesStreamController;
   bool isRestartingScan = false;
+  StreamSubscription? scanSubscription;
   BluetoothCustomService({ required this.permissionHandler });
 
   Future<bool> checkPermissions() async {
@@ -57,12 +58,25 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
 
     FlutterBluePlus.startScan();
 
-    StreamSubscription? scanSubscription;
+
 
     scanSubscription = FlutterBluePlus.onScanResults.listen((results) async {
       List<BluetoothDevice> detectedDevices = results.map((r) => r.device).toList();
 
-      devices.removeWhere((device) => !detectedDevices.any((d) => d.remoteId == device.remoteId));
+      final toRemove = <BluetoothDevice>[];
+
+      for (final device in devices) {
+        final state = await device.connectionState.first;
+        final stillDetected = detectedDevices.any((d) => d.remoteId == device.remoteId);
+
+        if (!stillDetected && state != BluetoothConnectionState.connected) {
+          toRemove.add(device);
+        }
+      }
+
+devices.removeWhere((d) => toRemove.contains(d));
+
+
 
       for (ScanResult result in results) {
         String deviceName = (result.device.platformName ?? '').toLowerCase();
@@ -124,6 +138,7 @@ Future<EitherErr<void>> reScan() {
       await FlutterBluePlus.stopScan();
       _devicesStreamController?.close();
       _devicesStreamController = null;
+      scanSubscription!.cancel();
       print("Escaneo stopped.");
     }, (exception) {
       throw BluetoothErr(

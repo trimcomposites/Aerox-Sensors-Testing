@@ -21,12 +21,11 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
   final DisconnectFromRacketSensorUsecase disconnectFromRacketSensorUsecase;
   final GetSelectedBluetoothRacketUsecase getSelectedBluetoothRacketUsecase;
   final StartOfflineRTSOSUseCase startOfflineRTSOSUseCase; 
-  final  StoptOfflineRTSOSUseCase stopOfflineRTSOSUseCase;
-  final  ReadStorageDataUsecase readStorageDataUsecase;
+  final StoptOfflineRTSOSUseCase stopOfflineRTSOSUseCase;
+  final ReadStorageDataUsecase readStorageDataUsecase;
   final StreamRTSOSUsecase startStreamRTSOS;
   final ParseBlobUsecase parseBlobUsecase;
   final EraseStorageDataUsecase eraseStorageDataUsecase;
-
 
   SelectedEntityPageBloc({ 
     required this.disconnectFromRacketSensorUsecase,
@@ -38,28 +37,38 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     required this.parseBlobUsecase,
     required this.eraseStorageDataUsecase,
   }) : super(SelectedEntityPageState(uiState: UIState.idle())) {
-    
+
+    // 🔌 Desconexión manual (no muestra error)
     on<OnDisconnectSelectedRacketSelectedEntityPage>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.loading(), selectedRacketEntity: state.selectedRacketEntity));
+      emit(state.copyWith(uiState: UIState.loading()));
 
       final selectedRacket = state.selectedRacketEntity;
       if (selectedRacket != null) {
         await disconnectFromRacketSensorUsecase.call(selectedRacket).then((either) {
           either.fold(
-            (failure) {
-              emit(state.copyWith(uiState: UIState.error(failure.errMsg)));
-            },
-            (r) {
-              emit(state.copyWith(selectedRacketEntity: null, uiState: UIState.idle()));
-            },
+            (failure) => emit(state.copyWith(uiState: UIState.idle())), // Silencioso
+            (_) => emit(state.copyWith(selectedRacketEntity: null, uiState: UIState.idle())),
           );
         });
       }
     });
 
-    on<OnGetSelectedRacketSelectedEntityPage>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.loading(), selectedRacketEntity: state.selectedRacketEntity));
+    // ⚠️ Desconexión automática (muestra error en UI)
+    on<OnAutoDisconnectSelectedRacket>((event, emit) async {
+      final selectedRacket = state.selectedRacketEntity;
+      if (selectedRacket != null) {
+        await disconnectFromRacketSensorUsecase.call(selectedRacket);
+      }
 
+      emit(state.copyWith(
+        selectedRacketEntity: null,
+        uiState: UIState.error(event.errorMsg),
+      ));
+    });
+
+    // 🔁 Obtener raqueta seleccionada
+    on<OnGetSelectedRacketSelectedEntityPage>((event, emit) async {
+      emit(state.copyWith(uiState: UIState.loading()));
       await getSelectedBluetoothRacketUsecase.call().then((either) {
         either.fold(
           (failure) {
@@ -72,60 +81,58 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
         );
       });
     });
-  
-    on<OnShowConnectionError>((event, emit) async {
 
-      emit(state.copyWith(uiState: UIState.error( event.errorMsg ) ));
+    on<OnShowConnectionError>((event, emit) {
+      emit(state.copyWith(uiState: UIState.error(event.errorMsg)));
     });
+
     on<OnStartHSBlob>((event, emit) async {
-
-      await startOfflineRTSOSUseCase.call( event.sensor );
+      await startOfflineRTSOSUseCase.call(event.sensor);
     });
-    
-  
+
     on<OnStopHSBlob>((event, emit) async {
-
-      await stopOfflineRTSOSUseCase.call( event.sensor );
+      await stopOfflineRTSOSUseCase.call(event.sensor);
     });
-    
-  
+
     on<OnReadStorageData>((event, emit) async {
-
-      // ignore: avoid_single_cascade_in_expression_statements
-      await readStorageDataUsecase.call( event.sensor )..fold(
-        (l) =>  emit(state.copyWith(uiState: UIState.error(l.errMsg))), 
-        (r) => emit(state.copyWith(blobs: r)));
+      await readStorageDataUsecase.call(event.sensor).then((either) {
+        either.fold(
+          (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+          (r) => emit(state.copyWith(blobs: r)),
+        );
+      });
     });
+
     on<OnParseBlob>((event, emit) async {
-
-      // ignore: avoid_single_cascade_in_expression_statements
-      await parseBlobUsecase.call( event.blob )..fold(
-        (l) =>  emit(state.copyWith(uiState: UIState.error(l.errMsg))), 
-        (r) =>{});
-        // (r) => emit(state.copyWith(blobs: r)));
+      await parseBlobUsecase.call(event.blob).then((either) {
+        either.fold(
+          (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+          (_) => {},
+        );
+      });
     });
+
     on<OnStartStreamRTSOS>((event, emit) async {
-
-      await startStreamRTSOS.call( event.sensor );
+      await startStreamRTSOS.call(event.sensor);
     });
+
     on<OnEraseStorageData>((event, emit) async {
-  emit(state.copyWith(uiState: UIState.loading()));
-
-  final result = await eraseStorageDataUsecase.call(event.sensor);
-  result.fold(
-    (err) => emit(state.copyWith(uiState: UIState.error(err.errMsg))),
-    (_) => emit(state.copyWith(uiState: UIState.success())),
-    );
-  });
-
+      emit(state.copyWith(uiState: UIState.loading()));
+      final result = await eraseStorageDataUsecase.call(event.sensor);
+      result.fold(
+        (err) => emit(state.copyWith(uiState: UIState.error(err.errMsg))),
+        (_) => emit(state.copyWith(uiState: UIState.success())),
+      );
+    });
   }
 
   void monitorSelectedRacketConnection() {
     state.selectedRacketEntity?.sensors.forEach((sensor) {
       sensor.device.connectionState.listen((connectionState) {
         if (connectionState == BluetoothConnectionState.disconnected) {
-          add(OnDisconnectSelectedRacketSelectedEntityPage());
-          add( OnShowConnectionError(errorMsg: 'Ha habido un problema de Conexión, comprueba los sensores y vuelve a intentarlo.') );
+          add(OnAutoDisconnectSelectedRacket(
+            errorMsg: 'Se ha perdido la conexión con los sensores. Reintenta la conexión.',
+          ));
         }
       });
     });

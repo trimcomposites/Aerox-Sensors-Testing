@@ -5,6 +5,11 @@ class SelectedEntityPageEvent {}
 class OnDisconnectSelectedRacketSelectedEntityPage extends SelectedEntityPageEvent {
   
 }
+class OnAutoDisconnectSelectedRacket extends SelectedEntityPageEvent {
+  final String  errorMsg;
+
+  OnAutoDisconnectSelectedRacket({required this.errorMsg});
+}
 class OnShowConnectionError extends SelectedEntityPageEvent {
   final String errorMsg;
 

@@ -29,6 +29,7 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
         ));
     });
     on<OnGetSelectedRacketSensorEntityLobby>((event, emit)async {
+      // ignore: avoid_single_cascade_in_expression_statements
       await getSelectedBluetoothRacketUsecase.call()..fold(
         (l) => emit(state.copyWith( uiState: UIState.error( 'Error fetching Raqueta seleccionada' ) )), 
         (r) => emit(state.copyWith( sensorEntity: r ))
@@ -38,7 +39,7 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
       final sensorEntity = state.sensorEntity;
       if(sensorEntity!=null){
         for (var sensor in sensorEntity.sensors){
-          startOfflineRTSOSUseCase.call(sensor);
+           startOfflineRTSOSUseCase.call(sensor);
         }
       }
     });

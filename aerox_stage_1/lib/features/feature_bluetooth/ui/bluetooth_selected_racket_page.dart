@@ -26,7 +26,11 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
           leading: Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.menu),
-              onPressed: () => Scaffold.of(context).openDrawer(),
+              onPressed: () {
+                if(selectedEntityPageBloc.state.selectedRacketEntity!=null){
+                  Scaffold.of(context).openDrawer();
+                }
+              },
             ),
           ),
         ),
@@ -46,20 +50,22 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                 children: [
                   BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
                     builder: (context, state) {
-                      return Column(
-                        children: [
-                          SelectedRacketName(),
-                          BleRecordWithButton( 
-                            text: 'Grabación con Cámaras', 
-                            color: Colors.red,
-                            onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: 1, ))); }, 
+                      return Center(
+                        child: Column(
+                          children: [
+                            SelectedRacketName(),
+                            BleRecordWithButton( 
+                              text: 'Grabación con Cámaras', 
+                              color: Colors.red,
+                              onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: 1, ))); }, 
+                              ),
+                            BleRecordWithButton( 
+                              text: 'Grabación SIN Cámaras',
+                              color: Colors.blue, 
+                              onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: 104, ))); }, 
                             ),
-                          BleRecordWithButton( 
-                            text: 'Grabación SIN Cámaras',
-                            color: Colors.blue, 
-                            onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: 104, ))); }, 
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     },
                   ),
