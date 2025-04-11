@@ -36,6 +36,7 @@ class BluetoothRacketsList extends StatelessWidget {
         listener: (context, state) {
           if (state.selectedRacketEntity != null && state.uiState.next != null) {
             Navigator.pop(context);
+            sensorsBloc.add( OnStopScanBluetoothSensors() );
             Navigator.pushNamed(context, state.uiState.next!);
           }
         },

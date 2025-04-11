@@ -16,7 +16,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 class BluetoothCustomService {
   final BluetoothPermissionHandler permissionHandler;
   bool _isScanning = false;
-  final List<BluetoothDevice> devices = [];
+  List<BluetoothDevice> devices = [];
   StreamController<List<RacketSensor>>? _devicesStreamController;
   bool isRestartingScan = false;
   BluetoothCustomService({ required this.permissionHandler });
@@ -43,7 +43,7 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
 
     if (_isScanning && _devicesStreamController != null ) return _devicesStreamController!.stream;
     _isScanning = true;
-    devices.clear();
+    //devices.clear();
 
     _devicesStreamController?.close();
     _devicesStreamController = StreamController<List<RacketSensor>>.broadcast();

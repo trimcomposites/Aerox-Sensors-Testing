@@ -1,32 +1,44 @@
 part of 'rtsos_lobby_bloc.dart';
 
 class RtsosLobbyState extends Equatable {
+  final UIState uiState;
   final String? selectedHitType;
   final List<String> hitTypes;
   final int durationSeconds;
+  final RacketSensorEntity? sensorEntity;
 
   RtsosLobbyState({
+    required this.uiState,
     required this.selectedHitType,
-    this.durationSeconds = 5
-  }): hitTypes =  RTSOSCommonValues.hitTypeDescriptions.keys.toList();
+    this.durationSeconds = 5,
+    this.sensorEntity,
+  }) : hitTypes = RTSOSCommonValues.hitTypeDescriptions.keys.toList();
 
-  // Mapa estático: nombre del golpe -> descripción
-
-  // copyWith para actualizar el estado
   RtsosLobbyState copyWith({
+    UIState? uiState,
     String? selectedHitType,
     List<String>? hitTypes,
-    int? durationSeconds
+    int? durationSeconds,
+    RacketSensorEntity? sensorEntity,
   }) {
     return RtsosLobbyState(
+      uiState: uiState ?? this.uiState,
       selectedHitType: selectedHitType ?? this.selectedHitType,
-      durationSeconds: durationSeconds ?? this.durationSeconds
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      sensorEntity: sensorEntity ?? this.sensorEntity,
     );
   }
 
   @override
-  List<Object?> get props => [selectedHitType, hitTypes, durationSeconds];
+  List<Object?> get props => [
+        uiState,
+        selectedHitType,
+        hitTypes,
+        durationSeconds,
+        sensorEntity,
+      ];
 }
+
 class RTSOSCommonValues {
     static const Map<String, String> hitTypeDescriptions = {
     'D': 'Derecha tras bote: Golpe de derecha después del bote en el suelo.',

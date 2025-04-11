@@ -39,7 +39,7 @@ void main() async{
             create: ( context )=>sl<SensorsBloc>() 
           ),
           BlocProvider(
-            create: ( context )=>sl<SelectedEntityPageBloc>() 
+            create: ( context )=>sl<SelectedEntityPageBloc>()  
           ),
           BlocProvider(
             create: ( context )=>sl<RtsosLobbyBloc>() 

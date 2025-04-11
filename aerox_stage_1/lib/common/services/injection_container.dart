@@ -147,5 +147,7 @@ Future<void> dependencyInjectionInitialize() async {
       eraseStorageDataUsecase: sl()
     ))
     ..registerFactory(() => RtsosLobbyBloc(
+      getSelectedBluetoothRacketUsecase: sl(),
+      startOfflineRTSOSUseCase: sl()
     ));
 }
