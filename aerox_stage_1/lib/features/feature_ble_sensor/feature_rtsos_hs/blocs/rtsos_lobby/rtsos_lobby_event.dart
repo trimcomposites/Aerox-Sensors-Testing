@@ -7,3 +7,7 @@ class OnHitTypeValueChanged extends RtsosLobbyEvent {
   final String newValue;
   OnHitTypeValueChanged(this.newValue);
 }
+class OnRtsosDurationChanged extends RtsosLobbyEvent {
+  final int newValue;
+  OnRtsosDurationChanged(this.newValue);
+}

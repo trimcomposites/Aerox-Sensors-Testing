@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/duration_selector_with_input.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/hit_type_select_drop_down.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_record_params.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/ble_record_with_button.dart';
@@ -34,10 +35,17 @@ class RTSOSRecordingLobby extends StatelessWidget {
                 sampleRate!= 1
                 ? HitTypeSelectDropDown()
                 : Container(),
+                DurationSelectorWithInput(),
                 BleRecordWithButton(
                   text: 'INICIAR GRABACIÓN',
-                  color: Colors.red,
-                  onPressed: () {},
+                  color: sampleRate==1 || sampleRate!=1 && state.selectedHitType != null
+                  ? Colors.red
+                  : Colors.grey,
+                  onPressed: () {
+                    if(sampleRate==1 || sampleRate!=1 && state.selectedHitType != null){
+                      
+                    }
+                  },
                 )
               ],
             );

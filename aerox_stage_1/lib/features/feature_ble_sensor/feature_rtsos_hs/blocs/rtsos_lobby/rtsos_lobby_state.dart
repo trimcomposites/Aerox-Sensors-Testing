@@ -3,9 +3,11 @@ part of 'rtsos_lobby_bloc.dart';
 class RtsosLobbyState extends Equatable {
   final String? selectedHitType;
   final List<String> hitTypes;
+  final int durationSeconds;
 
   RtsosLobbyState({
     required this.selectedHitType,
+    this.durationSeconds = 5
   }): hitTypes =  RTSOSCommonValues.hitTypeDescriptions.keys.toList();
 
   // Mapa estático: nombre del golpe -> descripción
@@ -14,14 +16,16 @@ class RtsosLobbyState extends Equatable {
   RtsosLobbyState copyWith({
     String? selectedHitType,
     List<String>? hitTypes,
+    int? durationSeconds
   }) {
     return RtsosLobbyState(
       selectedHitType: selectedHitType ?? this.selectedHitType,
+      durationSeconds: durationSeconds ?? this.durationSeconds
     );
   }
 
   @override
-  List<Object?> get props => [selectedHitType, hitTypes];
+  List<Object?> get props => [selectedHitType, hitTypes, durationSeconds];
 }
 class RTSOSCommonValues {
     static const Map<String, String> hitTypeDescriptions = {

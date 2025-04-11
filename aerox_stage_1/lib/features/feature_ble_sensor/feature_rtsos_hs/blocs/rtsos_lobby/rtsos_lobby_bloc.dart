@@ -8,8 +8,14 @@ part 'rtsos_lobby_state.dart';
 class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
   RtsosLobbyBloc() : super(RtsosLobbyState( selectedHitType: null )) {
     on<OnHitTypeValueChanged>((event, emit) {
-      emit(RtsosLobbyState(
+      emit(state.copyWith(
           selectedHitType: event.newValue,
+          
+        ));
+    });
+    on<OnRtsosDurationChanged>((event, emit) {
+      emit(state.copyWith(
+          durationSeconds: event.newValue,
           
         ));
     });
