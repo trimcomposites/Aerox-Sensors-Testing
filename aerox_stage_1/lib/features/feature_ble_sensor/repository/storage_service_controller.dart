@@ -31,10 +31,10 @@ class StorageServiceController {
     final blobs = <Blob>[];
     var blobInfo = await fetchFirstBlob(device);
 
-    while (blobInfo != null) {
+    if (blobInfo is BlobInfo) {
       final packetResult = await fetchBlobPacketsFast(device, fetchPacketData: fetchData);
       final packets = packetResult.getOrElse(() => []);
-      final blob = Blob(blobInfo: blobInfo, packets: packets);
+      final blob = Blob(blobInfo: blobInfo as BlobInfo, packets: packets);
       if (packets.isNotEmpty) {
         blob.createdAt = packets.first.packetInfo?.createdAt;
         blob.closedAt = packets.last.packetInfo?.closedAt;
@@ -47,44 +47,67 @@ class StorageServiceController {
     return blobs;
   }
 
-  Future<EitherErr<List<int>>> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet) {
-    return EitherCatch.catchAsync<List<int>, BluetoothErr>(() async {
-      if (packet.packetInfo == null) throw Exception("PacketInfo is null");
-      final headerSize = packet.packetInfo!.dataAddress - packet.packetInfo!.address;
-      final dataSize = packet.packetInfo!.packetSize - headerSize;
-      final result = await _readRangeData(device, packet.packetInfo!.dataAddress, dataSize);
-      if (result == null) throw Exception("Failed to read packet data");
-      return result;
-    }, (e) => BluetoothErr(errMsg: e.toString(), statusCode: 104));
+Future<EitherErr<List<int>>> fetchBlobPacketData(
+  BluetoothDevice device,
+  BlobPacket packet,
+) {
+  if (packet.packetInfo == null) {
+    return Future.value(
+      Left(BluetoothErr(errMsg: "PacketInfo is null", statusCode: 103)),
+    );
   }
 
-  Future<Uint8List?> _readRangeData(BluetoothDevice device, int startAddress, int dataLen) async {
-    var readAddress = startAddress;
-    var bytesToRead = dataLen;
-    var rawData = BytesBuilder();
-    var retryCount = 0;
+  final headerSize = packet.packetInfo!.dataAddress - packet.packetInfo!.address;
+  final dataSize = packet.packetInfo!.packetSize - headerSize;
 
-    while (bytesToRead > 0) {
-      final chunkSize = bytesToRead > StorageServiceConstants.STORAGE_MAX_DATA_LEN
-          ? StorageServiceConstants.STORAGE_MAX_DATA_LEN
-          : bytesToRead;
+  return readRangeData(device, packet.packetInfo!.dataAddress, dataSize)
+      .flatMap((data) async {
+        return Right(data.toList()); // si necesitas convertir a List<int>
+      });
+}
 
-      final data = await readData(device, readAddress, chunkSize);
-      if (data != null) {
-        rawData.add(data);
-        bytesToRead -= chunkSize;
-        readAddress += chunkSize;
-        retryCount = 0;
-      } else if (retryCount < 3) {
-        retryCount++;
+Future<EitherErr<Uint8List>> readRangeData(
+  BluetoothDevice device,
+  int startAddress,
+  int dataLen,
+) async {
+  var readAddress = startAddress;
+  var bytesToRead = dataLen;
+  final rawData = BytesBuilder();
+
+  Future<EitherErr<void>> readNextChunk() async {
+    final chunkSize = bytesToRead > StorageServiceConstants.STORAGE_MAX_DATA_LEN
+        ? StorageServiceConstants.STORAGE_MAX_DATA_LEN
+        : bytesToRead;
+
+    return readData(device, readAddress, chunkSize).flatMap((data) async {
+      rawData.add(data);
+      bytesToRead -= chunkSize;
+      readAddress += chunkSize;
+      return Right(null);
+    });
+  }
+
+  int retryCount = 0;
+
+  while (bytesToRead > 0) {
+    final result = await readNextChunk();
+    if (result is Right) {
+      retryCount = 0;
+    } else {
+      retryCount++;
+      if (retryCount < 3) {
         await Future.delayed(const Duration(milliseconds: 500));
       } else {
-        return null;
+        final err = (result as Left).value;
+        return Left(err);
       }
     }
-
-    return rawData.toBytes();
   }
+
+  return Right(rawData.toBytes());
+}
+
 Future<Either<Err, List<BlobPacket>>> fetchBlobPackets(
   BluetoothDevice device, {
   bool fetchPacketData = false,
