@@ -25,6 +25,7 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/repository/blob_data_p
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/to_csv_blob.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_controller.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/blocs/ble_storage/ble_storage_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
@@ -156,5 +157,11 @@ Future<void> dependencyInjectionInitialize() async {
       getSelectedBluetoothRacketUsecase: sl(),
       startOfflineRTSOSUseCase: sl(),
       disconnectFromRacketSensorUsecase: sl()
+    ))
+    ..registerFactory(() => BleStorageBloc(
+      getSelectedBluetoothRacketUsecase: sl(),
+      disconnectFromRacketSensorUsecase: sl(),
+      readStorageDataUsecase: sl(),
+      parseBlobUsecase: sl()
     ));
 }
