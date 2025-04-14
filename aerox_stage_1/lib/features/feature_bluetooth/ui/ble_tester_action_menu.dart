@@ -54,6 +54,18 @@ class BleTesterActionMenu extends StatelessWidget {
                             event: OnStartStreamRTSOS(sensor: sensor),
                           ),
                           BleActionButton(
+                            text: 'Set Timestamp',
+                            icon: Icons.alarm_add,
+                            iconColor: Colors.brown,
+                            event: OnSetTimeStamp(sensor: sensor),
+                          ),
+                          BleActionButton(
+                            text: 'Get Timestamp',
+                            icon: Icons.alarm,
+                            iconColor: Colors.purple,
+                            event: OnGetTimeStamp(sensor: sensor),
+                          ),
+                          BleActionButton(
                             text: 'Borrar Memoria',
                             icon: Icons.delete_forever,
                             iconColor: Colors.red,

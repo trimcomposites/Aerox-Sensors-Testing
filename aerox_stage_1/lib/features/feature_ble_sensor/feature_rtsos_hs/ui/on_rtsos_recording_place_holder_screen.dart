@@ -19,10 +19,10 @@ class _OnRTSOSRecordingPlaceHolderScreenState extends State<OnRTSOSRecordingPlac
   Timer? _timer;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     _remainingSeconds = widget.durationSeconds;
-    await Duration(seconds: 2); //??
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remainingSeconds <= 1) {
         timer.cancel();

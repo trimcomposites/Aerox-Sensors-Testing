@@ -3,8 +3,10 @@ import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/erase_storage_data_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_sensor_timestamp.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/set_sensor_timestamp.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stream_rtsos_usecase.dart';
@@ -26,6 +28,8 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
   final StreamRTSOSUsecase startStreamRTSOS;
   final ParseBlobUsecase parseBlobUsecase;
   final EraseStorageDataUsecase eraseStorageDataUsecase;
+  final SetSensorTimestampUseCase setTimestampUseCase;
+  final GetSensorTimestampUseCase getTimestampUseCase;
 
   SelectedEntityPageBloc({ 
     required this.disconnectFromRacketSensorUsecase,
@@ -36,6 +40,8 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     required this.startStreamRTSOS,
     required this.parseBlobUsecase,
     required this.eraseStorageDataUsecase,
+    required this.setTimestampUseCase,
+    required this.getTimestampUseCase
   }) : super(SelectedEntityPageState(uiState: UIState.idle())) {
 
     // 🔌 Desconexión manual (no muestra error)
@@ -99,6 +105,24 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
         either.fold(
           (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
           (r) => emit(state.copyWith(blobs: r)),
+        );
+      });
+    });
+
+    on<OnSetTimeStamp>((event, emit) async {
+      await setTimestampUseCase.call(event.sensor).then((either) {
+        either.fold(
+          (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+          (r) => emit(state.copyWith(uiState: UIState.idle())),
+        );
+      });
+    });
+
+    on<OnGetTimeStamp>((event, emit) async {
+      await getTimestampUseCase.call(event.sensor).then((either) {
+        either.fold(
+          (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+          (r) => emit(state.copyWith(uiState: UIState.idle())),
         );
       });
     });

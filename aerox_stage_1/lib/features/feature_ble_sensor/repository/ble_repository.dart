@@ -129,40 +129,78 @@ Future<EitherErr<void>> setTimestamp(RacketSensor sensor, {DateTime? dateTime}) 
   return EitherCatch.catchAsync<void, BluetoothErr>(() async {
     final now = (dateTime ?? DateTime.now().toUtc());
 
-    final int timestamp = now.millisecondsSinceEpoch ~/ 1000;
-    final int ms = (now.microsecond ~/ 1000);
+    // --- TimestampMeasurement encoding (timestamp in seconds + ms) ---
+    final int timestampSeconds = now.millisecondsSinceEpoch ~/ 1000;
+    final int ms = now.microsecond ~/ 1000;
 
-    final List<int> value = []
-      ..addAll(_toBytes(timestamp, 4)) // timestamp in seconds
-      ..addAll(_toBytes(ms, 2));       // milliseconds
+    final List<int> timestampValue = []
+      ..addAll(_toBytes(timestampSeconds, 4))  // uint32 LE
+      ..addAll(_toBytes(ms, 2));               // uint16 LE
+
+    // --- CurrentTimeMeasurement encoding (CTS - 2A2B spec) ---
+    final int year = now.year;
+    final int month = now.month;
+    final int day = now.day;
+    final int hour = now.hour;
+    final int minute = now.minute;
+    final int second = now.second;
+    final int weekday = now.weekday; // 1 = Monday ... 7 = Sunday
+    final int fraction256 = (now.microsecond * 256 ~/ 1000000);
+    final int adjustReason = 0;
+
+    final List<int> currentTimeValue = []
+      ..addAll(_toBytes(year, 2))   // uint16 year LE
+      ..add(month)
+      ..add(day)
+      ..add(hour)
+      ..add(minute)
+      ..add(second)
+      ..add(weekday)
+      ..add(fraction256)
+      ..add(adjustReason);
 
     final services = await sensor.device.discoverServices();
 
-    final targetService = services.firstWhere(
+    final timeService = services.firstWhere(
       (s) => s.uuid == Guid(StorageServiceConstants.CURRENT_TIME_SERVICE_UUID),
       orElse: () => throw BluetoothErr(
-        errMsg: 'Servicio 1805 (Current Time) no encontrado.',
+        errMsg: 'Servicio CTS (1805) no encontrado.',
         statusCode: 404,
       ),
     );
 
-    final characteristic = targetService.characteristics.firstWhere(
+    // --- Escribir tiempo actual a la característica 2A2B (Current Time) ---
+    final timeCharacteristic = timeService.characteristics.firstWhere(
+      (c) => c.uuid.toString().toLowerCase().contains('2a2b'),
+      orElse: () => throw BluetoothErr(
+        errMsg: 'Characteristic Current Time (2A2B) no encontrada.',
+        statusCode: 404,
+      ),
+    );
+
+    await timeCharacteristic.write(currentTimeValue, withoutResponse: false);
+
+    // --- Escribir timestamp extendido a la característica personalizada ---
+    final timestampCharacteristic = timeService.characteristics.firstWhere(
       (c) => c.uuid == Guid(StorageServiceConstants.TIMESTAMP_CHARACTERISTIC_UUID),
       orElse: () => throw BluetoothErr(
-        errMsg: 'Característica de timestamp no encontrada.',
+        errMsg: 'Characteristic Timestamp personalizada no encontrada.',
         statusCode: 404,
       ),
     );
 
-    await characteristic.write(value, withoutResponse: false);
-    print("✅ Timestamp enviado: $timestamp s + $ms ms");
+    await timestampCharacteristic.write(timestampValue, withoutResponse: false);
+
+    print("\u2705 Hora BLE y timestamp extendido escritos correctamente: $now");
   }, (e) {
     return BluetoothErr(
-      errMsg: 'Error al establecer el timestamp: ${e.toString()}',
+      errMsg: 'Error al establecer la hora/timestamp: ${e.toString()}',
       statusCode: 500,
     );
   });
 }
+
+
 
 Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
   final serviceUuid = Guid(StorageServiceConstants.STORAGE_SERVICE_UUID);
@@ -186,6 +224,53 @@ Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
         return Right(null);
       });
 }
+
+Future<EitherErr<DateTime>> getTimestamp(RacketSensor sensor) async {
+  return EitherCatch.catchAsync<DateTime, BluetoothErr>(() async {
+    final services = await sensor.device.discoverServices();
+
+    final timeService = services.firstWhere(
+      (s) => s.uuid == Guid(StorageServiceConstants.CURRENT_TIME_SERVICE_UUID),
+      orElse: () => throw BluetoothErr(
+        errMsg: 'Servicio CTS (1805) no encontrado.',
+        statusCode: 404,
+      ),
+    );
+
+    final timestampCharacteristic = timeService.characteristics.firstWhere(
+      (c) => c.uuid == Guid(StorageServiceConstants.TIMESTAMP_CHARACTERISTIC_UUID),
+      orElse: () => throw BluetoothErr(
+        errMsg: 'Characteristic Timestamp personalizada no encontrada.',
+        statusCode: 404,
+      ),
+    );
+
+    final value = await timestampCharacteristic.read();
+    if (value.length < 6) {
+      throw BluetoothErr(errMsg: 'Valor de timestamp inválido.', statusCode: 400);
+    }
+
+    final int seconds = value[0] |
+        (value[1] << 8) |
+        (value[2] << 16) |
+        (value[3] << 24);
+    final int ms = value[4] | (value[5] << 8);
+
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(
+      (seconds * 1000) + ms,
+      isUtc: true,
+    );
+
+    print("\uD83D\uDCC5 Timestamp leído: $dateTime ($ms ms)");
+    return dateTime;
+  }, (e) {
+    return BluetoothErr(
+      errMsg: 'Error al leer el timestamp: ${e.toString()}',
+      statusCode: 500,
+    );
+  });
+}
+
 List<int> _toBytes(int value, int length) {
   final result = <int>[];
   for (int i = 0; i < length; i++) {

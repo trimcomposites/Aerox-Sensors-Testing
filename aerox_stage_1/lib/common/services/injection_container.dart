@@ -1,7 +1,9 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/erase_storage_data_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_sensor_timestamp.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/set_sensor_timestamp.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stream_rtsos_usecase.dart';
@@ -115,6 +117,8 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl()))
     ..registerLazySingleton(() => StreamRTSOSUsecase( bleRepository : sl())) 
     ..registerLazySingleton(() => ParseBlobUsecase( bleRepository : sl())) 
+    ..registerLazySingleton(() => SetSensorTimestampUseCase( bleRepository : sl())) 
+    ..registerLazySingleton(() => GetSensorTimestampUseCase( bleRepository : sl())) 
     ..registerLazySingleton(() => StoptOfflineRTSOSUseCase( bleRepository : sl()));
 
   // Registro de Blocs
@@ -144,7 +148,9 @@ Future<void> dependencyInjectionInitialize() async {
       readStorageDataUsecase: sl(),
       startStreamRTSOS: sl(),
       parseBlobUsecase: sl(),
-      eraseStorageDataUsecase: sl()
+      eraseStorageDataUsecase: sl(),
+      setTimestampUseCase: sl(),
+      getTimestampUseCase: sl()
     ))
     ..registerFactory(() => RtsosLobbyBloc(
       getSelectedBluetoothRacketUsecase: sl(),

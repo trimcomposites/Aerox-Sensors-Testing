@@ -26,7 +26,7 @@ static const int HS_RTSOS_BLOB_REGISTER_TYPE = 0x08;
 static const int HS_1KHZ_RTSOS_BLOB_REGISTER_TYPE = 1;
 
   static const int STORAGE_MAX_DATA_LEN = 242;
-  static const String CURRENT_TIME_SERVICE_UUID = '1805';
+  static const String CURRENT_TIME_SERVICE_UUID = '00001805-0000-1000-8000-00805f9b34fb';
 static const String TIMESTAMP_CHARACTERISTIC_UUID = 'd09b4c5e-dbb3-4082-aeb9-6fe0f34c9625';
 
 }

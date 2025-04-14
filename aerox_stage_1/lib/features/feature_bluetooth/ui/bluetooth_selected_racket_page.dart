@@ -33,6 +33,15 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
               },
             ),
           ),
+          actions:[
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                selectedEntityPageBloc.add(OnDisconnectSelectedRacketSelectedEntityPage());
+                Navigator.of(context).pop();
+              },
+            ),
+          ] ,
         ),
         drawer: BleTesterActionMenu(),
         body: BlocListener<SelectedEntityPageBloc, SelectedEntityPageState>(

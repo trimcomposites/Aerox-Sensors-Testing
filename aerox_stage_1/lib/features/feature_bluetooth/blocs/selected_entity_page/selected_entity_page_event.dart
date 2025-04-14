@@ -33,6 +33,16 @@ class OnReadStorageData extends SelectedEntityPageEvent {
 
   OnReadStorageData({required this.sensor});
 }
+class OnSetTimeStamp extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnSetTimeStamp({required this.sensor});
+}
+class OnGetTimeStamp extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnGetTimeStamp({required this.sensor});
+}
 class OnStartStreamRTSOS extends SelectedEntityPageEvent {
   final RacketSensor sensor;
 
