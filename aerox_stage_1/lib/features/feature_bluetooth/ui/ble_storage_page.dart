@@ -31,7 +31,10 @@ class BleStoragePage extends StatelessWidget {
             children: [
               TextButton.icon(
                 onPressed: (){
-                  bleStoragePageBloc.add(OnParseBlobBleStorage(blob: bleStoragePageBloc.state.blobs.first ));
+                  for(var blob  in bleStoragePageBloc.state.blobs ){
+                    bleStoragePageBloc.add(OnParseBlobBleStorage(blob: blob ));
+                  }
+
                 }, 
                 label: Text( 'Exportar a CSV' ),
                 icon: Icon( Icons.import_export, color: Colors.green, ),

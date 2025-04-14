@@ -75,8 +75,8 @@ class ReadStorageDataUsecase extends AsyncUseCaseWithParams<void,  RacketSensor>
         blobType: 1,
         blobNumPackets: 2,
         blobSize: 128,
-        extraDataLen: 4,
-        extraData: [0x01, 0x01, 0x01, 0x06],
+        extraDataLen: 3,
+        extraData: [0x01, 0x01, 0x06],
       ),
       packets: [
         BlobPacket(
@@ -121,8 +121,8 @@ class ReadStorageDataUsecase extends AsyncUseCaseWithParams<void,  RacketSensor>
         blobType: 1,
         blobNumPackets: 2,
         blobSize: 128,
-        extraDataLen: 4,
-        extraData: [0x01, 0x01, 0x01, 0x06],
+        extraDataLen: 3,
+        extraData: [0x01, 0x01, 0x06],
       ),
       packets: [
         BlobPacket(
@@ -167,8 +167,8 @@ class ReadStorageDataUsecase extends AsyncUseCaseWithParams<void,  RacketSensor>
         blobType: 1,
         blobNumPackets: 1,
         blobSize: 64,
-        extraDataLen: 4,
-        extraData: [0x01, 0x01, 0x01, 0x06],
+        extraDataLen: 3,
+        extraData: [0x01, 0x01, 0x06],
       ),
       packets: [
         BlobPacket(

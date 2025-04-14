@@ -81,6 +81,11 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                               color: Colors.green, 
                               onPressed: (){ Navigator.pushReplacement(context, MaterialPageRoute(builder: ( context ) => BleStoragePage())); }, 
                             ),
+                            BleRecordWithButton( 
+                              text: 'Blob Database',
+                              color: Colors.purple, 
+                              onPressed: (){ Navigator.pushReplacement(context, MaterialPageRoute(builder: ( context ) => BleStoragePage())); }, 
+                            ),
                             
                           ],
                         ),

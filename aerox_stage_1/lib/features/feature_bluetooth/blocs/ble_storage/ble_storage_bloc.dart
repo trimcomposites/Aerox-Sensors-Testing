@@ -77,7 +77,11 @@ class BleStorageBloc extends Bloc<BleStorageEvent, BleStorageState> {
       await parseBlobUsecase.call(event.blob).then((either) {
         either.fold(
           (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
-          (_) => {},
+          (r) {
+            final List<List<Map<String, dynamic>>> newParsedBlobs =  [ ...state.parsedBlobs, r ];
+            emit( state.copyWith( parsedBlobs: newParsedBlobs ) );
+            print( state.parsedBlobs );
+          },
         );
       });
     });

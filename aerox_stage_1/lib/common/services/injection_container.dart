@@ -35,6 +35,7 @@ import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/racket
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
+import 'package:aerox_stage_1/features/feature_racket/repository/local/blobs_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
@@ -57,6 +58,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => GoogleSignIn())
     // Base de Datos Local
     ..registerLazySingleton(() => RacketsSQLiteDB())
+    ..registerLazySingleton(() => BlobSQLiteDB())
 
     //BLuetooth
     ..registerLazySingleton(() => BluetoothPermissionHandler())
@@ -92,7 +94,8 @@ Future<void> dependencyInjectionInitialize() async {
        bleService: sl(),
        storageServiceController: sl(),
        blobDataParser: sl(),
-       toCsvBlob: sl()
+       toCsvBlob: sl(), 
+       blobSqliteDB: sl()
       ));
 
   // Registro de Casos de Uso (Use Cases)

@@ -110,7 +110,7 @@ Future<EitherErr<List<Map<String, dynamic>>>> parseBlob(Blob blob) async {
     if (blobType == StorageServiceConstants.HS_1KHZ_RTSOS_BLOB_REGISTER_TYPE) {
       final parsed = blobDataParser.parseHs1kzRtsosBlob(blob);
       print( " PARSED BLOB: ${parsed} " );
-      toCsvBlob.exportParsedBlobToCsv( parsed, fileName: "${blob.createdAt}" );
+      //toCsvBlob.exportParsedBlobToCsv( parsed, fileName: "${blob.createdAt}" );
       return Right(parsed);
     }
 
