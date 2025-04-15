@@ -141,12 +141,12 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     });
 
     on<OnEraseStorageData>((event, emit) async {
-      // emit(state.copyWith(uiState: UIState.loading()));
-      // final result = await eraseStorageDataUsecase.call(event.sensor);
-      // result.fold(
-      //   (err) => emit(state.copyWith(uiState: UIState.error(err.errMsg))),
-      //   (_) => emit(state.copyWith(uiState: UIState.success())),
-      // );
+      emit(state.copyWith(uiState: UIState.loading()));
+      final result = await eraseStorageDataUsecase.call(event.sensor);
+      result.fold(
+        (err) => emit(state.copyWith(uiState: UIState.error(err.errMsg))),
+        (_) => emit(state.copyWith(uiState: UIState.success())),
+      );
     });
   }
 

@@ -173,10 +173,12 @@ class StorageServiceController {
 while (true) {
   try {
     final response = await bleService.sendCommand(
+      reqOpCode: false,
       device: device,
       serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
       cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_NEXT_PACKET, 255],
+      
     ).timeout(const Duration(seconds: 2)); // 👈 aquí
 
     if (response.length < 2) break;

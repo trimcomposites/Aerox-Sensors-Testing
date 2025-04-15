@@ -15,6 +15,7 @@ class BleService {
     required List<int> cmd,
     bool closeAfterResponse = true,
     bool requireStatusOk = true,
+    bool reqOpCode = true
   }) async {
     final services = await device.discoverServices();
     final service = services.firstWhere((s) => s.uuid == serviceUuid, orElse: () {
@@ -29,10 +30,14 @@ class BleService {
     // Suscribirse primero y esperar respuesta filtrada
     final response = subscribeToCharacteristic(
       characteristic,
-      expectedOpcode: cmd[0],
+      expectedOpcode:
+      reqOpCode
+      ? cmd[0]
+      : null,
       closeAfterFirst: closeAfterResponse,
       sentCommand: cmd,
       requireStatusOk: requireStatusOk,
+      
     );
 
     await characteristic.write(cmd);
@@ -44,55 +49,57 @@ class BleService {
     return result;
   }
 
-  Future<List<int>?> subscribeToCharacteristic(
-    BluetoothCharacteristic characteristic, {
-    required int expectedOpcode,
-    List<int>? sentCommand,
-    bool closeAfterFirst = true,
-    bool requireStatusOk = true,
-  }) async {
-    try {
-      final completer = Completer<List<int>?>();
-      StreamSubscription<List<int>>? subscription;
+ Future<List<int>?> subscribeToCharacteristic(
+  BluetoothCharacteristic characteristic, {
+  int? expectedOpcode, // 👈 puede ser null
+  List<int>? sentCommand,
+  bool closeAfterFirst = true,
+  bool requireStatusOk = true,
+}) async {
+  try {
+    final completer = Completer<List<int>?>();
+    StreamSubscription<List<int>>? subscription;
 
-      await characteristic.setNotifyValue(true);
+    await characteristic.setNotifyValue(true);
 
-      subscription = characteristic.value.listen((value) async {
-        print("Received value: $value");
-        print("Expected opcode: $expectedOpcode");
-        print("As Uint8List: ${Uint8List.fromList(value)}");
+    subscription = characteristic.value.listen((value) async {
+      print("Received value: $value");
+      print("Expected opcode: $expectedOpcode");
+      print("As Uint8List: ${Uint8List.fromList(value)}");
 
-        final isEcho = sentCommand != null && _listsEqual(value, sentCommand);
-        final isValidResponse = value.isNotEmpty &&
-            value[0] == expectedOpcode &&
-            (!requireStatusOk || (value.length > 1 && value[1] == 0x00));
+      final isEcho = sentCommand != null && _listsEqual(value, sentCommand);
 
-        if (isValidResponse && !isEcho) {
-          if (!completer.isCompleted) {
-            completer.complete(value);
-            if (closeAfterFirst) {
-              await subscription?.cancel();
-              await characteristic.setNotifyValue(false);
-              print("Unsubscribed after matched value");
-            }
+      final isValidResponse = value.isNotEmpty &&
+        (expectedOpcode == null || value[0] == expectedOpcode) && // 👈 acepta todo si es null
+        (!requireStatusOk || (value.length > 1 && value[1] == 0x00));
+
+      if (isValidResponse && !isEcho) {
+        if (!completer.isCompleted) {
+          completer.complete(value);
+          if (closeAfterFirst) {
+            await subscription?.cancel();
+            await characteristic.setNotifyValue(false);
+            print("Unsubscribed after matched value");
           }
-        } else {
-          print("Ignored value: $value (echo: $isEcho, valid: $isValidResponse)");
         }
-      });
+      } else {
+        print("Ignored value: $value (echo: $isEcho, valid: $isValidResponse)");
+      }
+    });
 
-      return await completer.future.timeout(
-        const Duration(milliseconds: 500),
-        onTimeout: () {
-          print("Timeout waiting for expected response ($expectedOpcode)");
-          return null;
-        },
-      );
-    } catch (e) {
-      print("Error subscribing to characteristic: $e");
-      return null;
-    }
+    return await completer.future.timeout(
+      const Duration(milliseconds: 1000),
+      onTimeout: () {
+        print("Timeout waiting for expected response (${expectedOpcode ?? 'any'})");
+        return null;
+      },
+    );
+  } catch (e) {
+    print("Error subscribing to characteristic: $e");
+    return null;
   }
+}
+
 
   bool _listsEqual(List<int> a, List<int> b) {
     if (a.length != b.length) return false;
