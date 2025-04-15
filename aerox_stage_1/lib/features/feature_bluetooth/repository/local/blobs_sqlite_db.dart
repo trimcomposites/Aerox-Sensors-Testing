@@ -1,14 +1,16 @@
 import 'dart:convert';
-import 'package:sqflite/sqflite.dart';
+import 'dart:io';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:csv/csv.dart';
+import 'package:open_filex/open_filex.dart';
 
 class BlobSQLiteDB {
   static final BlobSQLiteDB _instance = BlobSQLiteDB._internal();
   static Database? _database;
 
-  factory BlobSQLiteDB() {
-    return _instance;
-  }
+  factory BlobSQLiteDB() => _instance;
 
   BlobSQLiteDB._internal();
 
@@ -64,6 +66,42 @@ class BlobSQLiteDB {
       return List<Map<String, dynamic>>.from(jsonDecode(result.first['data'] as String));
     }
     return null;
+  }
+
+  Future<List<List<Map<String, dynamic>>>> getAllParsedBlobs() async {
+    final db = await database;
+    final result = await db.query('parsed_blobs');
+
+    return result.map((row) {
+      final dataJson = row['data'] as String;
+      final List<dynamic> dataList = jsonDecode(dataJson);
+      return List<Map<String, dynamic>>.from(dataList);
+    }).toList();
+  }
+
+  Future<void> exportParsedBlobToCsv(DateTime createdAt, {String? customFileName}) async {
+    try {
+      final parsedData = await getParsedBlob(createdAt);
+      if (parsedData == null || parsedData.isEmpty) {
+        print('⚠️ No parsed data found for $createdAt');
+        return;
+      }
+
+      final headers = parsedData.first.keys.toList();
+      final rows = parsedData.map((e) => headers.map((h) => e[h]).toList()).toList();
+      final csvData = const ListToCsvConverter().convert([headers, ...rows]);
+
+      final dir = await getApplicationDocumentsDirectory();
+      final fileName = customFileName ?? 'blob_${createdAt.toIso8601String()}';
+      final filePath = '${dir.path}/$fileName.csv';
+      final file = File(filePath);
+      await file.writeAsString(csvData);
+
+      final result = await OpenFilex.open(filePath);
+      print('CSV export result: ${result.message}');
+    } catch (e) {
+      print('❌ Error exporting CSV: $e');
+    }
   }
 
   Future<bool> existsBlob(DateTime createdAt) async {
