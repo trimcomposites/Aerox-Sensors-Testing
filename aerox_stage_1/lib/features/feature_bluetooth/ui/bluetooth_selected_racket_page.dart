@@ -1,13 +1,14 @@
 import 'package:aerox_stage_1/common/ui/error_dialog.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/blob_database_page.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_recording_lobby.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/ui/ble_record_with_button.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/ui/ble_storage_page.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/ui/ble_tester_action_menu.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/ui/blob_storage_list.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_record_with_button.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/ble_storage_page.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_tester_action_menu.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/blob_storage_list.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/selected_racket_name.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,7 +85,7 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                             BleRecordWithButton( 
                               text: 'Blob Database',
                               color: Colors.purple, 
-                              onPressed: (){ Navigator.pushReplacement(context, MaterialPageRoute(builder: ( context ) => BleStoragePage())); }, 
+                              onPressed: (){ Navigator.pushReplacement(context, MaterialPageRoute(builder: ( context ) => BlobDatabasePage())); }, 
                             ),
                             
                           ],

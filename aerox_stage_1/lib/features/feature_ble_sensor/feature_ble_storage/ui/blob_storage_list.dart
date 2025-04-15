@@ -1,6 +1,6 @@
-import 'package:aerox_stage_1/features/feature_bluetooth/blocs/ble_storage/ble_storage_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/blocs/ble_storage/ble_storage_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/ui/by_exact_date_blob_filter.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/by_exact_date_blob_filter.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

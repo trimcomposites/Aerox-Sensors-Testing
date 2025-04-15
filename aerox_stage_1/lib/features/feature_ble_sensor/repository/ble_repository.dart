@@ -11,7 +11,7 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_ser
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_controller.dart';
 
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_service.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/local/blobs_sqlite_db.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/local/blobs_sqlite_db.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
@@ -193,28 +193,36 @@ class BleRepository {
     });
   }
 
-  Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
-    final serviceUuid = Guid(StorageServiceConstants.STORAGE_SERVICE_UUID);
-    final characteristicUuid = Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID);
-    const eraseCommand = [StorageServiceConstants.STORAGE_CP_OP_ERASE_MEMORY];
+Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
+  final serviceUuid = Guid(StorageServiceConstants.STORAGE_SERVICE_UUID);
+  final characteristicUuid = Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID);
+  const eraseCommand = [StorageServiceConstants.STORAGE_CP_OP_ERASE_MEMORY];
 
-    return bleService
-        .sendCommand(
-          device: sensor.device,
-          serviceUuid: serviceUuid,
-          characteristicUuid: characteristicUuid,
-          cmd: eraseCommand,
-        )
-        .flatMap((response) async {
-          if (response.length < 2 || response[1] != 0) {
-            return Left(BluetoothErr(
-              errMsg: 'Failed to erase memory. Response: $response',
-              statusCode: 97,
-            ));
-          }
-          return Right(null);
-        });
-  }
+  return EitherCatch.catchAsync<void, BluetoothErr>(() async {
+    final response = await bleService.sendCommand(
+      device: sensor.device,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      cmd: eraseCommand,
+    );
+
+    if (response.length < 2 || response[1] != 0) {
+      throw BluetoothErr(
+        errMsg: 'Falló el borrado de memoria. Respuesta: $response',
+        statusCode: 97,
+      );
+    }
+
+    print('🧹 Memoria de blobs borrada correctamente');
+    return;
+  }, (e) {
+    return BluetoothErr(
+      errMsg: 'Error al borrar la memoria: ${e.toString()}',
+      statusCode: 99,
+    );
+  });
+}
+
 
   Future<EitherErr<DateTime>> getTimestamp(RacketSensor sensor) async {
     return EitherCatch.catchAsync<DateTime, BluetoothErr>(() async {

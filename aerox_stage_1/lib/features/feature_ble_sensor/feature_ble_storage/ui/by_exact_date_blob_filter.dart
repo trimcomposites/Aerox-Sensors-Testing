@@ -1,4 +1,4 @@
-import 'package:aerox_stage_1/features/feature_bluetooth/blocs/ble_storage/ble_storage_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/blocs/ble_storage/ble_storage_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';

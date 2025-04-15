@@ -1,5 +1,6 @@
-import 'package:aerox_stage_1/features/feature_bluetooth/blocs/ble_storage/ble_storage_bloc.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/ui/blob_storage_list.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/blocs/ble_storage/ble_storage_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/blob_storage_list.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/export_to_csv_button.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,16 +30,7 @@ class BleStoragePage extends StatelessWidget {
           height: MediaQuery.of(context).size.height*0.9,
           child: Column(
             children: [
-              TextButton.icon(
-                onPressed: (){
-                  for(var blob  in bleStoragePageBloc.state.blobs ){
-                    bleStoragePageBloc.add(OnParseBlobBleStorage(blob: blob ));
-                  }
-
-                }, 
-                label: Text( 'Exportar a CSV' ),
-                icon: Icon( Icons.import_export, color: Colors.green, ),
-              ),
+              ExportToCSVButton(),
               BlobStorageList()
               ],
           ),

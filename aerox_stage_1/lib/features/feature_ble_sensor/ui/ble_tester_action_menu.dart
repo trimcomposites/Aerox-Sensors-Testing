@@ -1,5 +1,5 @@
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/ui/ble_action_button.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_action_button.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

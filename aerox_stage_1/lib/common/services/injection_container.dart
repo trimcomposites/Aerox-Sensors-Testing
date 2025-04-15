@@ -7,6 +7,7 @@ import 'package:aerox_stage_1/domain/use_cases/ble_sensor/set_sensor_timestamp.d
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stream_rtsos_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_blobs_from_db_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/connect_to_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
@@ -19,13 +20,15 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecas
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/blocs/blob_database/blob_database_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/blob_repository.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_repository.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/blob_data_parser.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/to_csv_blob.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_controller.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/blocs/ble_storage/ble_storage_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/blocs/ble_storage/ble_storage_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/bluetooth_repository.dart';
@@ -35,7 +38,7 @@ import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/racket
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
-import 'package:aerox_stage_1/features/feature_racket/repository/local/blobs_sqlite_db.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/local/blobs_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
@@ -96,6 +99,10 @@ Future<void> dependencyInjectionInitialize() async {
        blobDataParser: sl(),
        toCsvBlob: sl(), 
        blobSqliteDB: sl()
+      ))
+    ..registerLazySingleton(() => BlobRepository(
+      blobSQLiteDB: sl(),
+      toCsvBlob: sl()
       ));
 
   // Registro de Casos de Uso (Use Cases)
@@ -115,10 +122,11 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => StoptScanBluetoothSensorsUsecase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => ReScanRacketSensorsUseCase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => EraseStorageDataUsecase(bleRepository: sl()))
+    ..registerLazySingleton(() => GetAllBlobsFromDbUsecase(blobRepository: sl()))
 
     //ble
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
-    ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl()))
+    ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl(), blobSQLiteDB: sl()))
     ..registerLazySingleton(() => StreamRTSOSUsecase( bleRepository : sl())) 
     ..registerLazySingleton(() => ParseBlobUsecase( bleRepository : sl())) 
     ..registerLazySingleton(() => SetSensorTimestampUseCase( bleRepository : sl())) 
@@ -166,5 +174,8 @@ Future<void> dependencyInjectionInitialize() async {
       disconnectFromRacketSensorUsecase: sl(),
       readStorageDataUsecase: sl(),
       parseBlobUsecase: sl()
+    ))
+    ..registerFactory(() => BlobDatabaseBloc(
+      getAllBlobsFromDbUsecase: sl()
     ));
 }

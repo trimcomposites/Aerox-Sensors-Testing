@@ -8,7 +8,6 @@ import 'package:aerox_stage_1/common/utils/error/err/err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_extension.dart';
-import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_data_logger.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/bluetooth_permission_handler.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';

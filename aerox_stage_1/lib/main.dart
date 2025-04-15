@@ -2,8 +2,10 @@ import 'package:aerox_stage_1/common/services/aerox_asset_bundle.dart';
 import 'package:aerox_stage_1/common/services/injection_container.dart';
 import 'package:aerox_stage_1/common/services/router.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/blocs/blob_database/blob_database_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/local/blobs_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/blocs/ble_storage/ble_storage_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/blocs/ble_storage/ble_storage_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_selected_racket_page.dart';
@@ -48,6 +50,9 @@ void main() async{
           BlocProvider(
             create: ( context )=>sl<BleStorageBloc>() 
           ),
+          BlocProvider(
+            create: ( context )=>sl<BlobDatabaseBloc>() 
+          ),
 
       ],
       child: const MyApp()),
@@ -65,6 +70,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     
       final RacketsSQLiteDB db = sl();
+      final BlobSQLiteDB blobDb = sl();
+      //blobDb.clearParsedBlobs();
       //db.checkAndDeleteDB();
       //db.clearDatabase();
       //db.checkAndDeleteDB();

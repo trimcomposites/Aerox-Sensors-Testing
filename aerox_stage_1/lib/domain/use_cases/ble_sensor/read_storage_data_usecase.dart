@@ -3,20 +3,31 @@ import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/local/blobs_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_repository.dart';
 import 'package:dartz/dartz.dart';
 
 class ReadStorageDataUsecase extends AsyncUseCaseWithParams<void,  RacketSensor>{
 
   final BleRepository bleRepository;
-
-  ReadStorageDataUsecase({required this.bleRepository});
+  final BlobSQLiteDB blobSQLiteDB; //TODO: DELETE, solo para mocks
+  ReadStorageDataUsecase({required this.bleRepository, required this.blobSQLiteDB});
   @override
   Future<EitherErr<List<Blob>>> call( sensor ) async {
     
-    // final blobs = bleRepository.readAllBlobs( sensor );
-    // return blobs;
-    return Right(MockBlobs.mockBlobs);
+    final blobs = bleRepository.readAllBlobs( sensor );
+    return blobs;
+    // for( var blob in MockBlobs.mockBlobs ){
+    //   final exists = await blobSQLiteDB.existsBlob(blob.createdAt!);
+    //   if (!exists) {
+    //     final parsed = await bleRepository.parseBlob(blob);
+    //     parsed.fold(
+    //       (_) => null,
+    //       (parsedData) => blobSQLiteDB.insertParsedBlob(blob.createdAt!, parsedData),
+    //     );//TODO: REMOVE FOLD
+    //   }
+    // }
+    // return Right(MockBlobs.mockBlobs);
 
   } 
 

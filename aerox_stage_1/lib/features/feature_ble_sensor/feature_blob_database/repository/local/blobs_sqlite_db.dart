@@ -42,7 +42,17 @@ class BlobSQLiteDB {
 
   Future<void> insertParsedBlob(DateTime createdAt, List<Map<String, dynamic>> parsedData) async {
     final db = await database;
-    final dataJson = jsonEncode(parsedData);
+
+    final cleanedData = parsedData.map((row) {
+      return row.map((key, value) {
+        if (value is DateTime) {
+          return MapEntry(key, value.toIso8601String());
+        }
+        return MapEntry(key, value);
+      });
+    }).toList();
+
+    final dataJson = jsonEncode(cleanedData);
 
     await db.insert(
       'parsed_blobs',
@@ -52,7 +62,8 @@ class BlobSQLiteDB {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-  }
+}
+
 
   Future<List<Map<String, dynamic>>?> getParsedBlob(DateTime createdAt) async {
     final db = await database;

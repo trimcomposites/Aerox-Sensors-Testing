@@ -8,36 +8,40 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BleService {
-  Future<Either<Err, List<int>>> sendCommand({
+  Future<List<int>> sendCommand({
     required BluetoothDevice device,
     required Guid serviceUuid,
     required Guid characteristicUuid,
     required List<int> cmd,
     bool closeAfterResponse = true,
     bool requireStatusOk = true,
-  }) {
-    return EitherCatch.catchAsync<List<int>, BluetoothErr>(() async {
-      final services = await device.discoverServices();
-      final service = services.firstWhere((s) => s.uuid == serviceUuid);
-      final characteristic = service.characteristics.firstWhere((c) => c.uuid == characteristicUuid);
+  }) async {
+    final services = await device.discoverServices();
+    final service = services.firstWhere((s) => s.uuid == serviceUuid, orElse: () {
+      throw Exception("Service $serviceUuid not found");
+    });
 
-      // Suscribirse primero y esperar respuesta filtrada
-      final response = subscribeToCharacteristic(
-        characteristic,
-        expectedOpcode: cmd[0],
-        closeAfterFirst: closeAfterResponse,
-        sentCommand: cmd,
-        requireStatusOk: requireStatusOk,
-      );
+    final characteristic = service.characteristics.firstWhere(
+      (c) => c.uuid == characteristicUuid,
+      orElse: () => throw Exception("Characteristic $characteristicUuid not found"),
+    );
 
-      await characteristic.write(cmd);
-      print("Command sent: $cmd");
+    // Suscribirse primero y esperar respuesta filtrada
+    final response = subscribeToCharacteristic(
+      characteristic,
+      expectedOpcode: cmd[0],
+      closeAfterFirst: closeAfterResponse,
+      sentCommand: cmd,
+      requireStatusOk: requireStatusOk,
+    );
 
-      final result = await response;
-      if (result == null) throw Exception("No response received from device");
+    await characteristic.write(cmd);
+    print("Command sent: $cmd");
 
-      return result;
-    }, (e) => BluetoothErr(errMsg: e.toString(), statusCode: 100));
+    final result = await response;
+    if (result == null) throw Exception("No response received from device");
+
+    return result;
   }
 
   Future<List<int>?> subscribeToCharacteristic(

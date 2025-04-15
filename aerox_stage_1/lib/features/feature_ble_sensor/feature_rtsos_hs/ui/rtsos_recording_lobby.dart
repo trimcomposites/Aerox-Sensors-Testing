@@ -5,7 +5,7 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/du
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/hit_type_select_drop_down.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/on_rtsos_recording_place_holder_screen.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_record_params.dart';
-import 'package:aerox_stage_1/features/feature_bluetooth/ui/ble_record_with_button.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_record_with_button.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
