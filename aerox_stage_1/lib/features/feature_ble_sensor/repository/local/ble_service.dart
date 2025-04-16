@@ -100,6 +100,73 @@ class BleService {
   }
 }
 
+Future<List<List<int>>> sendCommandAndCollectMultiple({
+  required BluetoothDevice device,
+  required Guid serviceUuid,
+  required Guid characteristicUuid,
+  required List<int> cmd,
+  required bool Function(List<int> value) isValidResponse,
+  int maxResponses = 10,
+  Duration timeout = const Duration(seconds: 2),
+}) async {
+  final services = await device.discoverServices();
+  final service = services.firstWhere((s) => s.uuid == serviceUuid);
+  final characteristic = service.characteristics.firstWhere((c) => c.uuid == characteristicUuid);
+
+  final completer = Completer<List<List<int>>>();
+  final responses = <List<int>>[];
+  late StreamSubscription<List<int>> subscription;
+
+  bool isDone = false;
+
+  await characteristic.setNotifyValue(true);
+
+  subscription = characteristic.value.listen((value) async {
+    if (isDone) return;
+
+    if (isValidResponse(value)) {
+      responses.add(value);
+      if (responses.length >= maxResponses) {
+        isDone = true;
+        await subscription.cancel();
+        await characteristic.setNotifyValue(false);
+        if (!completer.isCompleted) completer.complete(responses);
+      }
+    }
+  });
+
+  await characteristic.write(cmd, withoutResponse: false);
+  print("📤 Command sent: $cmd");
+
+  Future.delayed(timeout).then((_) async {
+    if (!isDone) {
+      isDone = true;
+      await subscription.cancel();
+      await characteristic.setNotifyValue(false);
+      if (!completer.isCompleted) completer.complete(responses); // Devuelve lo que haya
+    }
+  });
+
+  return completer.future;
+}
+Future<List<int>> sendCommandAndReadResponse({
+  required BluetoothDevice device,
+  required Guid serviceUuid,
+  required Guid characteristicUuid,
+  required List<int> cmd,
+  Duration timeout = const Duration(seconds: 1),
+}) async {
+  final services = await device.discoverServices();
+  final service = services.firstWhere((s) => s.uuid == serviceUuid);
+  final characteristic = service.characteristics.firstWhere((c) => c.uuid == characteristicUuid);
+
+  // write command
+  await characteristic.write(cmd, withoutResponse: false);
+
+  // read response directly
+  return await characteristic.read().timeout(timeout);
+}
+
 
   bool _listsEqual(List<int> a, List<int> b) {
     if (a.length != b.length) return false;

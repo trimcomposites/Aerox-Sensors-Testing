@@ -38,15 +38,25 @@ class StorageServiceController {
     return blobs;
   }
 
-  Future<List<int>> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet) async {
-    if (packet.packetInfo == null) throw Exception("PacketInfo is null");
-
-    final headerSize = packet.packetInfo!.dataAddress - packet.packetInfo!.address;
-    final dataSize = packet.packetInfo!.packetSize - headerSize;
-
-    final data = await readRangeData(device, packet.packetInfo!.dataAddress, dataSize);
-    return data.toList();
+Future<List<int>> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet) async {
+  if (packet.packetInfo == null) {
+    throw Exception("PacketInfo is null");
   }
+
+  final headerSize = packet.packetInfo!.dataAddress - packet.packetInfo!.address;
+  final dataSize = packet.packetInfo!.packetSize - headerSize;
+
+  final data = await readRangeDataAsPython(
+    device: device,
+    serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
+    characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
+    startAddress: packet.packetInfo!.dataAddress,
+    dataLen: dataSize,
+  );
+
+  return data.toList();
+}
+
 
   Future<Uint8List> readRangeData(BluetoothDevice device, int startAddress, int dataLen) async {
     var readAddress = startAddress;
@@ -66,6 +76,69 @@ class StorageServiceController {
 
     return rawData.toBytes();
   }
+Future<Uint8List> readRangeDataAsPython({
+  required BluetoothDevice device,
+  required Guid serviceUuid,
+  required Guid characteristicUuid,
+  required int startAddress,
+  required int dataLen,
+  int maxChunkSize = 240,
+  Duration timeout = const Duration(seconds: 4),
+}) async {
+  final services = await device.discoverServices();
+  final service = services.firstWhere((s) => s.uuid == serviceUuid);
+  final characteristic = service.characteristics.firstWhere((c) => c.uuid == characteristicUuid);
+
+  final rawData = BytesBuilder();
+  int totalReceived = 0;
+  final completer = Completer<Uint8List>();
+
+  late final StreamSubscription<List<int>> subscription;
+  await characteristic.setNotifyValue(true);
+
+  subscription = characteristic.value.listen((value) {
+    if (value.isNotEmpty && value[0] == StorageServiceConstants.STORAGE_CP_OP_READ_DATA) {
+      final payload = value.skip(2); 
+      rawData.add(Uint8List.fromList(payload.toList()));
+      totalReceived += payload.length;
+
+      if (totalReceived >= dataLen && !completer.isCompleted) {
+        completer.complete(rawData.toBytes());
+      }
+    }
+  });
+
+  final numChunks = (dataLen / maxChunkSize).ceil();
+
+  for (var i = 0; i < numChunks; i++) {
+    final chunkAddress = startAddress + i * maxChunkSize;
+    final chunkLen = (i == numChunks - 1)
+        ? dataLen - (i * maxChunkSize)
+        : maxChunkSize;
+
+    final cmd = [
+      StorageServiceConstants.STORAGE_CP_OP_READ_DATA,
+      ...chunkAddress.toBytesLE(length: 3),
+      chunkLen
+    ];
+
+    await characteristic.write(cmd, withoutResponse: false);
+    await Future.delayed(Duration(milliseconds: 10)); 
+  }
+
+
+    if (!completer.isCompleted) {
+      completer.complete(rawData.toBytes());
+    }
+
+
+  final result = await completer.future;
+  await subscription.cancel();
+  await characteristic.setNotifyValue(false);
+
+  return result;
+}
+
 
   Future<Uint8List> readData(BluetoothDevice device, int address, int dataLen) async {
     final cmd = BytesBuilder()
@@ -164,39 +237,44 @@ class StorageServiceController {
     );
     return response.length >= 3 ? response[2] : null;
   }
+Future<List<PacketInfo>> fetchAllPacketInfos(BluetoothDevice device) async {
+  final allPackets = <PacketInfo>[];
 
-  Future<List<PacketInfo>> fetchAllPacketInfos(BluetoothDevice device) async {
-    final allPackets = <PacketInfo>[];
-    final first = await fetchFirstPacket(device);
-    allPackets.add(first);
+  final first = await fetchFirstPacket(device);
+  allPackets.add(first);
 
-while (true) {
-  try {
-    final response = await bleService.sendCommand(
-      reqOpCode: false,
-      device: device,
-      serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
-      characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
-      cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_NEXT_PACKET, 255],
-      
-    ).timeout(const Duration(seconds: 2)); // 👈 aquí
+  while (true) {
+    try {
+      final responses = await bleService.sendCommandAndCollectMultiple(
+        device: device,
+        serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
+        characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
+        cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_NEXT_PACKET, 255],
+        isValidResponse: (value) =>
+            value.isNotEmpty && value[0] == StorageServiceConstants.STORAGE_CP_OP_FETCH_NEXT_PACKET,
+        maxResponses: 255, // Permitir que lleguen muchos de golpe
+        timeout: const Duration(milliseconds: 800), // Ajustar según rendimiento BLE
+      );
 
-    if (response.length < 2) break;
+      if (responses.isEmpty) break;
 
-    final packetInfos = PacketInfo.fromMultipleRaw(response.sublist(2));
-    if (packetInfos.isEmpty) break;
+      final rawBytes = responses.expand((e) => e.skip(2)).toList();
+      final packetInfos = PacketInfo.fromMultipleRaw(rawBytes);
 
-    allPackets.addAll(packetInfos);
-    if (packetInfos.length < 255) break;
-  } catch (e) {
-    print('🛑 Timeout o error al obtener siguiente paquete: $e');
-    break; // 🧠 rompe el bucle y continúa
+      if (packetInfos.isEmpty) break;
+
+      allPackets.addAll(packetInfos);
+
+      if (packetInfos.length < 255) break;
+
+    } catch (e) {
+      print("⚠️ Error during packet collection: $e");
+      break;
+    }
   }
+
+  return allPackets;
 }
-
-
-    return allPackets;
-  }
 
   Future<List<BlobPacket>> fetchBlobPacketsFast(BluetoothDevice device, {bool fetchPacketData = false}) async {
     final packetInfos = await fetchAllPacketInfos(device);
@@ -223,5 +301,9 @@ while (true) {
       ..[0] = value & 0xFF
       ..[1] = (value >> 8) & 0xFF
       ..[2] = (value >> 16) & 0xFF;
+  }
+}extension on int {
+  List<int> toBytesLE({int length = 4}) {
+    return List.generate(length, (i) => (this >> (8 * i)) & 0xFF);
   }
 }
