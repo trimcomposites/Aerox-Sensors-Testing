@@ -46,7 +46,7 @@ class BleService {
     final result = await response;
     if (result == null) throw Exception("No response received from device");
 
-    return result;
+    return result ;
   }
 
  Future<List<int>?> subscribeToCharacteristic(

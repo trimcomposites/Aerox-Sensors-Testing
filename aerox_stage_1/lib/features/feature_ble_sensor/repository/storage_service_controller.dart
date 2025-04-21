@@ -58,24 +58,6 @@ Future<List<int>> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet)
 }
 
 
-  Future<Uint8List> readRangeData(BluetoothDevice device, int startAddress, int dataLen) async {
-    var readAddress = startAddress;
-    var bytesToRead = dataLen;
-    final rawData = BytesBuilder();
-
-    while (bytesToRead > 0) {
-      final chunkSize = bytesToRead > StorageServiceConstants.STORAGE_MAX_DATA_LEN
-          ? StorageServiceConstants.STORAGE_MAX_DATA_LEN
-          : bytesToRead;
-
-      final data = await readData(device, readAddress, chunkSize);
-      rawData.add(data);
-      bytesToRead -= chunkSize;
-      readAddress += chunkSize;
-    }
-
-    return rawData.toBytes();
-  }
 Future<Uint8List> readRangeDataAsPython({
   required BluetoothDevice device,
   required Guid serviceUuid,
@@ -96,14 +78,17 @@ Future<Uint8List> readRangeDataAsPython({
   late final StreamSubscription<List<int>> subscription;
   await characteristic.setNotifyValue(true);
 
-  subscription = characteristic.value.listen((value) {
+  subscription = characteristic.value.listen((value) async {
     if (value.isNotEmpty && value[0] == StorageServiceConstants.STORAGE_CP_OP_READ_DATA) {
-      final payload = value.skip(2); 
+      final payload = value.skip(2);
       rawData.add(Uint8List.fromList(payload.toList()));
       totalReceived += payload.length;
 
       if (totalReceived >= dataLen && !completer.isCompleted) {
-        completer.complete(rawData.toBytes());
+        await subscription.cancel();
+        await characteristic.setNotifyValue(false);
+        final result = rawData.toBytes().sublist(0, dataLen); // ⬅️ CORTAMOS EXACTAMENTE
+        completer.complete(result);
       }
     }
   });
@@ -123,18 +108,21 @@ Future<Uint8List> readRangeDataAsPython({
     ];
 
     await characteristic.write(cmd, withoutResponse: false);
-    await Future.delayed(Duration(milliseconds: 10)); 
+    await Future.delayed(const Duration(milliseconds: 10)); // ajustable si hace falta
   }
 
-
-    if (!completer.isCompleted) {
-      completer.complete(rawData.toBytes());
-    }
-
-
   final result = await completer.future;
-  await subscription.cancel();
-  await characteristic.setNotifyValue(false);
+
+  // Seguridad por si no se cumplió el if dentro del listener
+  if (!completer.isCompleted) {
+    await subscription.cancel();
+    await characteristic.setNotifyValue(false);
+    completer.complete(rawData.toBytes().sublist(0, dataLen));
+  }
+
+  print('📥 start address: $startAddress');
+  print('📦 dataLen: $dataLen');
+  print('📏 raw data Length: ${result.length}');
 
   return result;
 }
