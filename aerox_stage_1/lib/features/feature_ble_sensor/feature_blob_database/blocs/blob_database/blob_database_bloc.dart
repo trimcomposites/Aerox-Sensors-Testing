@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
+import 'package:aerox_stage_1/domain/models/parsed_blob.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/export_to_csv_blob_list_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_blobs_from_db_usecase.dart';
 import 'package:bloc/bloc.dart';

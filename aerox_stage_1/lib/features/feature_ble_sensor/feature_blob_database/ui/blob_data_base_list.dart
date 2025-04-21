@@ -16,7 +16,7 @@ class BlobDataBaseList extends StatelessWidget {
             itemCount: state.blobs.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                child: Text( ' BLOB ${index} : ${ state.blobs[index].first['timestamp'] }' ),
+                child: Text( ' BLOB ${index} : ${ state.blobs[index].content.first['timestamp'] } PATH: ${ state.blobs[index].path  } ' ),
               );
             },
           );

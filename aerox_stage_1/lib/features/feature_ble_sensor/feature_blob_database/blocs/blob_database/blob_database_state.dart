@@ -2,8 +2,8 @@ part of 'blob_database_bloc.dart';
 
 class BlobDatabaseState extends Equatable{
 
-    final List<List<Map<String, dynamic>>> blobs;
-    final List<List<Map<String, dynamic>>> filteredBlobs;
+    final List<ParsedBlob> blobs;
+    final List<ParsedBlob> filteredBlobs;
     final UIState uiState;
 
   BlobDatabaseState({
@@ -13,8 +13,8 @@ class BlobDatabaseState extends Equatable{
     });
 
   copyWith({
-    List<List<Map<String, dynamic>>>? blobs,
-    List<List<Map<String, dynamic>>>? filteredBlobs,
+    List<ParsedBlob>? blobs,
+    List<ParsedBlob>? filteredBlobs,
     UIState? uiState
   }) => BlobDatabaseState(
             blobs: blobs ?? this.blobs, 
