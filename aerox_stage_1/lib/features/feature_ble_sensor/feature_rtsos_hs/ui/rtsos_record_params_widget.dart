@@ -1,12 +1,13 @@
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 
-class RTSOSRecordParams extends StatelessWidget {
-  const RTSOSRecordParams({
+class RTSOSRecordParamsWidget extends StatelessWidget {
+  const RTSOSRecordParamsWidget({
     super.key,
     required this.sampleRate,
   });
 
-  final double sampleRate;
+  final SampleRate sampleRate;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class RTSOSRecordParams extends StatelessWidget {
           ),
         const SizedBox(height: 8),
         Text(
-          sampleRate==1
+          sampleRate== SampleRate.khz1
           ? "• SAMPLE RATE: 1KHZ" 
           : "• SAMPLE RATE: 104hz",
           style: const TextStyle(fontSize: 15, color: Colors.black87),

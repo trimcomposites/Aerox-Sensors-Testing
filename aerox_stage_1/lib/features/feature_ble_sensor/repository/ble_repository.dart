@@ -4,6 +4,7 @@ import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/blob_data_parser.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/to_csv_blob.dart';
@@ -30,15 +31,21 @@ class BleRepository {
     required this.blobSqliteDB,
   });
 
-  Future<EitherErr<void>> sendStartOfflineRSTOS(RacketSensor sensor) async {
+  Future<EitherErr<void>> sendStartOfflineRSTOS(StartRTSOSParams params, ) async {
     final serviceUuid = Guid('71d713ef-799e-42af-9d57-9803e36b0f93');
     final characteristicUuid = Guid('a84ce035-60ed-4b24-99c9-8683052aa48b');
-
+    var cmd;
     final commandCode = 0x22;
-    final cmd = [commandCode, 0x03, 0x03, 0x03, 0x06, 0x05];
+    switch( params.sampleRate ){
 
+      case SampleRate.khz1:
+        cmd = [commandCode, 0x00, 0x01, 0x06, 0x06, params.durationSeconds ];
+      case SampleRate.hz104:
+        cmd = [commandCode, 0x04, 0x01, 0x06, 0x06, params.durationSeconds ];
+    }
+    print( 'RTSOS Command: ' + cmd.toString() );
     await bleService.sendCommand(
-      device: sensor.device,
+      device: params.sensor.device,
       serviceUuid: serviceUuid,
       characteristicUuid: characteristicUuid,
       cmd: cmd,

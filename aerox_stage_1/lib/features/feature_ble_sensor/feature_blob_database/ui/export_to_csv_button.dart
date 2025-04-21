@@ -17,7 +17,7 @@ class ExportToCSVButton extends StatelessWidget {
     return TextButton.icon(
       onPressed: (){
         for(var blob  in blobDatabaseBloc.state.blobs ){
-          //bleStoragePageBloc.add(OnParseBlobBleStorage(blob: blob ));
+          blobDatabaseBloc.add(OnExportToCSVFilteredBlobs());
         }
     
       }, 

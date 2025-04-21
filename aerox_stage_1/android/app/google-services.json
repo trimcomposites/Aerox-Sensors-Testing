@@ -1,43 +1,26 @@
 {
   "project_info": {
-    "project_number": "300686522146",
-    "project_id": "aerox-stage1",
-    "storage_bucket": "aerox-stage1.firebasestorage.app"
+    "project_number": "308022027062",
+    "project_id": "aerox-sensor-testing",
+    "storage_bucket": "aerox-sensor-testing.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:300686522146:android:adc15c3a2362217648577b",
+        "mobilesdk_app_id": "1:308022027062:android:06f95907efc63c0a304997",
         "android_client_info": {
-          "package_name": "com.labtend.aerox"
+          "package_name": "com.labtend.aeroxsensortesting"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "300686522146-4kihkc4qgen2bfdjgmb40tbskq85hqgj.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCq0QBGnbdyMWfLCJi2sdoqDNZfigbLPlo"
+          "current_key": "AIzaSyDz_utPayHd9wn24FW_3ORHU5DKv9mB3Zg"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "300686522146-4kihkc4qgen2bfdjgmb40tbskq85hqgj.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "300686522146-gcb4cnrdca9vlcc4mrlmrj6proi3m0bo.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.labtend.aerox"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

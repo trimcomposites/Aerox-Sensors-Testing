@@ -88,7 +88,9 @@ extension PacketInfoParser on List<int> {
 }
 
 extension BlobInfoParser on List<int> {
-  BlobInfo? toBlobInfo() {
-    return BlobInfo.parseValue(this);
+  BlobInfo toBlobInfo() {
+    // Saltamos opcode (index 0) y status (index 1)
+    final blobRaw = this.sublist(2);
+    return BlobInfo.parseValue(blobRaw);
   }
 }

@@ -1,10 +1,11 @@
 import 'package:aerox_stage_1/common/ui/error_dialog.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/duration_selector_with_input.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/hit_type_select_drop_down.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/on_rtsos_recording_place_holder_screen.dart';
-import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_record_params.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_record_params_widget.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_record_with_button.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class RTSOSRecordingLobby extends StatelessWidget {
   const RTSOSRecordingLobby({super.key, required this.sampleRate});
 
-  final double sampleRate;
+  final SampleRate sampleRate;
 
   @override
   Widget build(BuildContext context) {
@@ -39,19 +40,19 @@ class RTSOSRecordingLobby extends StatelessWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RTSOSRecordParams(sampleRate: sampleRate),
+                  RTSOSRecordParamsWidget(sampleRate: sampleRate),
                   const SizedBox(height: 16),
-                  sampleRate != 1 ? HitTypeSelectDropDown() : Container(),
+                  sampleRate != SampleRate.hz104 ? HitTypeSelectDropDown() : Container(),
                   DurationSelectorWithInput(),
                   BleRecordWithButton(
                     text: 'INICIAR GRABACIÓN',
-                    color: sampleRate == 1 ||
-                            sampleRate != 1 && state.selectedHitType != null
+                    color: sampleRate != SampleRate.khz1 ||
+                            sampleRate == SampleRate.khz1 && state.selectedHitType != null
                         ? Colors.red
                         : Colors.grey,
                     onPressed: () {
-                      if (sampleRate == 1 ||
-                          sampleRate != 1 && state.selectedHitType != null) {
+                      if (sampleRate == SampleRate.khz1 ||
+                          sampleRate != SampleRate.khz1 && state.selectedHitType != null) {
                         rtsosLobbyBloc.add(OnStartHSBlobOnLobby(
                             duration: state.durationSeconds,
                             sampleRate: sampleRate));

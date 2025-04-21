@@ -93,7 +93,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     });
 
     on<OnStartHSBlob>((event, emit) async {
-      await startOfflineRTSOSUseCase.call(event.sensor);
+      await startOfflineRTSOSUseCase.call( StartRTSOSParams(sampleRate: SampleRate.khz1, durationSeconds: 5, sensor: event.sensor) );
     });
 
     on<OnStopHSBlob>((event, emit) async {

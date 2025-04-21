@@ -7,6 +7,7 @@ import 'package:aerox_stage_1/domain/use_cases/ble_sensor/set_sensor_timestamp.d
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stream_rtsos_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/blob_database/export_to_csv_blob_list_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_blobs_from_db_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/connect_to_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
@@ -123,6 +124,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => ReScanRacketSensorsUseCase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => EraseStorageDataUsecase(bleRepository: sl()))
     ..registerLazySingleton(() => GetAllBlobsFromDbUsecase(blobRepository: sl()))
+    ..registerLazySingleton(() => ExportToCsvBlobListUsecase(blobRepository: sl()))
 
     //ble
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
@@ -176,6 +178,7 @@ Future<void> dependencyInjectionInitialize() async {
       parseBlobUsecase: sl()
     ))
     ..registerFactory(() => BlobDatabaseBloc(
-      getAllBlobsFromDbUsecase: sl()
+      getAllBlobsFromDbUsecase: sl(),
+      exportToCsvBlobListUsecase: sl()
     ));
 }

@@ -17,7 +17,7 @@ class OnGetSelectedRacketSensorEntityLobby extends RtsosLobbyEvent {
 }
 class OnStartHSBlobOnLobby extends RtsosLobbyEvent {
   final int duration;
-  final double sampleRate;
+  final SampleRate sampleRate;
 
   OnStartHSBlobOnLobby({required this.duration, required this.sampleRate});
 }

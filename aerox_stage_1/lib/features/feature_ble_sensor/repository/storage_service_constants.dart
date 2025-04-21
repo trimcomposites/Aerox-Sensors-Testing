@@ -23,7 +23,7 @@ class StorageServiceConstants {
   static const int RTSOS_USE_IMU_REFERENCE_MASK = 0x40;
 
 static const int HS_RTSOS_BLOB_REGISTER_TYPE = 0x08;
-static const int HS_1KHZ_RTSOS_BLOB_REGISTER_TYPE = 1;
+static const int HS_1KHZ_RTSOS_BLOB_REGISTER_TYPE = 0x09;
 
   static const int STORAGE_MAX_DATA_LEN = 242;
   static const String CURRENT_TIME_SERVICE_UUID = '00001805-0000-1000-8000-00805f9b34fb';

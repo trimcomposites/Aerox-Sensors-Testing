@@ -46,7 +46,7 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
       final sensorEntity = state.sensorEntity;
       if(sensorEntity!=null){
         for (var sensor in sensorEntity.sensors){
-           startOfflineRTSOSUseCase.call(sensor);
+           startOfflineRTSOSUseCase.call( StartRTSOSParams(sampleRate: event.sampleRate, durationSeconds: event.duration, sensor: sensor) );
         }
       }
     });
