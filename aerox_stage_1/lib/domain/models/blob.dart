@@ -194,6 +194,8 @@ class PacketInfo extends Equatable {
   final blobType = value[7];
   final packetSize = _toIntLE(value.sublist(8, 11));
   final timestamp = _toIntLE(value.sublist(11, 15));
+    
+
 
   int ms = 0;
   if (value.length >= 17) {

@@ -45,7 +45,10 @@ Future<List<int>> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet)
 
   final headerSize = packet.packetInfo!.dataAddress - packet.packetInfo!.address;
   final dataSize = packet.packetInfo!.packetSize - headerSize;
-
+  print( 'data size ${dataSize}' );
+  print( 'data address ${packet.packetInfo!.dataAddress}' );
+  print(  'packet size ${packet.packetInfo!.packetSize}' );
+  print( 'header size ${headerSize}' );
   final data = await readRangeDataAsPython(
     device: device,
     serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
@@ -87,7 +90,7 @@ Future<Uint8List> readRangeDataAsPython({
       if (totalReceived >= dataLen && !completer.isCompleted) {
         await subscription.cancel();
         await characteristic.setNotifyValue(false);
-        final result = rawData.toBytes().sublist(0, dataLen); // ⬅️ CORTAMOS EXACTAMENTE
+        final result = rawData.toBytes().sublist(3); // ⬅️ CORTAMOS EXACTAMENTE
         completer.complete(result);
       }
     }
@@ -120,9 +123,8 @@ Future<Uint8List> readRangeDataAsPython({
     completer.complete(rawData.toBytes().sublist(0, dataLen));
   }
 
-  print('📥 start address: $startAddress');
-  print('📦 dataLen: $dataLen');
-  print('📏 raw data Length: ${result.length}');
+  print( 'result ${result }' );
+  print( 'rawData ${result }' );
 
   return result;
 }
