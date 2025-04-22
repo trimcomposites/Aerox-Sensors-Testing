@@ -45,10 +45,6 @@ Future<List<int>> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet)
 
   final headerSize = packet.packetInfo!.dataAddress - packet.packetInfo!.address;
   final dataSize = packet.packetInfo!.packetSize - headerSize;
-  print( 'data size ${dataSize}' );
-  print( 'data address ${packet.packetInfo!.dataAddress}' );
-  print(  'packet size ${packet.packetInfo!.packetSize}' );
-  print( 'header size ${headerSize}' );
   final data = await readRangeDataAsPython(
     device: device,
     serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),

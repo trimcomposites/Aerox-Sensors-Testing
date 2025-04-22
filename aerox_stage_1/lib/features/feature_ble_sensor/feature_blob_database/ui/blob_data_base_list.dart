@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 
 class BlobDataBaseList extends StatelessWidget {
   const BlobDataBaseList({super.key});
@@ -38,10 +39,22 @@ class BlobDataBaseList extends StatelessWidget {
                       ? IconButton(
                           icon: const Icon(Icons.open_in_new, color: Colors.blueAccent),
                           onPressed: () async {
-                            final exists = await File(path).exists();
+
+                            final dir = await getApplicationDocumentsDirectory();
+                            final fullPath = '${dir.path}/${blob.path}';
+                            final file = File(fullPath);
+
+                            final exists = await file.exists();
                             print('¿El archivo existe?: $exists');
 
-                            await OpenFilex.open(path);
+                            if (exists) {
+                              await OpenFilex.open(fullPath);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Archivo no encontrado. $fullPath')),
+                              );
+                            }
+                          
                           },
                         )
                       : null,

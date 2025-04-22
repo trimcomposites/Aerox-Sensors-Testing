@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
       final RacketsSQLiteDB db = sl();
       final BlobSQLiteDB blobDb = sl();
       //blobDb.clearParsedBlobs();
-      blobDb.deleteDatabaseFile();
+      //blobDb.deleteDatabaseFile();
       //db.checkAndDeleteDB();
       //db.clearDatabase();
       //db.checkAndDeleteDB();

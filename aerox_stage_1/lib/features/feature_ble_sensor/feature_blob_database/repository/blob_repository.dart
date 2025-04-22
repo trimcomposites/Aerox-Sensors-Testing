@@ -9,6 +9,7 @@ import 'package:aerox_stage_1/domain/models/parsed_blob.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/local/blobs_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/to_csv_blob.dart';
 import 'package:dartz/dartz.dart';
+import 'package:path_provider/path_provider.dart';
 
 class BlobRepository {
   final BlobSQLiteDB blobSQLiteDB;
@@ -55,7 +56,14 @@ Future<EitherErr<List<File>>> exportToSCVBlobs(List<ParsedBlob> blobs) {
           .exportParsedBlobToCsv(blobs[i], fileName: 'parsed_blob_$i')
           .flatMap<File>((file) async {
             resultList.add(file);
-            blobSQLiteDB.updatePathForBlob( blobs[i].createdAt , file.path);
+            final dir = await getApplicationDocumentsDirectory();
+            final fileName = '${blobs[i].content.first['timestamp']}.csv';
+            final path = '${dir.path}/${fileName}';
+
+            await file.copy(path);
+
+            blobSQLiteDB.updatePathForBlob(blobs[i].createdAt, fileName);
+
             return Right(file);
           });
       
