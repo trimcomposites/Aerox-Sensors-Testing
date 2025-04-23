@@ -45,4 +45,48 @@ class ErrorDialog {
       });
     });
   }
+  static void showCustomDialog({
+    required BuildContext context,
+    required String message,
+    String title = 'Mensaje',
+    VoidCallback? onOk,
+  }) {
+    if (_isDialogOpen) return;
+    _isDialogOpen = true;
+
+    Future.microtask(() {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.info, color: Colors.blue, size: 40),
+              const SizedBox(height: 10),
+              Text(
+                message,
+                style: const TextStyle(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _isDialogOpen = false;
+                if (onOk != null) onOk();
+              },
+              child: const Text("OK", style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+        ),
+      ).then((_) => _isDialogOpen = false);
+    });
+  }
 }

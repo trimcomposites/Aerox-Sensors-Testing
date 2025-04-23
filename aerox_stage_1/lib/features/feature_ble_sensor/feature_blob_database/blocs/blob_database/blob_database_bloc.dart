@@ -121,20 +121,32 @@ on<OnUploadBlobsToStorage>((event, emit) async {
     on<OnAddAllBlobsToSelectedList>((event, emit) {
       emit(state.copyWith(selectedBlobs: state.filteredBlobs));
     });
-   on<OnFilterDatabaseBlobsByExactDate>((event, emit) {
-      final filtered = state.blobs.where((b) {
-        final created = b.createdAt;
-        return created != null &&
+    on<OnFilterDatabaseBlobsByExactDate>((event, emit) {
+    final List<ParsedBlob> filtered = [];
+
+    for (final b in state.blobs) {
+      final created = b.createdAt;
+      if (created != null &&
           created.year == event.exactDate.year &&
           created.month == event.exactDate.month &&
-          created.day == event.exactDate.day;
-      });
+          created.day == event.exactDate.day) {
+        filtered.add(b);
+      }
+}
 
       final combined = {...filtered, ...state.selectedBlobs}.toList();
-
       emit(state.copyWith(filteredBlobs: combined));
     });
 
+    on<OnFilterDatabaseBlobsUntilDate>((event, emit) {
+      final filtered = state.blobs.where((b) {
+        final created = b.createdAt;
+        return created != null && created.isBefore(event.untilDate.add(Duration(days: 1)));
+      });
+
+      final combined = {...filtered, ...state.selectedBlobs}.toList();
+      emit(state.copyWith(filteredBlobs: combined));
+    });
 
   }
 }

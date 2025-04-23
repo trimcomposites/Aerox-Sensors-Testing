@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/ui/error_dialog.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/blob_storage_list.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/blocs/blob_database/blob_database_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/blob_data_base_list.dart';
@@ -18,9 +19,22 @@ class BlobDatabasePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Blob Database'),
-        actions: [TextButton(onPressed: () {
-          blobDatabaseBloc.add( OnUploadBlobsToStorage(blobs: blobDatabaseBloc.state.filteredBlobs ) );
-        }, child: Text('Subir Archivos'))],
+        actions: [
+        TextButton(
+          onPressed: () {
+            ErrorDialog.showCustomDialog(
+              context: context,
+              title: 'Subir archivos',
+              message: '¿Estás seguro de que deseas subir estos blobs a la nube? ${blobDatabaseBloc.state.filteredBlobs.length} blob(s)',
+              onOk: () {
+                context.read<BlobDatabaseBloc>().add(
+                  OnUploadBlobsToStorage(
+                    blobs: context.read<BlobDatabaseBloc>().state.filteredBlobs,
+                  ),
+                );
+              },
+        );
+      }, child: Text('Subir Archivos'))],
       ),
       body: Column(
         children: [

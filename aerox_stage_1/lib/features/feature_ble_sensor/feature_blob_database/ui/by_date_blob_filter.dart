@@ -21,7 +21,7 @@ class ByDateBlobFilter extends StatelessWidget {
             lastDate: DateTime.now(),
           );
           if (picked != null) {
-            blobDatabaseBloc.add(OnFilterDatabaseBlobsByExactDate(picked));
+            blobDatabaseBloc.add(OnFilterDatabaseBlobsUntilDate(picked));
           }
         },
         child: const Text('Seleccionar fecha límite'),

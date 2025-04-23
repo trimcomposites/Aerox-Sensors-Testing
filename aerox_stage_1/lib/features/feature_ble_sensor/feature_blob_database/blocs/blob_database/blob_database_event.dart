@@ -35,3 +35,8 @@ class OnFilterDatabaseBlobsByExactDate extends BlobDatabaseEvent {
 
   OnFilterDatabaseBlobsByExactDate(this.exactDate);
 }
+class OnFilterDatabaseBlobsUntilDate extends BlobDatabaseEvent {
+  final DateTime untilDate;
+
+  OnFilterDatabaseBlobsUntilDate(this.untilDate);
+}

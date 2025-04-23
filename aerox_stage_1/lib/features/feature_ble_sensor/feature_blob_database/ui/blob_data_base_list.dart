@@ -22,12 +22,12 @@ class BlobDataBaseList extends StatelessWidget {
           return ListView.builder(
             itemCount: state.filteredBlobs.length,
             itemBuilder: (BuildContext context, int index) {
-              final blob = state.blobs[index];
+              final blob = state.filteredBlobs[index];
               final timestamp = blob.content.first['timestamp'] ?? 'Sin timestamp';
               final path = blob.path ?? '';
               final hasPath = path.isNotEmpty;
 
-              return BlobDatabaseListTile(hasPath: hasPath, timestamp: timestamp, blob: blob, index: index,);
+              return BlobDatabaseListTile(hasPath: hasPath, timestamp: timestamp, blob: blob,);
             },
           );
         },
