@@ -19,7 +19,7 @@ class BlobDatabasePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Blob Database'),
         actions: [TextButton(onPressed: () {
-          blobDatabaseBloc.add( OnUploadBlobsToStorage(blobs: blobDatabaseBloc.state.filteredBlobs) );
+          blobDatabaseBloc.add( OnUploadBlobsToStorage(blobs: blobDatabaseBloc.state.filteredBlobs ) );
         }, child: Text('Subir Archivos'))],
       ),
       body: Column(

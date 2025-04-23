@@ -5,9 +5,12 @@ import 'package:aerox_stage_1/domain/models/parsed_blob.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/export_to_csv_blob_list_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_blobs_from_db_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/storage/upload_blobs_to_storage_usecase.dart';
+import 'package:aerox_stage_1/features/feature_storage/repository/upload_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'blob_database_event.dart';
 part 'blob_database_state.dart';
@@ -39,35 +42,65 @@ class BlobDatabaseBloc extends Bloc<BlobDatabaseEvent, BlobDatabaseState> {
         }
       );
     });
-    on<OnUploadBlobsToStorage>((event, emit) async {
-      try {
-        final files = event.blobs
-            .where((blob) => blob.path != null)
-            .map((blob) => File(blob.path!))
-            .where((file) => file.existsSync()) 
-            .toList();
 
-        if (files.isEmpty) {
-          emit(state.copyWith(
-            uiState: UIState.error('No se encontraron archivos válidos para subir.'),
-          ));
-          return;
-        }
+on<OnUploadBlobsToStorage>((event, emit) async {
+  try {
+    final dir = await getApplicationDocumentsDirectory(); 
+    final List<FileWithPath> filesWithPaths = [];
 
-        final result = await uploadBlobsToStorageUsecase.call(files);
-        result.fold(
-          (l) => emit(state.copyWith(
-            uiState: UIState.error('Error al subir los Blobs al almacenamiento.'),
-          )),
-          (r) {
-          },
-        );
-      } catch (e) {
-        emit(state.copyWith(
-          uiState: UIState.error('Error inesperado al subir los blobs: $e'),
-        ));
+    for (final blob in event.blobs) {
+      final fileName = blob.path;
+      final createdAt = blob.createdAt;
+
+      if (fileName == null || createdAt == null) {
+        print('❌ Blob descartado: path o createdAt nulos');
+        continue;
       }
-    });
+
+      final fullPath = '${dir.path}/$fileName';
+      final file = File(fullPath);
+      final exists = await file.exists();
+
+      if (!exists) {
+        print('❌ Archivo no existe: $fullPath');
+        continue;
+      }
+
+      final folder = DateFormat('yyyy-MM-dd').format(createdAt);
+      print('✅ Archivo válido: $fullPath | Carpeta: $folder');
+
+      filesWithPaths.add(FileWithPath(file: file, path: folder));
+    }
+
+    if (filesWithPaths.isEmpty) {
+      emit(state.copyWith(
+        uiState: UIState.error('No se encontraron archivos válidos para subir.'),
+      ));
+      return;
+    }
+
+    final result = await uploadBlobsToStorageUsecase.call(filesWithPaths);
+    result.fold(
+      (l) {
+        print('❌ Fallo al subir archivos: ${l.toString()}');
+        emit(state.copyWith(
+          uiState: UIState.error('Error al subir los Blobs al almacenamiento.'),
+        ));
+      },
+      (r) {
+        print('✅ Todos los archivos subidos con éxito.');
+        emit(state.copyWith(
+          uiState: UIState.success(),
+        ));
+      },
+    );
+  } catch (e) {
+    print('❌ Excepción inesperada: $e');
+    emit(state.copyWith(
+      uiState: UIState.error('Error inesperado al subir los blobs: $e'),
+    ));
+  }
+});
 
     on<OnAddBlobToSelectedList>((event, emit) {
       final updatedList = List<ParsedBlob>.from(state.selectedBlobs);

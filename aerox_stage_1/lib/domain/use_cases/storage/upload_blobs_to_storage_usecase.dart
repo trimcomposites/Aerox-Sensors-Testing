@@ -8,7 +8,7 @@ import 'package:aerox_stage_1/domain/use_cases/use_case.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/ble_repository.dart';
 import 'package:aerox_stage_1/features/feature_storage/repository/upload_repository.dart';
 
-class UploadBlobsToStorageUsecase extends AsyncUseCaseWithParams<void,  List<File>>{
+class UploadBlobsToStorageUsecase extends AsyncUseCaseWithParams<void,  List<FileWithPath>>{
 
   final UploadRepository uploadRepository;
 
@@ -16,7 +16,7 @@ class UploadBlobsToStorageUsecase extends AsyncUseCaseWithParams<void,  List<Fil
   @override
   Future<EitherErr<void>> call( blobs ) async {
     
-    final result = await uploadRepository.uplaoadFileList(  blobs );
+    final result = await uploadRepository.uploadFileListWithPaths(  blobs,  );
     return result;
 
   } 

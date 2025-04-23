@@ -11,14 +11,13 @@ class UploadRepository {
 
   UploadRepository({required this.storageUploadService});
 
-  Future<EitherErr<void>> uplaoadFileList(List<File> files, {String? path}) {
-    return EitherCatch.catchAsync<void, BluetoothErr>(() async {
 
-      for( File file in files ){
-        final url = await storageUploadService.uploadFile(file, path: path);
+  Future<EitherErr<void>> uploadFileListWithPaths(List<FileWithPath> filesWithPaths) {
+    return EitherCatch.catchAsync<void, BluetoothErr>(() async {
+      for (final item in filesWithPaths) {
+        final url = await storageUploadService.uploadFile(item.file, path: item.path);
         print('✅ Archivo subido. URL: $url');
       }
-      
     }, (e) {
       return BluetoothErr(
         errMsg: 'Error al subir archivo: ${e.toString()}',
@@ -26,4 +25,10 @@ class UploadRepository {
       );
     });
   }
+}
+class FileWithPath {
+  final File file;
+  final String path;
+
+  FileWithPath({required this.file, required this.path});
 }
