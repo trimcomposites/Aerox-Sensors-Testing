@@ -143,4 +143,5 @@ class BlobDataParser {
     final byteData = ByteData.sublistView(bytes);
     return byteData.getInt16(0, Endian.little);
   }
+  
 }

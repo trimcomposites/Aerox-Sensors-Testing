@@ -30,7 +30,7 @@ class BleStoragePage extends StatelessWidget {
           height: MediaQuery.of(context).size.height*0.9,
           child: Column(
             children: [
-              ExportToCSVButton(),
+
               BlobStorageList()
               ],
           ),

@@ -55,7 +55,24 @@ Future<List<int>> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet)
 
   return data.toList();
 }
-
+  Future<Uint8List> readRangeData(BluetoothDevice device, int startAddress, int dataLen) async {
+     var readAddress = startAddress;
+     var bytesToRead = dataLen;
+     final rawData = BytesBuilder();
+ 
+     while (bytesToRead > 0) {
+       final chunkSize = bytesToRead > StorageServiceConstants.STORAGE_MAX_DATA_LEN
+           ? StorageServiceConstants.STORAGE_MAX_DATA_LEN
+           : bytesToRead;
+ 
+       final data = await readData(device, readAddress, chunkSize);
+       rawData.add(data);
+       bytesToRead -= chunkSize;
+       readAddress += chunkSize;
+     }
+ 
+     return rawData.toBytes();
+   }
 
 Future<Uint8List> readRangeDataAsPython({
   required BluetoothDevice device,
@@ -63,7 +80,7 @@ Future<Uint8List> readRangeDataAsPython({
   required Guid characteristicUuid,
   required int startAddress,
   required int dataLen,
-  int maxChunkSize = 240,
+  int maxChunkSize = 242,
   Duration timeout = const Duration(seconds: 4),
 }) async {
   final services = await device.discoverServices();
@@ -77,7 +94,7 @@ Future<Uint8List> readRangeDataAsPython({
   late final StreamSubscription<List<int>> subscription;
   await characteristic.setNotifyValue(true);
 
-  subscription = characteristic.value.listen((value) async {
+  subscription = characteristic.lastValueStream.listen((value) async {
     if (value.isNotEmpty && value[0] == StorageServiceConstants.STORAGE_CP_OP_READ_DATA) {
       final payload = value.skip(2);
       rawData.add(Uint8List.fromList(payload.toList()));
@@ -86,7 +103,8 @@ Future<Uint8List> readRangeDataAsPython({
       if (totalReceived >= dataLen && !completer.isCompleted) {
         await subscription.cancel();
         await characteristic.setNotifyValue(false);
-        final result = rawData.toBytes().sublist(3); // ⬅️ CORTAMOS EXACTAMENTE
+        final result = rawData.toBytes();
+        print('✅ Todos los datos recibidos (${result.length} bytes)');
         completer.complete(result);
       }
     }
@@ -100,6 +118,7 @@ Future<Uint8List> readRangeDataAsPython({
         ? dataLen - (i * maxChunkSize)
         : maxChunkSize;
 
+    print('📦 chunk addr $chunkAddress (len: $chunkLen)');
     final cmd = [
       StorageServiceConstants.STORAGE_CP_OP_READ_DATA,
       ...chunkAddress.toBytesLE(length: 3),
@@ -107,24 +126,21 @@ Future<Uint8List> readRangeDataAsPython({
     ];
 
     await characteristic.write(cmd, withoutResponse: false);
-    await Future.delayed(const Duration(milliseconds: 10)); // ajustable si hace falta
+    await Future.delayed(const Duration(milliseconds: 10));
   }
 
-  final result = await completer.future;
-
-  // Seguridad por si no se cumplió el if dentro del listener
-  if (!completer.isCompleted) {
+  // Esperamos a recibir todos los datos o timeout
+  final result = await completer.future.timeout(timeout, onTimeout: () async {
     await subscription.cancel();
     await characteristic.setNotifyValue(false);
-    completer.complete(rawData.toBytes().sublist(0, dataLen));
-  }
+    final partial = rawData.toBytes();
+    print('⚠️ Timeout. Se recibieron solo ${partial.length} bytes de $dataLen esperados.');
+    return partial;
+  });
 
-  print( 'result ${result }' );
-  print( 'rawData ${result }' );
-
+  print('📏 result length bytes: ${result.length}');
   return result;
 }
-
 
   Future<Uint8List> readData(BluetoothDevice device, int address, int dataLen) async {
     final cmd = BytesBuilder()
@@ -156,6 +172,7 @@ Future<Uint8List> readRangeDataAsPython({
       serviceUuid: Guid(StorageServiceConstants.STORAGE_SERVICE_UUID),
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
       cmd: cmd.toBytes(),
+      reqOpCode: false
     );
 
     if (response.length < 3) {
@@ -273,6 +290,7 @@ Future<List<PacketInfo>> fetchAllPacketInfos(BluetoothDevice device) async {
         try {
           final data = await fetchBlobPacketData(device, packet);
           packet.packetData = data;
+          print( 'data: ${data.length}' );
         } catch (_) {}
       }
 

@@ -1,5 +1,8 @@
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/blob_storage_list.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/blocs/blob_database/blob_database_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/blob_data_base_list.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/by_date_blob_filter.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/by_exact_date_blob_filter.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/export_to_csv_button.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,18 +13,52 @@ class BlobDatabasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blobDatabaseBloc = BlocProvider.of<BlobDatabaseBloc>(context);
-    blobDatabaseBloc.add( OnReadBlobDatabase() );
+    blobDatabaseBloc.add(OnReadBlobDatabase());
+    blobDatabaseBloc.add(OnResetBlobSelectedList());
     return Scaffold(
       appBar: AppBar(
-        title: Text( 'Blob Database' ),
+        title: Text('Blob Database'),
+        actions: [TextButton(onPressed: () {
+          blobDatabaseBloc.add( OnUploadBlobsToStorage(blobs: blobDatabaseBloc.state.filteredBlobs) );
+        }, child: Text('Subir Archivos'))],
       ),
       body: Column(
         children: [
-
+          SelectDatabaseBlobActions(),
+          ByExactDateBlobFilter(),
+          ByDateBlobFilter(),
+          BlocBuilder<BlobDatabaseBloc, BlobDatabaseState>(
+            builder: (context, state) {
+              return Text('( ${state.selectedBlobs.length} ) Blobs seleccionados.');
+            },
+          ),
           ExportToCSVButton(),
           BlobDataBaseList(),
         ],
       ),
+    );
+  }
+}
+
+class SelectDatabaseBlobActions extends StatelessWidget {
+  const SelectDatabaseBlobActions({
+    super.key,
+  });
+
+
+  @override
+  Widget build(BuildContext context) {
+    final blobDatabaseBloc = BlocProvider.of<BlobDatabaseBloc>(context);
+
+    return Row(
+      children: [
+        TextButton(onPressed: () {
+          blobDatabaseBloc.add(OnAddAllBlobsToSelectedList());
+        }, child: Text('Seleccionar Todo')),
+        TextButton(onPressed: () {
+          blobDatabaseBloc.add(OnResetBlobSelectedList());
+        }, child: Text('Anular Selecciones'))
+      ],
     );
   }
 }

@@ -67,7 +67,6 @@ Future<EitherErr<List<File>>> exportToSCVBlobs(List<ParsedBlob> blobs) {
             return Right(file);
           });
       
-      // Esto asegura que si `exportParsedBlobToCsv` da Left, el flatMap lanza y se detiene.
     }
 
     return resultList;

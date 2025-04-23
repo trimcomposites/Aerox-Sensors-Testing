@@ -20,6 +20,7 @@ import 'package:aerox_stage_1/domain/use_cases/racket/get_rackets_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/get_selected_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/select_racket_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/racket/unselect_racket_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/storage/upload_blobs_to_storage_usecase.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/blocs/blob_database/blob_database_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/blob_repository.dart';
@@ -43,6 +44,8 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/racket_repository.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/remote/remote_get_rackets.dart';
+import 'package:aerox_stage_1/features/feature_storage/repository/remote/storage_service.dart';
+import 'package:aerox_stage_1/features/feature_storage/repository/upload_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -71,6 +74,9 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => BleService())
     ..registerLazySingleton(() => BlobDataParser())
     ..registerLazySingleton(() => ToCsvBlob())
+
+    //storage
+    ..registerLazySingleton(() => StorageService())
 
 
 
@@ -101,6 +107,9 @@ Future<void> dependencyInjectionInitialize() async {
        toCsvBlob: sl(), 
        blobSqliteDB: sl()
       ))
+    ..registerLazySingleton(() => UploadRepository(
+        storageUploadService: sl()
+      ))
     ..registerLazySingleton(() => BlobRepository(
       blobSQLiteDB: sl(),
       toCsvBlob: sl()
@@ -125,6 +134,9 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => EraseStorageDataUsecase(bleRepository: sl()))
     ..registerLazySingleton(() => GetAllBlobsFromDbUsecase(blobRepository: sl()))
     ..registerLazySingleton(() => ExportToCsvBlobListUsecase(blobRepository: sl()))
+
+    //storage 
+    ..registerLazySingleton(() => UploadBlobsToStorageUsecase(uploadRepository: sl()))
 
     //ble
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
@@ -179,6 +191,7 @@ Future<void> dependencyInjectionInitialize() async {
     ))
     ..registerFactory(() => BlobDatabaseBloc(
       getAllBlobsFromDbUsecase: sl(),
-      exportToCsvBlobListUsecase: sl()
+      exportToCsvBlobListUsecase: sl(),
+      uploadBlobsToStorageUsecase: sl()
     ));
 }
