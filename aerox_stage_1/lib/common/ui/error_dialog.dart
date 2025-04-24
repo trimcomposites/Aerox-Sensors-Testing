@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/features/feature_home/ui/home_page.dart';
 import 'package:flutter/material.dart';
 
 class ErrorDialog {
@@ -28,14 +29,16 @@ class ErrorDialog {
               ),
             ],
           ),
-          actions: [
+           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context, true);
-                _isDialogOpen = false; 
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  (route) => false,
+                );
+                _isDialogOpen = false;
               },
-              child: Text("OK", style: TextStyle(color: Colors.blue)),
+              child: const Text("OK", style: TextStyle(color: Colors.blue)),
             ),
           ],
         ),

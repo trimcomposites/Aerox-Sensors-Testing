@@ -72,16 +72,25 @@ class BleService {
       final isValidResponse = value.isNotEmpty &&
         (expectedOpcode == null || value[0] == expectedOpcode) && // 👈 acepta todo si es null
         (!requireStatusOk || (value.length > 1 && value[1] == 0x00));
+        if (isValidResponse && !isEcho) {
+          if (!completer.isCompleted) {
+            completer.complete(value);
 
-      if (isValidResponse && !isEcho) {
-        if (!completer.isCompleted) {
-          completer.complete(value);
-          if (closeAfterFirst) {
-            await subscription?.cancel();
-            await characteristic.setNotifyValue(false);
-            print("Unsubscribed after matched value");
+            if (closeAfterFirst) {
+              try {
+                final isConnected = await characteristic.device.connectionState.first == BluetoothConnectionState.connected;
+                if (isConnected) {
+                  await subscription?.cancel();
+                  await characteristic.setNotifyValue(false);
+                  print("🔕 Unsubscribed after matched value");
+                }
+              } catch (e) {
+                print("⚠️ Error al cerrar notificaciones tras respuesta válida: $e");
+              }
+            }
           }
-        }
+
+
       } else {
         print("Ignored value: $value (echo: $isEcho, valid: $isValidResponse)");
       }
@@ -138,14 +147,26 @@ Future<List<List<int>>> sendCommandAndCollectMultiple({
   await characteristic.write(cmd, withoutResponse: false);
   print("📤 Command sent: $cmd");
 
-  Future.delayed(timeout).then((_) async {
-    if (!isDone) {
-      isDone = true;
-      await subscription.cancel();
-      await characteristic.setNotifyValue(false);
-      if (!completer.isCompleted) completer.complete(responses); // Devuelve lo que haya
-    }
-  });
+      Future.delayed(timeout).then((_) async {
+        if (!isDone) {
+          isDone = true;
+
+          try {
+            final isConnected = await characteristic.device.connectionState.first == BluetoothConnectionState.connected;
+            if (isConnected) {
+              await subscription.cancel();
+              await characteristic.setNotifyValue(false);
+            }
+          } catch (e) {
+            print("⚠️ Error al cancelar o desactivar notify tras timeout: $e");
+          }
+
+          if (!completer.isCompleted) {
+            completer.complete(responses); 
+          }
+        }
+});
+
 
   return completer.future;
 }

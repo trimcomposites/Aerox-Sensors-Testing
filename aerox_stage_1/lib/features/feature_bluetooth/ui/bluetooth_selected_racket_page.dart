@@ -31,6 +31,9 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
             selectedEntityPageBloc.add(OnSetTimeStamp(sensor: sensor));
           }
         }
+        if(state.uiState.status == UIStatus.error){
+          ErrorDialog.showErrorDialog(context, state.uiState.errorMessage );
+        }
       },
       child: PopScope(
           canPop: false,

@@ -24,14 +24,14 @@ class BlobStorageList extends StatelessWidget {
           Expanded(
             child: BlocBuilder<BleStorageBloc, BleStorageState>(
               builder: (context, state) {
-                final filteredBlobs = state.filteredBlobs;
+                final blobs = state.blobs;
       
                 return state.uiState.status == UIStatus.loading
                 ? BleStorageLoadingIndicator()
                 : ListView.builder(
-                  itemCount: filteredBlobs.length,
+                  itemCount: blobs.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final blob = filteredBlobs[index];
+                    final blob = blobs[index];
                     return Row(
                       children: [
                         SingleChildScrollView(
