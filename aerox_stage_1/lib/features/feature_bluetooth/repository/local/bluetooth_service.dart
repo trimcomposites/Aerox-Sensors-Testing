@@ -31,7 +31,7 @@ class BluetoothCustomService {
       return false;
     }
   }
-Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
+  Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
   return EitherCatch.catchAsync<Stream<List<RacketSensor>>, BluetoothErr>(() async {
     bool hasPermission = await checkPermissions();
     if (!hasPermission) {
@@ -41,9 +41,11 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
       );
     }
 
-    if (_isScanning && _devicesStreamController != null ) return _devicesStreamController!.stream;
+    if (_isScanning && _devicesStreamController != null) {
+      return _devicesStreamController!.stream;
+    }
+
     _isScanning = true;
-    //devices.clear();
 
     _devicesStreamController?.close();
     _devicesStreamController = StreamController<List<RacketSensor>>.broadcast();
@@ -57,47 +59,51 @@ Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
 
     FlutterBluePlus.startScan();
 
-
-
     scanSubscription = FlutterBluePlus.onScanResults.listen((results) async {
-      List<BluetoothDevice> detectedDevices = results.map((r) => r.device).toList();
+      final detectedDevices = results.map((r) => r.device).toList();
 
-      final toRemove = <BluetoothDevice>[];
+      // ✅ Copia segura para iterar
+      final currentDevices = List<BluetoothDevice>.from(devices);
+      final updatedDevices = <BluetoothDevice>[];
 
-      for (final device in devices) {
-        final state = await device.connectionState.first;
-        final stillDetected = detectedDevices.any((d) => d.remoteId == device.remoteId);
+      for (final device in currentDevices) {
+        final isStillDetected = detectedDevices.any((d) => d.remoteId == device.remoteId);
+        final isConnected = await device.connectionState.first == BluetoothConnectionState.connected;
 
-        if (!stillDetected && state != BluetoothConnectionState.connected) {
-          toRemove.add(device);
+        if (isStillDetected || isConnected) {
+          updatedDevices.add(device);
         }
       }
 
-devices.removeWhere((d) => toRemove.contains(d));
+      // Reemplazamos la lista completa por la actualizada
+      devices
+        ..clear()
+        ..addAll(updatedDevices);
 
+      // Añadir nuevos dispositivos detectados que cumplan con el filtro
+      for (final result in results) {
+        final name = (result.device.platformName ?? '').toLowerCase();
+        final local = (result.device.localName ?? '').toLowerCase();
+        final filter = filterName?.toLowerCase();
 
-
-      for (ScanResult result in results) {
-        String deviceName = (result.device.platformName ?? '').toLowerCase();
-        String localName = (result.device.localName ?? '').toLowerCase();
-        String? filter = filterName?.toLowerCase();
-
-        if (filter == null || deviceName.contains(filter) || localName.contains(filter)) {
+        if (filter == null || name.contains(filter) || local.contains(filter)) {
           if (!devices.any((d) => d.remoteId == result.device.remoteId)) {
             devices.add(result.device);
           }
         }
       }
 
-      List<RacketSensor> racketSensors = await Future.wait(
-        devices.map((device) async => await device.toRacketSensor(state: await device.connectionState.first)),
+      final racketSensors = await Future.wait(
+        devices.map((device) async {
+          final state = await device.connectionState.first;
+          return await device.toRacketSensor(state: state);
+        }),
       );
 
       _devicesStreamController?.add(racketSensors);
     });
 
-
-    print("🔍 Escaneo iniciado: ${filterName} ");
+    print("🔍 Escaneo iniciado: $filterName");
     return _devicesStreamController!.stream;
   }, (exception) {
     throw BluetoothErr(
@@ -106,6 +112,7 @@ devices.removeWhere((d) => toRemove.contains(d));
     );
   });
 }
+
 
 
 Future<EitherErr<void>> reScan() {

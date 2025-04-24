@@ -57,9 +57,6 @@ class BluetoothRacketsList extends StatelessWidget {
                       },
                     ),
                   ),
-                  state.uiState.status == UIStatus.loading
-                      ? LoadingIndicator( showBackGround: false, )
-                      : Container(),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text("Cerrar"),

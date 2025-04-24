@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_rackets_list.dart';
@@ -24,7 +25,9 @@ class RacketEntityListItem extends StatelessWidget {
           children: [
           TextButton.icon(
               onPressed: () {
-                sensorsBloc.add(OnConnectRacketSensorEntity(id: entity.id));
+                if( sensorsBloc.state.uiState.status != UIStatus.loading ){
+                  sensorsBloc.add(OnConnectRacketSensorEntity(id: entity.id));
+                }
               
               },
               icon: Icon(Icons.sports_tennis_outlined),
