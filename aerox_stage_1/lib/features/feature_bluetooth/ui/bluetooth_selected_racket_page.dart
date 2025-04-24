@@ -70,23 +70,23 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                             BleRecordWithButton( 
                               text: 'Grabación con Cámaras', 
                               color: Colors.red,
-                              onPressed: (){ Navigator.pushReplacement(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.hz104, ))); }, 
+                              onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.hz104, ))); }, 
                               ),
                             BleRecordWithButton( 
                               text: 'Grabación SIN Cámaras',
                               color: Colors.blue, 
-                              onPressed: (){ Navigator.pushReplacement(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.khz1, ))); }, 
+                              onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.khz1, ))); }, 
                             ),
                             SizedBox(height: 20,),
                             BleRecordWithButton( 
                               text: 'Leer Memoria de Sensor',
                               color: Colors.green, 
-                              onPressed: (){ Navigator.pushReplacement(context, MaterialPageRoute(builder: ( context ) => BleStoragePage())); }, 
+                              onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => BleStoragePage())); }, 
                             ),
                             BleRecordWithButton( 
                               text: 'Blob Database',
                               color: Colors.purple, 
-                              onPressed: (){ Navigator.pushReplacement(context, MaterialPageRoute(builder: ( context ) => BlobDatabasePage())); }, 
+                              onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => BlobDatabasePage())); }, 
                             ),
                             
                           ],
