@@ -19,32 +19,35 @@ class BleActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selectedEntityPageBloc = BlocProvider.of<SelectedEntityPageBloc>(context);
-    return Container(
-      height: 70,
-      decoration: BoxDecoration( 
-        color: Colors.amber.shade200,
-        border: Border.all( color: Colors.amber, width: 3 ),
-        borderRadius: BorderRadius.only( topRight: Radius.circular(20), bottomRight: Radius.circular(20) )
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text( text, style: TextStyle( fontSize: 13 )),
-          SizedBox(   width: 10, ),
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            child: IconButton(
-              onPressed: () => {
-                selectedEntityPageBloc
-                  .add(event)
-              },
-              icon: Icon(
-                icon
-              ),
-              color: iconColor
+    return Padding(
+      padding: const EdgeInsets.only( bottom: 5 ),
+      child: InkWell(
+          onTap: () => {
+            selectedEntityPageBloc
+              .add(event)
+          },
+        child: Container(
+          height: 50,
+          decoration: BoxDecoration(             
+            color: Color.fromARGB(255, 244, 252, 255),
+            border: Border.all( color: Colors.blue.shade400, width: 3 ),
+            borderRadius: BorderRadius.only( topRight: Radius.circular(20), bottomRight: Radius.circular(20) )
+          ),
+          child:  Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text( text, style: TextStyle( fontSize: 13 )),
+                SizedBox(   width: 10, ),
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    icon,
+                    color: iconColor
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/blob_database_page.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_record_with_button.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_connect_button.dart';
@@ -22,14 +24,17 @@ class HomePageAdminView extends StatelessWidget {
         padding: const EdgeInsets.only(top: 30),
         child: BlocBuilder<HomeScreenBloc, HomeScreenState>(
           builder: (context, state) {
-          return Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
     
               BluetoothConnectButton(
                 position: 250,
-              )
+              ),
+              BleRecordWithButton( 
+                text: 'Blob Database',
+                onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => BlobDatabasePage())); }, 
+              ),
             ]
           );
           },

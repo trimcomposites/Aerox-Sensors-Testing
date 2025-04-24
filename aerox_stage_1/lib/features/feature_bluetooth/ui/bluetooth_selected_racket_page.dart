@@ -26,6 +26,7 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        backgroundColor: Color.fromARGB(255, 225, 245, 255),
         appBar: AppBar(
           leading: Builder(
             builder: (context) => IconButton(
@@ -69,23 +70,19 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                             SelectedRacketName(),
                             BleRecordWithButton( 
                               text: 'Grabación con Cámaras', 
-                              color: Colors.red,
                               onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.hz104, ))); }, 
                               ),
                             BleRecordWithButton( 
                               text: 'Grabación SIN Cámaras',
-                              color: Colors.blue, 
                               onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.khz1, ))); }, 
                             ),
-                            SizedBox(height: 20,),
                             BleRecordWithButton( 
                               text: 'Leer Memoria de Sensor',
-                              color: Colors.green, 
+  
                               onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => BleStoragePage())); }, 
                             ),
                             BleRecordWithButton( 
                               text: 'Blob Database',
-                              color: Colors.purple, 
                               onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => BlobDatabasePage())); }, 
                             ),
                             
