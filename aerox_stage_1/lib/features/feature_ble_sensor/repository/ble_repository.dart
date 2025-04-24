@@ -79,29 +79,30 @@ class BleRepository {
 
     return Right(null);
   }
+Future<EitherErr<List<Blob>>> readAllBlobs(
+  RacketSensor sensor, {
+  void Function(int read, int total)? onProgress,
+}) async {
+  try {
+    final device = sensor.device;
+    final blobs = <Blob>[];
 
-  Future<EitherErr<List<Blob>>> readAllBlobs(RacketSensor sensor) async {
-    try {
-      final blobs = await storageServiceController.fetchBlobs(sensor.device, fetchData: true);
-
-      if (blobs != null) {
-        for (final blob in blobs) {
-          final exists = await blobSqliteDB.existsBlob(blob.createdAt!);
-          if (!exists) {
-            final parsed = await parseBlob(blob);
-            parsed.fold(
-              (_) => null,
-              (parsedData) => blobSqliteDB.insertParsedBlob(blob.createdAt!, parsedData),
-            );
-          }
-        }
-      }
-
-      return Right(blobs ?? []);
-    } catch (e) {
-      return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
+    await for (final partial in storageServiceController.fetchBlobs(
+      device,
+      onProgress ?? (_, __) {},
+      fetchData: true,
+    )) {
+      blobs
+        ..clear()
+        ..addAll(partial);
     }
+
+    return Right(blobs);
+  } catch (e) {
+    return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
   }
+}
+
 
   Future<EitherErr<List<Map<String, dynamic>>>> parseBlob(Blob blob) async {
     try {

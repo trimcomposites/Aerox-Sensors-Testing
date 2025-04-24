@@ -1,6 +1,7 @@
 import 'package:aerox_stage_1/common/ui/loading_indicator.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/blocs/ble_storage/ble_storage_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/ble_storage_loading_indicator.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/blocs/blob_database/blob_database_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/by_exact_date_blob_filter.dart';
@@ -26,7 +27,7 @@ class BlobStorageList extends StatelessWidget {
                 final filteredBlobs = state.filteredBlobs;
       
                 return state.uiState.status == UIStatus.loading
-                ? LoadingIndicator()
+                ? BleStorageLoadingIndicator()
                 : ListView.builder(
                   itemCount: filteredBlobs.length,
                   itemBuilder: (BuildContext context, int index) {

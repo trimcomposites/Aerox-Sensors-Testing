@@ -13,30 +13,58 @@ class StorageServiceController {
   StorageServiceController({required this.bleService});
 
   Future<List<Blob>> getBlobs(BluetoothDevice device) async {
-    return _devicesBlobs[device.remoteId.str] ?? await fetchBlobs(device);
-  }
-
-  Future<List<Blob>> fetchBlobs(BluetoothDevice device, {bool fetchData = false}) async {
-    final numBlobs = await getNumBlobs(device);
-    if (numBlobs == null || numBlobs == 0) return [];
-
-    final blobs = <Blob>[];
-    BlobInfo? blobInfo = await fetchFirstBlob(device);
-
-    while (blobInfo != null || numBlobs < blobs.length ) {
-      final packets = await fetchBlobPacketsFast(device, fetchPacketData: fetchData);
-      final blob = Blob(blobInfo: blobInfo!, packets: packets);
-      if (packets.isNotEmpty) {
-        blob.createdAt = packets.first.packetInfo?.createdAt;
-        blob.closedAt = packets.last.packetInfo?.closedAt;
-      }
-      blobs.add(blob);
-      blobInfo = await fetchNextBlob(device);
+    if (_devicesBlobs.containsKey(device.remoteId.str)) {
+      return _devicesBlobs[device.remoteId.str]!;
     }
 
-    _devicesBlobs[device.remoteId.str] = blobs;
-    return blobs;
+    final List<Blob> finalBlobs = [];
+
+    await for (final partial in fetchBlobs(
+      device,
+      (read, total) {
+
+      },
+      fetchData: true,
+    )) {
+      finalBlobs
+        ..clear()
+        ..addAll(partial);
+    }
+
+    return finalBlobs;
   }
+
+Stream<List<Blob>> fetchBlobs(
+  BluetoothDevice device,
+  void Function(int current, int total) onProgress, {
+  bool fetchData = false,
+}) async* {
+  final numBlobs = await getNumBlobs(device);
+  if (numBlobs == null || numBlobs == 0) yield [];
+
+  final blobs = <Blob>[];
+  BlobInfo? blobInfo = await fetchFirstBlob(device);
+  int count = 0;
+
+  while (blobInfo != null && count < numBlobs!) {
+    final packets = await fetchBlobPacketsFast(device, fetchPacketData: fetchData);
+    final blob = Blob(blobInfo: blobInfo, packets: packets);
+    if (packets.isNotEmpty) {
+      blob.createdAt = packets.first.packetInfo?.createdAt;
+      blob.closedAt = packets.last.packetInfo?.closedAt;
+    }
+    blobs.add(blob);
+    count++;
+
+    onProgress(count, numBlobs);
+
+    yield blobs;
+    blobInfo = await fetchNextBlob(device);
+  }
+
+  _devicesBlobs[device.remoteId.str] = blobs;
+}
+
 
 Future<List<int>> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet) async {
   if (packet.packetInfo == null) {

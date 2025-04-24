@@ -6,7 +6,9 @@ class BleStorageState {
       this.selectedRacketEntity,
       this.blobs = const [],
       this.filteredBlobs = const [],
-      this.parsedBlobs = const []
+      this.parsedBlobs = const [],
+      this.blobsRead = 0,
+      this.totalBlobs = 0,
     });
 
   final UIState uiState;
@@ -14,25 +16,30 @@ class BleStorageState {
   final List<Blob> blobs;
   final List<Blob> filteredBlobs;
   final List<List<Map<String, dynamic>>> parsedBlobs;
-  //final List<BlobPacket> packets;
+  final int blobsRead;
+  final int totalBlobs;
 
   BleStorageState copyWith({
     UIState? uiState,
     RacketSensorEntity? selectedRacketEntity,
     List<Blob>? blobs,
     List<Blob>? filteredBlobs,
-    List<List<Map<String, dynamic>>>? parsedBlobs
+    List<List<Map<String, dynamic>>>? parsedBlobs,
+    int? blobsRead,
+    int? totalBlobs,
   }) {
     return BleStorageState(
       uiState: uiState ?? this.uiState,
       selectedRacketEntity: selectedRacketEntity,
       blobs: blobs ?? this.blobs,
       filteredBlobs: filteredBlobs ?? this.filteredBlobs,
+      blobsRead: blobsRead ?? this.blobsRead,
+      totalBlobs: totalBlobs ?? this.totalBlobs,
       parsedBlobs: parsedBlobs ?? this.parsedBlobs
     );
   }
 
   @override
-  List<Object?> get props => [uiState, selectedRacketEntity, blobs, filteredBlobs, parsedBlobs];
+  List<Object?> get props => [uiState, selectedRacketEntity, blobs, filteredBlobs, parsedBlobs, totalBlobs, blobsRead];
 }
 

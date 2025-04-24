@@ -13,26 +13,16 @@ class ReadStorageDataUsecase extends AsyncUseCaseWithParams<void,  RacketSensor>
   final BlobSQLiteDB blobSQLiteDB; //TODO: DELETE, solo para mocks
   ReadStorageDataUsecase({required this.bleRepository, required this.blobSQLiteDB});
   @override
-  Future<EitherErr<List<Blob>>> call( sensor ) async {
-    
-    final blobs = bleRepository.readAllBlobs( sensor );
-    return blobs;
-    // for( var blob in MockBlobs.mockBlobs ){
-    //   final exists = await blobSQLiteDB.existsBlob(blob.createdAt!);
-    //   if (!exists) {
-    //     final parsed = await bleRepository.parseBlob(blob);
-    //     parsed.fold(
-    //       (_) => null,
-    //       (parsedData) => blobSQLiteDB.insertParsedBlob(blob.createdAt!, parsedData),
-    //     );//TODO: REMOVE FOLD
-    //   }
-    // }
-    // return Right(MockBlobs.mockBlobs);
-
-  } 
+ Future<EitherErr<List<Blob>>> call(
+    RacketSensor sensor, {
+    void Function(int read, int total)? onProgress,
+  }) {
+    return bleRepository.readAllBlobs(sensor, onProgress: onProgress);
+  }
+}
 
 
-}class MockBlobs {
+class MockBlobs {
   static List<Blob> mockBlobs = <Blob>[
     Blob(
       blobInfo: BlobInfo(

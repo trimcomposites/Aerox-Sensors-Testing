@@ -60,16 +60,23 @@ class BleStorageBloc extends Bloc<BleStorageEvent, BleStorageState> {
       ));
     });
 
-    // Leer blobs del sensor
-    on<OnReadStorageDataBleStoragePage>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.loading()));
-      await readStorageDataUsecase.call(event.sensor).then((either) {
-        either.fold(
-          (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
-          (r) => emit(state.copyWith(blobs: r, uiState: UIState.idle())),
-        );
-      });
-    });
+on<OnReadStorageDataBleStoragePage>((event, emit) async {
+  emit(state.copyWith(uiState: UIState.loading(), blobsRead: 0, totalBlobs: 0));
+
+  final result = await readStorageDataUsecase.call(
+    event.sensor,
+    onProgress: (read, total) {
+      emit(state.copyWith(blobsRead: read, totalBlobs: total));
+      print( 'blobs leidos ${ state.blobsRead }/${state.totalBlobs}' );
+    },
+  );
+
+  result.fold(
+    (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+    (r) => emit(state.copyWith(blobs: r, uiState: UIState.idle())),
+  );
+});
+
 
     // Filtrar blobs por fecha de corte
     on<OnFilterBlobsByDate>((event, emit) {

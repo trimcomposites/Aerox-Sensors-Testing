@@ -1,6 +1,7 @@
 import 'package:aerox_stage_1/common/ui/loading_indicator.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/blocs/ble_storage/ble_storage_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/ble_storage_loading_indicator.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/blob_storage_list.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/export_to_csv_button.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
@@ -35,7 +36,7 @@ class BleStoragePage extends StatelessWidget {
                 return
                 state.uiState.status == UIState.loading()
                 ? Expanded(
-                  child: LoadingIndicator()
+                  child: BleStorageLoadingIndicator()
                   )
                 : BlobStorageList();
               },
