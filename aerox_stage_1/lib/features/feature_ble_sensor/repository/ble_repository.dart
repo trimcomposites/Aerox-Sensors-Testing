@@ -95,6 +95,21 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
       blobs
         ..clear()
         ..addAll(partial);
+
+      // ⏳ Guardar nuevos blobs en SQLite
+      for (final blob in partial) {
+        final createdAt = blob.createdAt;
+        if (createdAt == null) continue;
+
+        final exists = await blobSqliteDB.existsBlob(createdAt);
+        if (!exists) {
+          final parsed = await parseBlob(blob);
+          parsed.fold(
+            (_) => null,
+            (parsedData) => blobSqliteDB.insertParsedBlob(createdAt, parsedData),
+          );
+        }
+      }
     }
 
     return Right(blobs);
@@ -102,7 +117,6 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
     return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
   }
 }
-
 
   Future<EitherErr<List<Map<String, dynamic>>>> parseBlob(Blob blob) async {
     try {

@@ -37,7 +37,7 @@ class BlobSQLiteDB {
         path TEXT DEFAULT ''
       )
     ''');
-    await _insertMockParsedBlobs(db);
+    //∂await _insertMockParsedBlobs(db);
   }
 
   Future<void> insertParsedBlob(DateTime createdAt, List<Map<String, dynamic>> parsedData, {String path = ''}) async {

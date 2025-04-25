@@ -26,3 +26,11 @@ class OnAutoDisconnectSelectedRacketLobby extends RtsosLobbyEvent {
 
   OnAutoDisconnectSelectedRacketLobby({required this.errorMsg});
 }
+class OnAddBlobRecordedCounter extends RtsosLobbyEvent {
+
+  OnAddBlobRecordedCounter();
+}
+class OnResetBlobRecordedCounter extends RtsosLobbyEvent {
+
+  OnResetBlobRecordedCounter();
+}

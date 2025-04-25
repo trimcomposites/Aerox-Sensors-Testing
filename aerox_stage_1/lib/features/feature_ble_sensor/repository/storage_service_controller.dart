@@ -101,7 +101,6 @@ Future<List<int>> fetchBlobPacketData(BluetoothDevice device, BlobPacket packet)
  
      return rawData.toBytes();
    }
-
 Future<Uint8List> readRangeDataAsPython({
   required BluetoothDevice device,
   required Guid serviceUuid,
@@ -111,6 +110,8 @@ Future<Uint8List> readRangeDataAsPython({
   int maxChunkSize = 242,
   Duration timeout = const Duration(seconds: 4),
 }) async {
+  print('🔍 Start reading $dataLen bytes from address 0x${startAddress.toRadixString(16).padLeft(6, '0')}');
+
   final services = await device.discoverServices();
   final service = services.firstWhere((s) => s.uuid == serviceUuid);
   final characteristic = service.characteristics.firstWhere((c) => c.uuid == characteristicUuid);
@@ -121,54 +122,67 @@ Future<Uint8List> readRangeDataAsPython({
 
   late final StreamSubscription<List<int>> subscription;
   await characteristic.setNotifyValue(true);
+subscription = characteristic.lastValueStream.listen((value) async {
+  // Detectar si es un paquete válido de datos (usualmente > 3 bytes, y empieza con contenido esperable)
+  if (value.length <= 5) {
+    print('⚠️ Ignored small packet (${value.length} bytes): ${value.map((b) => b.toRadixString(16).padLeft(2, '0')).join(" ")}');
+    return; // 🔁 Importante: salir aquí directamente
+  }
 
-  subscription = characteristic.lastValueStream.listen((value) async {
-    if (value.isNotEmpty && value[0] == StorageServiceConstants.STORAGE_CP_OP_READ_DATA) {
-      final payload = value.skip(2);
-      rawData.add(Uint8List.fromList(payload.toList()));
-      totalReceived += payload.length;
+  // Remover los 2 primeros bytes (header, opcodes)
+  final newValue = value.sublist(2);
+  rawData.add(Uint8List.fromList(newValue));
+  totalReceived += newValue.length;
 
-      if (totalReceived >= dataLen && !completer.isCompleted) {
-        await subscription.cancel();
-        await characteristic.setNotifyValue(false);
-        final result = rawData.toBytes();
-        print('✅ Todos los datos recibidos (${result.length} bytes)');
-        completer.complete(result);
-      }
-    }
-  });
+  print('📥 Notified: ${newValue.length} bytes');
+  print('🧪 Preview: ${newValue.take(16).map((b) => b.toRadixString(16).padLeft(2, '0')).join(" ")}${newValue.length > 16 ? " ..." : ""}');
+  print('✅ Received ${newValue.length} bytes, total read: $totalReceived/$dataLen (${(totalReceived / dataLen * 100).toStringAsFixed(2)}%)');
+
+  if (totalReceived >= dataLen && !completer.isCompleted) {
+    await subscription.cancel();
+    await characteristic.setNotifyValue(false);
+    final result = rawData.toBytes();
+    print('🎉 DONE! Total ${result.length} bytes received.');
+    completer.complete(result);
+  }
+});
+
+
 
   final numChunks = (dataLen / maxChunkSize).ceil();
-
   for (var i = 0; i < numChunks; i++) {
     final chunkAddress = startAddress + i * maxChunkSize;
     final chunkLen = (i == numChunks - 1)
         ? dataLen - (i * maxChunkSize)
         : maxChunkSize;
 
-    print('📦 chunk addr $chunkAddress (len: $chunkLen)');
     final cmd = [
       StorageServiceConstants.STORAGE_CP_OP_READ_DATA,
       ...chunkAddress.toBytesLE(length: 3),
       chunkLen
     ];
 
+    print('\n📤 Sending chunk #${i + 1}');
+    print('👉 Address: 0x${chunkAddress.toRadixString(16).padLeft(6, '0')} | Length: $chunkLen');
+    print('📨 Command: ${cmd.map((b) => b.toRadixString(16).padLeft(2, '0')).join(" ")}');
+
     await characteristic.write(cmd, withoutResponse: false);
     await Future.delayed(const Duration(milliseconds: 10));
   }
 
-  // Esperamos a recibir todos los datos o timeout
   final result = await completer.future.timeout(timeout, onTimeout: () async {
     await subscription.cancel();
     await characteristic.setNotifyValue(false);
     final partial = rawData.toBytes();
-    print('⚠️ Timeout. Se recibieron solo ${partial.length} bytes de $dataLen esperados.');
+    print('⚠️ Timeout. Only received ${partial.length} of $dataLen expected bytes.');
     return partial;
   });
 
-  print('📏 result length bytes: ${result.length}');
+  print('📏 Final result: ${result.length} bytes');
+  print('FINAL RESULT ${result}');
   return result;
 }
+
 
   Future<Uint8List> readData(BluetoothDevice device, int address, int dataLen) async {
     final cmd = BytesBuilder()

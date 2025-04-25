@@ -61,6 +61,18 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
         uiState: UIState.error(event.errorMsg),
       ));
     });
+      on<OnAddBlobRecordedCounter>((event, emit) async {
+
+      emit(state.copyWith(
+        recordedBlobCounter: state.recordedBlobCounter+1
+      ));
+    });
+      on<OnResetBlobRecordedCounter>((event, emit) async {
+
+      emit(state.copyWith(
+        recordedBlobCounter: 0
+      ));
+    });
 
   }
   
