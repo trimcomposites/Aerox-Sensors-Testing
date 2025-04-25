@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/common/services/download_file.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/erase_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_sensor_timestamp.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_from_sensor_list.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/set_sensor_timestamp.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
@@ -137,10 +138,11 @@ Future<void> dependencyInjectionInitialize() async {
 
     //storage 
     ..registerLazySingleton(() => UploadBlobsToStorageUsecase(uploadRepository: sl()))
+    ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl(), blobSQLiteDB: sl()))
+    ..registerLazySingleton(() => ReadStorageDataFromSensorListUsecase( bleRepository : sl(), blobSQLiteDB: sl()))
 
     //ble
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
-    ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl(), blobSQLiteDB: sl()))
     ..registerLazySingleton(() => StreamRTSOSUsecase( bleRepository : sl())) 
     ..registerLazySingleton(() => ParseBlobUsecase( bleRepository : sl())) 
     ..registerLazySingleton(() => SetSensorTimestampUseCase( bleRepository : sl())) 
@@ -187,11 +189,12 @@ Future<void> dependencyInjectionInitialize() async {
       getSelectedBluetoothRacketUsecase: sl(),
       disconnectFromRacketSensorUsecase: sl(),
       readStorageDataUsecase: sl(),
-      parseBlobUsecase: sl()
+      parseBlobUsecase: sl(),
+      readStorageDataFromSensorListUsecase: sl()
     ))
     ..registerFactory(() => BlobDatabaseBloc(
       getAllBlobsFromDbUsecase: sl(),
       exportToCsvBlobListUsecase: sl(),
-      uploadBlobsToStorageUsecase: sl()
+      uploadBlobsToStorageUsecase: sl(),
     ));
 }

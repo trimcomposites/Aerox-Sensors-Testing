@@ -13,6 +13,12 @@ class OnReadStorageDataBleStoragePage extends BleStorageEvent{
   OnReadStorageDataBleStoragePage({required this.sensor});
 
 }
+class OnReadStorageDataFromSensorListBleStoragePage extends BleStorageEvent{
+  final List<RacketSensor> sensors;
+
+  OnReadStorageDataFromSensorListBleStoragePage({required this.sensors});
+
+}
 class OnFilterBlobsByDate extends BleStorageEvent {
   final DateTime cutoff;
   OnFilterBlobsByDate(this.cutoff);
@@ -26,4 +32,14 @@ class OnParseBlobBleStorage extends BleStorageEvent {
   final Blob blob;
 
   OnParseBlobBleStorage({required this.blob});
+}
+class OnUpdateGlobalRead extends BleStorageEvent {
+  final int read;
+
+  OnUpdateGlobalRead(this.read);
+}
+class OnUpdateGlobalTotal extends BleStorageEvent {
+  final int total;
+
+  OnUpdateGlobalTotal(this.total);
 }

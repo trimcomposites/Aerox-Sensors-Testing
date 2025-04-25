@@ -22,9 +22,9 @@ class BleStoragePage extends StatelessWidget {
       body: BlocListener<BleStorageBloc, BleStorageState>(
         listener: (context, state) {
           if (state.selectedRacketEntity != null) {
-            bleStoragePageBloc.add(OnReadStorageDataBleStoragePage(
-                sensor:
-                    bleStoragePageBloc.state.selectedRacketEntity!.sensors[0]));
+            bleStoragePageBloc.add(OnReadStorageDataFromSensorListBleStoragePage(
+                sensors:
+                    bleStoragePageBloc.state.selectedRacketEntity!.sensors));
             bleStoragePageBloc
                 .add(OnFilterBlobsByDate(DateTime.utc(2000, 1, 1)));
           }

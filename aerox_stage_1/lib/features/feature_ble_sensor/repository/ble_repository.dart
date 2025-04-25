@@ -117,6 +117,66 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
     return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
   }
 }
+Future<EitherErr<Map<RacketSensor, List<Blob>>>> readBlobsFromSensorsList({
+  required List<RacketSensor> sensors,
+  int maxParallel = 4,
+  void Function(RacketSensor sensor, int read, int total)? onProgress,
+  void Function(int readGlobal)? onReadGlobal,
+  void Function(int totalGlobal)? onTotalGlobal,
+}) async {
+  int globalRead = 0;
+  int globalTotal = 0;
+
+  final Map<RacketSensor, List<Blob>> resultMap = {};
+  final List<RacketSensor> queue = [...sensors];
+  final List<Future<void>> activeTasks = [];
+  final errors = <String>[];
+
+Future<void> handleSensor(RacketSensor sensor) async {
+  int lastRead = 0;
+  int lastTotal = 0;
+
+  final result = await readAllBlobs(sensor, onProgress: (read, total) {
+
+    final deltaRead = read - lastRead;
+    final deltaTotal = total - lastTotal;
+    lastRead = read;
+    lastTotal = total;
+
+    globalRead += deltaRead;
+    globalTotal += deltaTotal;
+
+
+    onProgress?.call(sensor, read, total);
+
+    onReadGlobal?.call(globalRead);
+    onTotalGlobal?.call(globalTotal);
+  });
+
+  result.fold(
+    (err) => errors.add("❌ ${sensor.device.remoteId.str}: ${err.errMsg}"),
+    (blobs) => resultMap[sensor] = blobs,
+  );
+}
+
+
+  while (queue.isNotEmpty || activeTasks.isNotEmpty) {
+    while (activeTasks.length < maxParallel && queue.isNotEmpty) {
+      final sensor = queue.removeAt(0);
+      final task = handleSensor(sensor);
+      activeTasks.add(task);
+      task.whenComplete(() => activeTasks.remove(task));
+    }
+    if (activeTasks.isNotEmpty) await Future.any(activeTasks);
+  }
+
+  if (errors.isNotEmpty) {
+    return Left(BluetoothErr(errMsg: errors.join('\n'), statusCode: 99));
+  }
+
+  return Right(resultMap);
+}
+
 
   Future<EitherErr<List<Map<String, dynamic>>>> parseBlob(Blob blob) async {
     try {

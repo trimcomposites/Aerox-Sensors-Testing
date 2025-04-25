@@ -3,6 +3,7 @@ import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_from_sensor_list.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
@@ -17,6 +18,7 @@ class BleStorageBloc extends Bloc<BleStorageEvent, BleStorageState> {
   final GetSelectedBluetoothRacketUsecase getSelectedBluetoothRacketUsecase;
   final DisconnectFromRacketSensorUsecase disconnectFromRacketSensorUsecase;
   final ReadStorageDataUsecase readStorageDataUsecase;
+  final ReadStorageDataFromSensorListUsecase readStorageDataFromSensorListUsecase;
   final ParseBlobUsecase parseBlobUsecase;
 
   BleStorageBloc({
@@ -24,6 +26,7 @@ class BleStorageBloc extends Bloc<BleStorageEvent, BleStorageState> {
     required this.disconnectFromRacketSensorUsecase,
     required this.readStorageDataUsecase,
     required this.parseBlobUsecase,
+    required this.readStorageDataFromSensorListUsecase
   }) : super(BleStorageState(uiState: UIState.idle())) {
     // Obtener raqueta seleccionada
     on<OnGetSelectedRacketBleStoragePage>((event, emit) async {
@@ -113,6 +116,44 @@ on<OnReadStorageDataBleStoragePage>((event, emit) async {
         );
       });
     });
+on<OnReadStorageDataFromSensorListBleStoragePage>((event, emit) async {
+  emit(state.copyWith(
+    uiState: UIState.loading(),
+    blobsRead: 0,
+    totalBlobs: 0,
+  ));
+
+  final result = await readStorageDataFromSensorListUsecase.call(
+    ReadBlobsFromSensorListParams(
+      sensors: event.sensors,
+      maxParallel: 4,
+      onProgress: (sensor, read, total) {
+        // (opcional) aquí puedes emitir algo por sensor si lo necesitas
+        print("📡 Sensor ${sensor.device.remoteId.str}: $read / $total");
+      },
+      onReadGlobal: (read) {
+        add(OnUpdateGlobalRead(read));
+      },
+      onTotalGlobal: (total) {
+        add(OnUpdateGlobalTotal(total));
+      },
+    ),
+  );
+
+  result.fold(
+    (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+    (map) => emit(state.copyWith(blobsBySensor: map, uiState: UIState.idle())),
+  );
+});
+on<OnUpdateGlobalRead>((event, emit) {
+  emit(state.copyWith(blobsRead: event.read));
+});
+
+on<OnUpdateGlobalTotal>((event, emit) {
+  emit(state.copyWith(totalBlobs: event.total));
+});
+
+
   }
 
   // Monitorización pasiva de conexión BLE

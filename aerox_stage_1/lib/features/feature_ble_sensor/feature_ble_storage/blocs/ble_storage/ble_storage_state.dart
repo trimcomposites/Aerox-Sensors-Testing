@@ -7,6 +7,7 @@ class BleStorageState {
       this.blobs = const [],
       this.filteredBlobs = const [],
       this.parsedBlobs = const [],
+      this.blobsBySensor = const {},
       this.blobsRead = 0,
       this.totalBlobs = 0,
     });
@@ -15,6 +16,7 @@ class BleStorageState {
   final RacketSensorEntity? selectedRacketEntity;
   final List<Blob> blobs;
   final List<Blob> filteredBlobs;
+   final Map<RacketSensor, List<Blob>> blobsBySensor;
   final List<List<Map<String, dynamic>>> parsedBlobs;
   final int blobsRead;
   final int totalBlobs;
@@ -24,6 +26,7 @@ class BleStorageState {
     RacketSensorEntity? selectedRacketEntity,
     List<Blob>? blobs,
     List<Blob>? filteredBlobs,
+     Map<RacketSensor, List<Blob>>? blobsBySensor,
     List<List<Map<String, dynamic>>>? parsedBlobs,
     int? blobsRead,
     int? totalBlobs,
@@ -34,12 +37,13 @@ class BleStorageState {
       blobs: blobs ?? this.blobs,
       filteredBlobs: filteredBlobs ?? this.filteredBlobs,
       blobsRead: blobsRead ?? this.blobsRead,
+      blobsBySensor: blobsBySensor ?? this.blobsBySensor,
       totalBlobs: totalBlobs ?? this.totalBlobs,
       parsedBlobs: parsedBlobs ?? this.parsedBlobs
     );
   }
 
   @override
-  List<Object?> get props => [uiState, selectedRacketEntity, blobs, filteredBlobs, parsedBlobs, totalBlobs, blobsRead];
+  List<Object?> get props => [uiState, selectedRacketEntity, blobs, filteredBlobs, parsedBlobs, totalBlobs, blobsRead, blobsBySensor];
 }
 

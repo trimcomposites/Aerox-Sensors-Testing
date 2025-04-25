@@ -127,7 +127,7 @@ Future<Uint8List> readRangeDataAsPython({
   subscription = characteristic.lastValueStream.skip(1).listen((value) async {
 
   if (ackCmdList.any((item) => listEquals(item, value))) {
-      print('⚠️ Ignored small packet (${value.length} bytes): ${value.map((b) => b.toRadixString(16).padLeft(2, '0')).join(" ")}');
+      print('⚠️ Ignored ACK packet (${value.length} bytes): ${value.map((b) => b.toRadixString(16).padLeft(2, '0')).join(" ")}');
       return;
     }
 
