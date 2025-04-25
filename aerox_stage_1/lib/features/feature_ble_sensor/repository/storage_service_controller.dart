@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
@@ -119,33 +120,33 @@ Future<Uint8List> readRangeDataAsPython({
   final rawData = BytesBuilder();
   int totalReceived = 0;
   final completer = Completer<Uint8List>();
+  final List<List<int>> ackCmdList = [];
 
   late final StreamSubscription<List<int>> subscription;
   await characteristic.setNotifyValue(true);
-subscription = characteristic.lastValueStream.listen((value) async {
-  // Detectar si es un paquete válido de datos (usualmente > 3 bytes, y empieza con contenido esperable)
-  if (value.length <= 5) {
-    print('⚠️ Ignored small packet (${value.length} bytes): ${value.map((b) => b.toRadixString(16).padLeft(2, '0')).join(" ")}');
-    return; // 🔁 Importante: salir aquí directamente
-  }
+  subscription = characteristic.lastValueStream.skip(1).listen((value) async {
 
-  // Remover los 2 primeros bytes (header, opcodes)
-  final newValue = value.sublist(2);
-  rawData.add(Uint8List.fromList(newValue));
-  totalReceived += newValue.length;
+  if (ackCmdList.any((item) => listEquals(item, value))) {
+      print('⚠️ Ignored small packet (${value.length} bytes): ${value.map((b) => b.toRadixString(16).padLeft(2, '0')).join(" ")}');
+      return;
+    }
 
-  print('📥 Notified: ${newValue.length} bytes');
-  print('🧪 Preview: ${newValue.take(16).map((b) => b.toRadixString(16).padLeft(2, '0')).join(" ")}${newValue.length > 16 ? " ..." : ""}');
-  print('✅ Received ${newValue.length} bytes, total read: $totalReceived/$dataLen (${(totalReceived / dataLen * 100).toStringAsFixed(2)}%)');
+    final newValue = value.sublist(2);
+    rawData.add(Uint8List.fromList(newValue));
+    totalReceived += newValue.length;
 
-  if (totalReceived >= dataLen && !completer.isCompleted) {
-    await subscription.cancel();
-    await characteristic.setNotifyValue(false);
-    final result = rawData.toBytes();
-    print('🎉 DONE! Total ${result.length} bytes received.');
-    completer.complete(result);
-  }
-});
+    print('📥 Notified: ${newValue.length} bytes');
+    print('🧪 Preview: ${newValue.take(16).map((b) => b.toRadixString(16).padLeft(2, '0')).join(" ")}${newValue.length > 16 ? " ..." : ""}');
+    print('✅ Received ${newValue.length} bytes, total read: $totalReceived/$dataLen (${(totalReceived / dataLen * 100).toStringAsFixed(2)}%)');
+
+    if (totalReceived >= dataLen && !completer.isCompleted) {
+      await subscription.cancel();
+      await characteristic.setNotifyValue(false);
+      final result = rawData.toBytes();
+      print('🎉 DONE! Total ${result.length} bytes received.');
+      completer.complete(result);
+    }
+  });
 
 
 
@@ -161,6 +162,7 @@ subscription = characteristic.lastValueStream.listen((value) async {
       ...chunkAddress.toBytesLE(length: 3),
       chunkLen
     ];
+    ackCmdList.add( cmd );
 
     print('\n📤 Sending chunk #${i + 1}');
     print('👉 Address: 0x${chunkAddress.toRadixString(16).padLeft(6, '0')} | Length: $chunkLen');
