@@ -39,7 +39,7 @@ class BleService {
       requireStatusOk: requireStatusOk,
       
     );
-
+    await Duration(milliseconds: 10);
     await characteristic.write(cmd);
     print("Command sent: $cmd");
 

@@ -32,15 +32,24 @@ class BlobSQLiteDB {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE parsed_blobs (
-        createdAt TEXT PRIMARY KEY,
+        id TEXT PRIMARY KEY,
+        createdAt TEXT NOT NULL,
         data TEXT NOT NULL,
         path TEXT DEFAULT ''
       )
     ''');
-    //∂await _insertMockParsedBlobs(db);
+    // await _insertMockParsedBlobs(db);
   }
 
-  Future<void> insertParsedBlob(DateTime createdAt, List<Map<String, dynamic>> parsedData, {String path = ''}) async {
+  String generateRandomId() {
+    return DateTime.now().microsecondsSinceEpoch.toString();
+  }
+
+  Future<void> insertParsedBlob(
+    DateTime createdAt,
+    List<Map<String, dynamic>> parsedData, {
+    String path = '',
+  }) async {
     final db = await database;
 
     final cleanedData = parsedData.map((row) {
@@ -57,6 +66,7 @@ class BlobSQLiteDB {
     await db.insert(
       'parsed_blobs',
       {
+        'id': generateRandomId(),
         'createdAt': createdAt.toIso8601String(),
         'data': dataJson,
         'path': path,
@@ -73,7 +83,7 @@ class BlobSQLiteDB {
       where: 'createdAt = ?',
       whereArgs: [createdAt.toIso8601String()],
     );
-    print( 'path updated' + path );
+    print('path updated: $path');
   }
 
   Future<List<Map<String, dynamic>>?> getParsedBlob(DateTime createdAt) async {
@@ -103,10 +113,11 @@ class BlobSQLiteDB {
     }
     return null;
   }
-Future<List<Map<String, dynamic>>> getAllParsedBlobs() async {
-  final db = await database;
-  return await db.query('parsed_blobs');
-}
+
+  Future<List<Map<String, dynamic>>> getAllParsedBlobs() async {
+    final db = await database;
+    return await db.query('parsed_blobs');
+  }
 
   Future<bool> existsBlob(DateTime createdAt) async {
     final db = await database;
@@ -122,54 +133,55 @@ Future<List<Map<String, dynamic>>> getAllParsedBlobs() async {
     final db = await database;
     await db.delete('parsed_blobs');
   }
-  
-Future<void> deleteDatabaseFile() async {
-  final databasesPath = await getDatabasesPath();
-  final path = join(databasesPath, 'blobs_database.db');
-  final dbFile = File(path);
-  if (await dbFile.exists()) {
-    await dbFile.delete();
-    print("🧹 Base de datos eliminada");
+
+  Future<void> deleteDatabaseFile() async {
+    final databasesPath = await getDatabasesPath();
+    final path = join(databasesPath, 'blobs_database.db');
+    final dbFile = File(path);
+    if (await dbFile.exists()) {
+      await dbFile.delete();
+      print("🧹 Base de datos eliminada");
+    }
   }
-}
 
   Future<List<DateTime>> getAllBlobTimestamps() async {
     final db = await database;
     final result = await db.query('parsed_blobs', columns: ['createdAt']);
     return result.map((e) => DateTime.parse(e['createdAt'] as String)).toList();
   }
+
   Future<void> _insertMockParsedBlobs(Database db) async {
-  final mockData = [
-    {'value': 1, 'timestamp': DateTime.now().toIso8601String()},
-    {'value': 2, 'timestamp': DateTime.now().toIso8601String()},
-  ];
+    final mockData = [
+      {'value': 1, 'timestamp': DateTime.now().toIso8601String()},
+      {'value': 2, 'timestamp': DateTime.now().toIso8601String()},
+    ];
 
-  final dataJson = jsonEncode(mockData);
+    final dataJson = jsonEncode(mockData);
 
-  final now = DateTime.now();
-  final otherDay = now.subtract(const Duration(days: 1));
+    final now = DateTime.now();
+    final otherDay = now.subtract(const Duration(days: 1));
 
-  final mockBlobs = [
-    {'createdAt': now.toIso8601String(), 'data': dataJson},
-    {'createdAt': now.toIso8601String(), 'data': dataJson},
-    {'createdAt': now.toIso8601String(), 'data': dataJson},
-    {'createdAt': otherDay.toIso8601String(), 'data': dataJson},
-    {'createdAt': otherDay.toIso8601String(), 'data': dataJson},
-  ];
+    final mockBlobs = [
+      {'createdAt': now.toIso8601String(), 'data': dataJson},
+      {'createdAt': now.toIso8601String(), 'data': dataJson},
+      {'createdAt': now.toIso8601String(), 'data': dataJson},
+      {'createdAt': otherDay.toIso8601String(), 'data': dataJson},
+      {'createdAt': otherDay.toIso8601String(), 'data': dataJson},
+    ];
 
-  for (final blob in mockBlobs) {
-    await db.insert(
-      'parsed_blobs',
-      {
-        'createdAt': blob['createdAt'],
-        'data': blob['data'],
-        'path': '',
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    for (final blob in mockBlobs) {
+      await db.insert(
+        'parsed_blobs',
+        {
+          'id': generateRandomId(),
+          'createdAt': blob['createdAt'],
+          'data': blob['data'],
+          'path': '',
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+
+    print('✅ Se insertaron 5 registros mock en parsed_blobs');
   }
-
-  print('✅ Se insertaron 5 registros mock en parsed_blobs');
-}
-
 }

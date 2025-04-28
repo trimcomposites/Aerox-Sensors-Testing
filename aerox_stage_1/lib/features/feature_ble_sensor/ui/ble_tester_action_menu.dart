@@ -69,7 +69,7 @@ class BleTesterActionMenu extends StatelessWidget {
                             text: 'Borrar Memoria',
                             icon: Icons.delete_forever,
                             iconColor: Colors.red,
-                            event: OnEraseStorageData(sensor: sensor),
+                            event: OnEraseStorageData(),
                           ),
                         ],
                       ),

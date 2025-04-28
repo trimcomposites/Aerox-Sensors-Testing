@@ -9,7 +9,8 @@ extension RacketSensorExtension on BluetoothDevice {
   RacketSensor toRacketSensor({required  BluetoothConnectionState state, String? customName }) {
       return RacketSensor(
         device: this,
-        name: platformName.isNotEmpty ? platformName : customName ?? remoteId.toString(),
+        alias: '  ',
+        name: customName ?? this.platformName?? remoteId.toString(),
         id: remoteId.toString(),
         connectionState: state,
       );

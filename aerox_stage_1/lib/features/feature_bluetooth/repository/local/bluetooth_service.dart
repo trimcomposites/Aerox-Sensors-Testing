@@ -114,7 +114,6 @@ class BluetoothCustomService {
 }
 
 
-
 Future<EitherErr<void>> reScan() {
   return EitherCatch.catchAsync<void, BluetoothErr>(() async {
     if (!_isScanning || isRestartingScan) return;

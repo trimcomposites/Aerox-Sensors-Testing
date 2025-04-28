@@ -140,14 +140,40 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
       await startStreamRTSOS.call(event.sensor);
     });
 
-    on<OnEraseStorageData>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.loading()));
-      final result = await eraseStorageDataUsecase.call(event.sensor);
-      result.fold(
-        (err) => emit(state.copyWith(uiState: UIState.error(err.errMsg))),
-        (_) => emit(state.copyWith(uiState: UIState.success())),
-      );
-    });
+  on<OnEraseStorageData>((event, emit) async {
+    final racket = state.selectedRacketEntity;
+
+    if (racket == null) {
+      emit(state.copyWith(uiState: UIState.error('No hay raqueta seleccionada')));
+      return;
+    }
+
+    emit(state.copyWith(uiState: UIState.loading()));
+
+    final futures = racket.sensors.map((sensor) {
+      return eraseStorageDataUsecase.call(sensor);
+    }).toList();
+
+    final results = await Future.wait(futures);
+
+    final hasError = results.any((either) => either.isLeft());
+
+    if (hasError) {
+      final failed = results
+          .asMap()
+          .entries
+          .where((entry) => entry.value.isLeft())
+          .map((entry) => racket.sensors[entry.key].device.remoteId.str)
+          .toList();
+
+      emit(state.copyWith(
+        uiState: UIState.error('Error al borrar sensores: ${failed.join(", ")}'),
+      ));
+    } else {
+      emit(state.copyWith(uiState: UIState.success()));
+    }
+  });
+
   }
 
   void monitorSelectedRacketConnection() {

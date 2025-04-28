@@ -42,14 +42,34 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
         }
       );
     });
-    on<OnStartHSBlobOnLobby>((event, emit) {
+    on<OnStartHSBlobOnLobby>((event, emit) async {
       final sensorEntity = state.sensorEntity;
-      if(sensorEntity!=null){
-        for (var sensor in sensorEntity.sensors){
-           startOfflineRTSOSUseCase.call( StartRTSOSParams(sampleRate: event.sampleRate, durationSeconds: event.duration, sensor: sensor) );
+      if (sensorEntity != null) {
+        final futures = sensorEntity.sensors.map((sensor) {
+          return startOfflineRTSOSUseCase.call(
+            StartRTSOSParams(
+              sampleRate: event.sampleRate,
+              durationSeconds: event.duration,
+              sensor: sensor,
+            ),
+          );
+        }).toList();
+
+        final results = await Future.wait(futures);
+
+        final hasError = results.any((either) => either.isLeft());
+        if (hasError) {
+          emit(state.copyWith(
+            uiState: UIState.error('Error al iniciar RTSOS en uno o más sensores'),
+          ));
+        } else {
+          emit(state.copyWith(
+            uiState: UIState.idle(),
+          ));
         }
       }
     });
+
       on<OnAutoDisconnectSelectedRacketLobby>((event, emit) async {
       final selectedRacket = state.sensorEntity;
       if (selectedRacket != null) {

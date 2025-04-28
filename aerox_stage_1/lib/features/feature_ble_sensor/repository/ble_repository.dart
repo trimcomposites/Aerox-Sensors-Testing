@@ -97,19 +97,18 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
         ..addAll(partial);
 
       // ⏳ Guardar nuevos blobs en SQLite
-      for (final blob in partial) {
-        final createdAt = blob.createdAt;
-        if (createdAt == null) continue;
+     for (final blob in partial) {
+      final createdAt = blob.createdAt;
+      if (createdAt == null) continue;
 
-        final exists = await blobSqliteDB.existsBlob(createdAt);
-        if (!exists) {
-          final parsed = await parseBlob(blob);
-          parsed.fold(
-            (_) => null,
-            (parsedData) => blobSqliteDB.insertParsedBlob(createdAt, parsedData),
-          );
-        }
-      }
+      final parsed = await parseBlob(blob);
+      parsed.fold(
+        (_) => null,
+        (parsedData) => blobSqliteDB.insertParsedBlob(createdAt, parsedData),
+      );
+    }
+
+      
     }
 
     return Right(blobs);
