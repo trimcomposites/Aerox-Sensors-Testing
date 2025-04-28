@@ -7,6 +7,7 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/hi
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/on_rtsos_recording_place_holder_screen.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_record_params_widget.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_record_with_button.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/ui/selected_racket_name.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,6 +41,7 @@ class RTSOSRecordingLobby extends StatelessWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SelectedRacketName( showStorage: true, ),
                   RTSOSRecordParamsWidget(sampleRate: sampleRate),
                   const SizedBox(height: 16),
                   sampleRate != SampleRate.hz104 ? HitTypeSelectDropDown() : Container(),

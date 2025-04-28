@@ -4,8 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SelectedRacketName extends StatelessWidget {
   const SelectedRacketName({
-    super.key,
+    super.key, this.showStorage = false ,
   });
+  final bool showStorage;
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +23,16 @@ class SelectedRacketName extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )),
-              Text(
-                state.selectedRacketEntity?.name ??
-                    'No hay raqueta seleccionada',
-                style: TextStyle(fontSize: 20),
+              Row(
+                children: [
+                  Text(
+                    state.selectedRacketEntity?.name ??
+                        'No hay raqueta seleccionada',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  const Spacer(),
+                  Icon( Icons.storage, color: Colors.blue.shade400, )
+                ],
               ),
               const SizedBox(height: 12),
               if (state.selectedRacketEntity != null)
@@ -46,7 +53,11 @@ class SelectedRacketName extends StatelessWidget {
                           children: [
                             Icon(Icons.sensors, size: 20, color: Colors.blue),
                             const SizedBox(width: 8),
-                            Text(sensor.id),
+                            Text(sensor.id, style: TextStyle( fontSize: showStorage ? 10 : null ),),
+                            const Spacer(),
+                            showStorage
+                            ? Text('15')
+                            : Container()
                           ],
                         ),
                       );

@@ -79,6 +79,18 @@ class BleRepository {
 
     return Right(null);
   }
+  Future<EitherErr<int>> getSensorNumBlobs( RacketSensor sensor )  async{
+    try{
+    final numBlobs = await storageServiceController.getNumBlobs( sensor.device );
+    if( numBlobs == null) throw Exception();
+    return  Right(numBlobs);
+    }catch(  e  ){
+      return Left(BluetoothErr(errMsg: 'error al obtener NumBlobs', statusCode: 1) );
+    }
+
+  }
+
+
 Future<EitherErr<List<Blob>>> readAllBlobs(
   RacketSensor sensor, {
   void Function(int read, int total)? onProgress,
