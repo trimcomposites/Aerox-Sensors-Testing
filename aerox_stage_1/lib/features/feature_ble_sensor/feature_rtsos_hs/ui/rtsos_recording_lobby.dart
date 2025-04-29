@@ -81,6 +81,7 @@ class RTSOSRecordingLobby extends StatelessWidget {
                               await Future.delayed(Duration(seconds: state.durationSeconds + 3));
 
                               rtsosLobbyBloc.add(OnStopHSRecording());
+                              rtsosLobbyBloc.add(OnAddBlobRecordedCounter());
                             }
                           : null, 
                     ),
@@ -99,6 +100,7 @@ class RTSOSRecordingLobby extends StatelessWidget {
                               await Future.delayed(Duration(seconds: 254 + 3));
 
                               rtsosLobbyBloc.add(OnStopHSRecording());
+                              rtsosLobbyBloc.add(OnAddBlobRecordedCounter());
                             }
                                 : null,
                           )
