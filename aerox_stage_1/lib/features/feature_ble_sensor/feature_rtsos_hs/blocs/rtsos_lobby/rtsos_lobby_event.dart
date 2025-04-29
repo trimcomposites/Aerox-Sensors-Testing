@@ -34,3 +34,15 @@ class OnResetBlobRecordedCounter extends RtsosLobbyEvent {
 
   OnResetBlobRecordedCounter();
 }
+class OnGetSensorsNumBlobs extends RtsosLobbyEvent {
+
+  OnGetSensorsNumBlobs();
+}
+class OnStopHSRecording extends RtsosLobbyEvent {
+
+  OnStopHSRecording();
+}
+class OnStartHSRecording extends RtsosLobbyEvent {
+
+  OnStartHSRecording();
+}

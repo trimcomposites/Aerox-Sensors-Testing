@@ -82,11 +82,11 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                                 SelectedRacketName(),
                                 BleRecordWithButton( 
                                   text: 'Grabación con Cámaras', 
-                                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.hz104, ))); }, 
+                                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.khz1, ))); }, 
                                   ),
                                 BleRecordWithButton( 
                                   text: 'Grabación SIN Cámaras',
-                                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.khz1, ))); }, 
+                                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.hz104, ))); }, 
                                 ),
                                 BleRecordWithButton( 
                                   text: 'Leer Memoria de Sensor',

@@ -38,7 +38,7 @@ class BlobSQLiteDB {
         path TEXT DEFAULT ''
       )
     ''');
-     await _insertMockParsedBlobs(db);
+    //await _insertMockParsedBlobs(db);
   }
 
   String generateRandomId() {

@@ -3,6 +3,7 @@ import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/duration_selector_with_input.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/get_num_bobs_event_timer.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/hit_type_select_drop_down.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/on_rtsos_recording_place_holder_screen.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_record_params_widget.dart';
@@ -23,7 +24,7 @@ class RTSOSRecordingLobby extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Iniciar Grabación SIN Cámaras',
+          'Grabación',
           style: TextStyle(fontSize: 25),
         ),
         leading: Container(),
@@ -38,38 +39,71 @@ class RTSOSRecordingLobby extends StatelessWidget {
           },
           child: BlocBuilder<RtsosLobbyBloc, RtsosLobbyState>(
             builder: (context, state) {
+              final bool canStartRecording = 
+                  !state.isRecording &&
+                  state.uiState.status != UIStatus.loading &&
+                  (
+                    (sampleRate == SampleRate.khz1) ||
+                    (sampleRate == SampleRate.hz104 && state.selectedHitType != null)
+                  );
+
+
               return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SelectedRacketName( showStorage: true, ),
-                  RTSOSRecordParamsWidget(sampleRate: sampleRate),
-                  const SizedBox(height: 16),
-                  sampleRate != SampleRate.hz104 ? HitTypeSelectDropDown() : Container(),
-                  DurationSelectorWithInput(),
-                  BleRecordWithButton(
-                    text: 'INICIAR GRABACIÓN',
-                    color: sampleRate != SampleRate.khz1 ||
-                            sampleRate == SampleRate.khz1 && state.selectedHitType != null
-                        ? Colors.red
-                        : Colors.grey,
-                    onPressed: () {
-                      if (sampleRate == SampleRate.khz1 ||
-                          sampleRate != SampleRate.khz1 && state.selectedHitType != null) {
-                        rtsosLobbyBloc.add(OnStartHSBlobOnLobby(
-                            duration: state.durationSeconds,
-                            sampleRate: sampleRate));
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    OnRTSOSRecordingPlaceHolderScreen(
-                                        durationSeconds:
-                                            state.durationSeconds)));
-                      }
-                    },
-                  )
-                ],
-              );
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GetNumBobsEventTimer(),
+                    SelectedRacketName(
+                      showStorage: true,
+                    ),
+                    RTSOSRecordParamsWidget(sampleRate: sampleRate),
+                    BlocBuilder<RtsosLobbyBloc, RtsosLobbyState>(
+                      builder: (context, state) {
+                        return Container(
+                          child: Text('${state.recordedBlobCounter} Blobs Registrados en esta sesión.'),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    sampleRate != SampleRate.khz1
+                        ? HitTypeSelectDropDown()
+                        : Container(),
+                    DurationSelectorWithInput(),
+                    BleRecordWithButton(
+                      text: 'INICIAR GRABACIÓN',
+                      color: canStartRecording ? Colors.red : Colors.grey,
+                      onPressed: canStartRecording
+                          ? ()async {
+                              rtsosLobbyBloc.add(OnStartHSRecording());
+                              rtsosLobbyBloc.add(OnStartHSBlobOnLobby(
+                                duration: state.durationSeconds,
+                                sampleRate: sampleRate,
+                              ));
+                              await Future.delayed(Duration(seconds: state.durationSeconds + 3));
+
+                              rtsosLobbyBloc.add(OnStopHSRecording());
+                            }
+                          : null, 
+                    ),
+                    sampleRate == SampleRate.hz104
+                        ? BleRecordWithButton(
+                            text: 'TIEMPO MAX.',
+                            color:
+                                canStartRecording ? Colors.blue : Colors.grey,
+                            onPressed: canStartRecording
+                              ? ()async {
+                              rtsosLobbyBloc.add(OnStartHSRecording());
+                              rtsosLobbyBloc.add(OnStartHSBlobOnLobby(
+                                duration: 254,
+                                sampleRate: sampleRate,
+                              ));
+                              await Future.delayed(Duration(seconds: 254 + 3));
+
+                              rtsosLobbyBloc.add(OnStopHSRecording());
+                            }
+                                : null,
+                          )
+                        : Container(),
+                  ]);
             },
           ),
         ),

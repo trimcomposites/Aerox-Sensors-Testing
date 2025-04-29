@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OnRTSOSRecordingPlaceHolderScreen extends StatefulWidget {
   final int durationSeconds;
@@ -23,9 +25,14 @@ class _OnRTSOSRecordingPlaceHolderScreenState extends State<OnRTSOSRecordingPlac
     super.initState();
     _remainingSeconds = widget.durationSeconds;
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (_remainingSeconds <= 1) {
         timer.cancel();
+        
+        await Duration(seconds: 2);
+        final rtsosLobbyBloc = BlocProvider.of<RtsosLobbyBloc>(context, listen: false);
+        rtsosLobbyBloc.add(OnGetSensorsNumBlobs());
+
         Navigator.of(context).pop();
       } else {
         setState(() {
@@ -57,7 +64,11 @@ class _OnRTSOSRecordingPlaceHolderScreenState extends State<OnRTSOSRecordingPlac
               const SizedBox(height: 20),
               Text(
                 '$_remainingSeconds',
-                style: const TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.red),
+                style: const TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ),
               ),
             ],
           ),
