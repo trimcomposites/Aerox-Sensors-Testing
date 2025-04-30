@@ -5,6 +5,7 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/repository/acc_scale.d
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/gyro_scale.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/imu_sample_rate.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/storage_service_constants.dart';
+import 'package:intl/intl.dart';
 
 class BlobDataParser {
   List<Map<String, dynamic>> parseHsRtsosBlob(Blob blob) {
@@ -128,7 +129,9 @@ class BlobDataParser {
 
         row['delta_t'] = deltaTime;
         row['absolute_time'] = deltaTime * globalSampleIndex;
-        row['timestamp'] = createdAt.add(Duration(microseconds: (deltaTime * 1e6 * i).round()));
+        final timestamp = createdAt.add(Duration(microseconds: (deltaTime * 1e6 * i).round()));
+        row['timestamp'] = formatPostgresTimestamp(timestamp);
+
 
         result.add(row);
         globalSampleIndex++;
@@ -138,6 +141,12 @@ class BlobDataParser {
     return result;
   }
 
+String formatPostgresTimestamp(DateTime dt) {
+  final utc = dt.toUtc();
+  final micros = utc.microsecond.toString().padLeft(6, '0');
+  final base = DateFormat('yyyy-MM-dd HH:mm:ss').format(utc);
+  return '$base.$micros+00:00';
+}
   int _toInt16LE(int low, int high) {
     final bytes = Uint8List.fromList([low, high]);
     final byteData = ByteData.sublistView(bytes);

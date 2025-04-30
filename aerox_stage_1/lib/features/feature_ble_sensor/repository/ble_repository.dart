@@ -99,29 +99,31 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
   try {
     final device = sensor.device;
     final blobs = <Blob>[];
+    final insertedHashes = <String>{};
 
     await for (final partial in storageServiceController.fetchBlobs(
       device,
       onProgress ?? (_, __) {},
       fetchData: true,
     )) {
-      blobs
-        ..clear()
-        ..addAll(partial);
+      for (final blob in partial) {
+        final createdAt = blob.createdAt;
+        if (createdAt == null) continue;
 
-      // ⏳ Guardar nuevos blobs en SQLite
-     for (final blob in partial) {
-      final createdAt = blob.createdAt;
-      if (createdAt == null) continue;
+        // 🧠 Crear un hash identificador del blob
+        final hash = _generateBlobHash(blob);
+        if (insertedHashes.contains(hash)) continue;
 
-      final parsed = await parseBlob(blob);
-      parsed.fold(
-        (_) => null,
-        (parsedData) => blobSqliteDB.insertParsedBlob(createdAt, parsedData),
-      );
-    }
-
-      
+        final parsed = await parseBlob(blob);
+        parsed.fold(
+          (_) => null,
+          (parsedData) async {
+            await blobSqliteDB.insertParsedBlob(createdAt, parsedData);
+            insertedHashes.add(hash);
+            blobs.add(blob);
+          },
+        );
+      }
     }
 
     return Right(blobs);
@@ -129,6 +131,7 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
     return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
   }
 }
+
 Future<EitherErr<Map<RacketSensor, List<Blob>>>> readBlobsFromSensorsList({
   required List<RacketSensor> sensors,
   int maxParallel = 4,
@@ -368,5 +371,16 @@ Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
     }
     return result;
   }
+  String _generateBlobHash(Blob blob) {
+  final info = blob.blobInfo;
+  final packets = blob.packets;
+
+  final raw = StringBuffer()
+    ..write(info?.address)
+    ..write(packets?.length);
+
+  return raw.toString();
+}
+
 }
  
