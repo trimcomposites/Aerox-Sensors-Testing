@@ -16,6 +16,7 @@ class BleStorageLoadingIndicator extends StatelessWidget {
             showBackGround ? Colors.black.withAlpha(128) : Colors.transparent,
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircularProgressIndicator(),
               BlocBuilder<BleStorageBloc, BleStorageState>(

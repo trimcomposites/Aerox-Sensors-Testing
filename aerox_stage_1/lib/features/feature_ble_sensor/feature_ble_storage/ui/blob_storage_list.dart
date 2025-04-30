@@ -2,6 +2,7 @@ import 'package:aerox_stage_1/common/ui/loading_indicator.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/blocs/ble_storage/ble_storage_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/ble_storage_loading_indicator.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/ui/blob_list.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/blocs/blob_database/blob_database_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/ui/by_exact_date_blob_filter.dart';
@@ -16,45 +17,39 @@ class BlobStorageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bleStorageBloc = BlocProvider.of<BleStorageBloc>(context);
-
+    final blobsNum = bleStorageBloc.state.blobsBySensor.values.expand((list) => list).toList().length;
+    
     return Expanded(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 8),
           Expanded(
-            child: BlocBuilder<BleStorageBloc, BleStorageState>(
-              builder: (context, state) {
-                final blobs = state.blobs;
-      
-                return state.uiState.status == UIStatus.loading
-                ? BleStorageLoadingIndicator()
-                : ListView.builder(
-                  itemCount: blobs.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final blob = blobs[index];
-                    return Row(
-                      children: [
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              "blob ${blob.createdAt}",
-                              maxLines: 10,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            //bleStorageBloc.add(OnParseBlob(blob: blob));
-                          },
-                          icon: const Icon(Icons.arrow_circle_up),
-                        )
-                      ],
-                    );
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+
+                  BlocBuilder<BleStorageBloc, BleStorageState>(
+                    builder: (context, state) {
+                      return 
+                      state.uiState.status != UIStatus.loading
+                      ? Center(
+                        child: Column( 
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_chart, color: Colors.green, size: 25,),
+                            Text( '¡Se han leído correctamente ${blobsNum} Blobs!', style: TextStyle( fontSize: 20 ), textAlign: TextAlign.center, ),
+                        ],
+                                            ),
+                      )
+                    : Center(child: Text( 'Leyendo Blobs de Storage...', style: TextStyle( fontSize: 20 ), ));
                   },
-                );
-              },
+                ),
+
+                BlobList(),
+
+              ],
             ),
           ),
         ],
