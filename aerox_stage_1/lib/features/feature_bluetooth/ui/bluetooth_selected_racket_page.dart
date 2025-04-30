@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/ui/error_dialog.dart';
+import 'package:aerox_stage_1/common/ui/loading_indicator.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
@@ -26,90 +27,130 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
 
     return BlocListener<SelectedEntityPageBloc, SelectedEntityPageState>(
       listener: (context, state) {
-        if(state.selectedRacketEntity != null){
-          for( var sensor in state.selectedRacketEntity!.sensors ){
+        if (state.selectedRacketEntity != null) {
+          for (var sensor in state.selectedRacketEntity!.sensors) {
             selectedEntityPageBloc.add(OnSetTimeStamp(sensor: sensor));
           }
         }
-        if(state.uiState.status == UIStatus.error){
-          ErrorDialog.showErrorDialog(context, state.uiState.errorMessage );
+        if (state.uiState.status == UIStatus.error) {
+          ErrorDialog.showErrorDialog(context, state.uiState.errorMessage);
         }
       },
-      child: PopScope(
-          canPop: false,
-          child: Scaffold(
-            backgroundColor: Color.fromARGB(255, 225, 245, 255),
-            appBar: AppBar(
-              leading: Builder(
-                builder: (context) => IconButton(
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    if(selectedEntityPageBloc.state.selectedRacketEntity!=null){
-                      Scaffold.of(context).openDrawer();
-                    }
-                  },
+      child: BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
+        builder: (context, state) {
+          return 
+          state.uiState.status == UIStatus.loading
+          ? Scaffold(body: LoadingIndicator( showBackGround: true, ))
+          : PopScope(
+            canPop: false,
+            child: Scaffold(
+              backgroundColor: Color.fromARGB(255, 225, 245, 255),
+              appBar: AppBar(
+                leading: Builder(
+                  builder: (context) => IconButton(
+                    icon: Icon(Icons.menu),
+                    onPressed: () {
+                      if (selectedEntityPageBloc.state.selectedRacketEntity !=
+                          null) {
+                        Scaffold.of(context).openDrawer();
+                      }
+                    },
+                  ),
                 ),
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.exit_to_app),
+                    onPressed: () {
+                      selectedEntityPageBloc
+                          .add(OnDisconnectSelectedRacketSelectedEntityPage());
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
               ),
-              actions:[
-                IconButton(
-                  icon: Icon(Icons.exit_to_app),
-                  onPressed: () {
-                    selectedEntityPageBloc.add(OnDisconnectSelectedRacketSelectedEntityPage());
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ] ,
-            ),
-            drawer: BleTesterActionMenu(),
-            body: BlocListener<SelectedEntityPageBloc, SelectedEntityPageState>(
-              listener: (context, state) {
-                if (state.selectedRacketEntity == null &&
-                    state.uiState.status == UIStatus.error) {
-                  ErrorDialog.showErrorDialog(context, state.uiState.errorMessage);
-                }
-              },
-              child: BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
-                builder: (context, state) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      BlocBuilder<SelectedEntityPageBloc, SelectedEntityPageState>(
-                        builder: (context, state) {
-                          return Center(
-                            child: Column(
-                              children: [
-                                SelectedRacketName(),
-                                BleRecordWithButton( 
-                                  text: 'Grabación con Cámaras', 
-                                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.khz1, ))); }, 
-                                  ),
-                                BleRecordWithButton( 
-                                  text: 'Grabación SIN Cámaras',
-                                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => RTSOSRecordingLobby( sampleRate: SampleRate.hz104, ))); }, 
-                                ),
-                                BleRecordWithButton( 
-                                  text: 'Leer Memoria de Sensor',
-      
-                                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => BleStoragePage())); }, 
-                                ),
-                                BleRecordWithButton( 
-                                  text: 'Blob Database',
-                                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => BlobDatabasePage())); }, 
-                                ),
-                                
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
+              drawer: BleTesterActionMenu(),
+              body:
+                  BlocListener<SelectedEntityPageBloc, SelectedEntityPageState>(
+                listener: (context, state) {
+                  if (state.selectedRacketEntity == null &&
+                      state.uiState.status == UIStatus.error) {
+                    ErrorDialog.showErrorDialog(
+                        context, state.uiState.errorMessage);
+                  }
                 },
+                child: BlocBuilder<SelectedEntityPageBloc,
+                    SelectedEntityPageState>(
+                  builder: (context, state) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        BlocBuilder<SelectedEntityPageBloc,
+                            SelectedEntityPageState>(
+                          builder: (context, state) {
+                            return Center(
+                              child: Column(
+                                children: [
+                                  SelectedRacketName(),
+                                  BleRecordWithButton(
+                                    text: 'Grabación con Cámaras',
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RTSOSRecordingLobby(
+                                                    sampleRate: SampleRate.khz1,
+                                                  )));
+                                    },
+                                  ),
+                                  BleRecordWithButton(
+                                    text: 'Grabación SIN Cámaras',
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RTSOSRecordingLobby(
+                                                    sampleRate:
+                                                        SampleRate.hz104,
+                                                  )));
+                                    },
+                                  ),
+                                  BleRecordWithButton(
+                                    text: 'Leer Memoria de Sensor',
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BleStoragePage()));
+                                    },
+                                  ),
+                                  BleRecordWithButton(
+                                    text: 'Blob Database',
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BlobDatabasePage()));
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
+      ),
     );
   }
 }

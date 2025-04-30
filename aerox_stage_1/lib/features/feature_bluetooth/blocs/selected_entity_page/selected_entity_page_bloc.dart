@@ -22,7 +22,7 @@ part 'selected_entity_page_state.dart';
 class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntityPageState> {
   final DisconnectFromRacketSensorUsecase disconnectFromRacketSensorUsecase;
   final GetSelectedBluetoothRacketUsecase getSelectedBluetoothRacketUsecase;
-  final StartOfflineRTSOSUseCase startOfflineRTSOSUseCase; 
+  final StartOfflineRTSOSUseCase startOfflineRTSOSUseCase;
   final StoptOfflineRTSOSUseCase stopOfflineRTSOSUseCase;
   final ReadStorageDataUsecase readStorageDataUsecase;
   final StreamRTSOSUsecase startStreamRTSOS;
@@ -31,7 +31,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
   final SetSensorTimestampUseCase setTimestampUseCase;
   final GetSensorTimestampUseCase getTimestampUseCase;
 
-  SelectedEntityPageBloc({ 
+  SelectedEntityPageBloc({
     required this.disconnectFromRacketSensorUsecase,
     required this.getSelectedBluetoothRacketUsecase,
     required this.startOfflineRTSOSUseCase,
@@ -44,42 +44,34 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     required this.getTimestampUseCase
   }) : super(SelectedEntityPageState(uiState: UIState.idle())) {
 
-    // 🔌 Desconexión manual (no muestra error)
     on<OnDisconnectSelectedRacketSelectedEntityPage>((event, emit) async {
       emit(state.copyWith(uiState: UIState.loading()));
-
       final selectedRacket = state.selectedRacketEntity;
       if (selectedRacket != null) {
         await disconnectFromRacketSensorUsecase.call(selectedRacket).then((either) {
           either.fold(
-            (failure) => emit(state.copyWith(uiState: UIState.idle())), // Silencioso
+            (failure) => emit(state.copyWith(uiState: UIState.error(failure.errMsg))),
             (_) => emit(state.copyWith(selectedRacketEntity: null, uiState: UIState.idle())),
           );
         });
       }
     });
 
-    // ⚠️ Desconexión automática (muestra error en UI)
     on<OnAutoDisconnectSelectedRacket>((event, emit) async {
       final selectedRacket = state.selectedRacketEntity;
       if (selectedRacket != null) {
         await disconnectFromRacketSensorUsecase.call(selectedRacket);
       }
-
       emit(state.copyWith(
         selectedRacketEntity: null,
         uiState: UIState.error(event.errorMsg),
       ));
     });
 
-    // 🔁 Obtener raqueta seleccionada
     on<OnGetSelectedRacketSelectedEntityPage>((event, emit) async {
-      emit(state.copyWith(uiState: UIState.loading()));
       await getSelectedBluetoothRacketUsecase.call().then((either) {
         either.fold(
-          (failure) {
-            emit(state.copyWith(uiState: UIState.error(failure.errMsg), selectedRacketEntity: null));
-          },
+          (failure) => emit(state.copyWith(uiState: UIState.error(failure.errMsg), selectedRacketEntity: null)),
           (r) {
             emit(state.copyWith(selectedRacketEntity: r, uiState: UIState.idle()));
             monitorSelectedRacketConnection();
@@ -93,18 +85,31 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     });
 
     on<OnStartHSBlob>((event, emit) async {
-      await startOfflineRTSOSUseCase.call( StartRTSOSParams(sampleRate: SampleRate.khz1, durationSeconds: 5, sensor: event.sensor) );
+      emit(state.copyWith(uiState: UIState.loading()));
+      await startOfflineRTSOSUseCase.call(StartRTSOSParams(sampleRate: SampleRate.khz1, durationSeconds: 5, sensor: event.sensor)).then(
+        (either) => either.fold(
+          (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+          (r) => emit(state.copyWith(uiState: UIState.idle())),
+        ),
+      );
     });
 
     on<OnStopHSBlob>((event, emit) async {
-      await stopOfflineRTSOSUseCase.call(event.sensor);
+      emit(state.copyWith(uiState: UIState.loading()));
+      await stopOfflineRTSOSUseCase.call(event.sensor).then(
+        (either) => either.fold(
+          (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+          (r) => emit(state.copyWith(uiState: UIState.idle())),
+        ),
+      );
     });
 
     on<OnReadStorageData>((event, emit) async {
+      emit(state.copyWith(uiState: UIState.loading()));
       await readStorageDataUsecase.call(event.sensor).then((either) {
         either.fold(
           (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
-          (r) => emit(state.copyWith(blobs: r)),
+          (r) => emit(state.copyWith(blobs: r, uiState: UIState.idle())),
         );
       });
     });
@@ -119,6 +124,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     });
 
     on<OnGetTimeStamp>((event, emit) async {
+      emit(state.copyWith(uiState: UIState.loading()));
       await getTimestampUseCase.call(event.sensor).then((either) {
         either.fold(
           (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
@@ -128,52 +134,58 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     });
 
     on<OnParseBlob>((event, emit) async {
+      emit(state.copyWith(uiState: UIState.loading()));
       await parseBlobUsecase.call(event.blob).then((either) {
         either.fold(
           (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
-          (_) => {},
+          (_) => emit(state.copyWith(uiState: UIState.idle())),
         );
       });
     });
 
     on<OnStartStreamRTSOS>((event, emit) async {
-      await startStreamRTSOS.call(event.sensor);
+      emit(state.copyWith(uiState: UIState.loading()));
+      await startStreamRTSOS.call(event.sensor).then((either) {
+        either.fold(
+          (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+          (r) => emit(state.copyWith(uiState: UIState.idle())),
+        );
+      });
     });
 
-  on<OnEraseStorageData>((event, emit) async {
-    final racket = state.selectedRacketEntity;
+    on<OnEraseStorageData>((event, emit) async {
+      final racket = state.selectedRacketEntity;
 
-    if (racket == null) {
-      emit(state.copyWith(uiState: UIState.error('No hay raqueta seleccionada')));
-      return;
-    }
+      if (racket == null) {
+        emit(state.copyWith(uiState: UIState.error('No hay raqueta seleccionada')));
+        return;
+      }
 
-    emit(state.copyWith(uiState: UIState.loading()));
+      emit(state.copyWith(uiState: UIState.loading()));
 
-    final futures = racket.sensors.map((sensor) {
-      return eraseStorageDataUsecase.call(sensor);
-    }).toList();
+      final futures = racket.sensors.map((sensor) {
+        return eraseStorageDataUsecase.call(sensor);
+      }).toList();
 
-    final results = await Future.wait(futures);
+      final results = await Future.wait(futures);
 
-    final hasError = results.any((either) => either.isLeft());
+      final hasError = results.any((either) => either.isLeft());
 
-    if (hasError) {
-      final failed = results
-          .asMap()
-          .entries
-          .where((entry) => entry.value.isLeft())
-          .map((entry) => racket.sensors[entry.key].device.remoteId.str)
-          .toList();
+      if (hasError) {
+        final failed = results
+            .asMap()
+            .entries
+            .where((entry) => entry.value.isLeft())
+            .map((entry) => racket.sensors[entry.key].device.remoteId.str)
+            .toList();
 
-      emit(state.copyWith(
-        uiState: UIState.error('Error al borrar sensores: ${failed.join(", ")}'),
-      ));
-    } else {
-      emit(state.copyWith(uiState: UIState.success()));
-    }
-  });
-
+        emit(state.copyWith(
+          uiState: UIState.error('Error al borrar sensores: ${failed.join(", ")}'),
+        ));
+      } else {
+        emit(state.copyWith(uiState: UIState.idle()));
+      }
+    });
   }
 
   void monitorSelectedRacketConnection() {

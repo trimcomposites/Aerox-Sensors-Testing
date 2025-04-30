@@ -1,19 +1,35 @@
-import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
+import 'package:flutter/material.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({
-    super.key, this.showBackGround = true,
+    super.key,
+    this.showBackGround = true,
   });
+
   final bool showBackGround;
+
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Container(
-        color: showBackGround ?
-          Colors.black.withAlpha(128)
+    return Container(
+      color: showBackGround
+          ? Colors.black.withOpacity(0.5)
           : Colors.transparent,
-        child: Center(
-          child: CircularProgressIndicator(),
+      child: const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Cargando...',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 16),
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          ],
         ),
       ),
     );
