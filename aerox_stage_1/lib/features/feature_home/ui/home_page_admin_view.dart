@@ -31,10 +31,6 @@ class HomePageAdminView extends StatelessWidget {
               BluetoothConnectButton(
                 position: 250,
               ),
-              BleRecordWithButton( 
-                text: 'Blob Database',
-                onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: ( context ) => BlobDatabasePage())); }, 
-              ),
             ]
           );
           },
