@@ -57,6 +57,7 @@ class BluetoothRacketsList extends StatelessWidget {
                       },
                     ),
                   ),
+                  Spacer(),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text("Cerrar"),

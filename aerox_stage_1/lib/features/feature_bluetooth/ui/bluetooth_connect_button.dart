@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_rackets_list.dart';
 import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
@@ -11,6 +13,7 @@ class BluetoothConnectButton extends StatelessWidget {
   final double position;
   @override
   Widget build(BuildContext context) {
+    bool _isModalOpen = false;
     return Positioned(
       bottom: position,
       child: Container(
@@ -31,26 +34,55 @@ class BluetoothConnectButton extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () async {
-            final state = await FlutterBluePlus.adapterState.first;
+            if (_isModalOpen) return;
+            _isModalOpen = true;
 
-            if (state == BluetoothAdapterState.on) {
-              showModalBottomSheet(
+            StreamSubscription<BluetoothAdapterState>? bluetoothSub;
+
+            try {
+              final state = await FlutterBluePlus.adapterState
+                  .firstWhere((s) => s == BluetoothAdapterState.on)
+                  .timeout(const Duration(seconds: 5));
+
+              if (!context.mounted) return;
+
+              await showModalBottomSheet(
                 context: context,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                 ),
                 builder: (BuildContext context) {
+                  // Inicia listener al estado de Bluetooth
+                  bluetoothSub = FlutterBluePlus.adapterState.listen((s) {
+                    if (s != BluetoothAdapterState.on) {
+                      // Cierra el modal automáticamente si se apaga Bluetooth
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop(); // cerrar modal
+                      }
+                    }
+                  });
+
                   return const BluetoothRacketsList();
                 },
-              ).whenComplete(() {
+              );
+
+              // Cuando se cierra el modal (ya sea por el usuario o por Bluetooth off)
+              bluetoothSub?.cancel();
+
+              if (context.mounted) {
                 final sensorsBloc = BlocProvider.of<SensorsBloc>(context);
                 sensorsBloc.add(OnStopScanBluetoothSensors());
-              });
-            } else {
-              // Opcional: mostrar un mensaje de error
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Activa el Bluetooth para conectar.")),
-              );
+              }
+
+            } catch (e) {
+              bluetoothSub?.cancel();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Activa el Bluetooth para conectar.")),
+                );
+              }
+            } finally {
+              _isModalOpen = false;
             }
           },
           child: Row(
