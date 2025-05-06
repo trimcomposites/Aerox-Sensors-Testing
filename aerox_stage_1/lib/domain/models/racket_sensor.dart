@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/domain/models/racket_sensor_extension.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 enum BlobCheckStatus {
@@ -9,7 +10,7 @@ enum BlobCheckStatus {
 class RacketSensor extends Equatable {
   final BluetoothDevice device;
   final String name;
-  final String alias;
+  final SensorPosition position;
   final String id;
   final BluetoothConnectionState connectionState;
   final List<BluetoothService> services;
@@ -21,7 +22,7 @@ class RacketSensor extends Equatable {
   const RacketSensor({
     required this.device,
     required this.name,
-    required this.alias,
+    required this.position,
     required this.id,
     required this.connectionState,
     this.services = const [],
@@ -33,7 +34,7 @@ class RacketSensor extends Equatable {
   RacketSensor copyWith({
     BluetoothDevice? device,
     String? name,
-    String? alias,
+    SensorPosition? position,
     String? id,
     BluetoothConnectionState? connectionState,
     List<BluetoothService>? services,
@@ -44,7 +45,7 @@ class RacketSensor extends Equatable {
     return RacketSensor(
       device: device ?? this.device,
       name: name ?? this.name,
-      alias: alias ?? this.alias,
+      position: position ?? this.position,
       id: id ?? this.id,
       connectionState: connectionState ?? this.connectionState,
       services: services ?? this.services,
@@ -58,7 +59,7 @@ class RacketSensor extends Equatable {
   List<Object?> get props => [
     device,
     name,
-    alias,
+    position,
     id,
     connectionState,
     services,
