@@ -71,6 +71,7 @@ dependencies:
   csv: ^6.0.0
   open_filex: ^4.7.0
   firebase_storage: ^12.4.5
+  flutter_foreground_task: ^9.1.0
 
 dev_dependencies:
   flutter_test:

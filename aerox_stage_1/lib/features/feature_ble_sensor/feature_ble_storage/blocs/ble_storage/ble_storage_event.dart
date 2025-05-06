@@ -43,3 +43,8 @@ class OnUpdateGlobalTotal extends BleStorageEvent {
 
   OnUpdateGlobalTotal(this.total);
 }
+class OnReadStorageDataForegroundBleStoragePage extends BleStorageEvent {
+  final List<RacketSensor> sensors;
+
+  OnReadStorageDataForegroundBleStoragePage({required this.sensors});
+}

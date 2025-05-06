@@ -93,5 +93,13 @@
     <string>Esta aplicación requiere acceso a Bluetooth para conectar dispositivos.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.pravera.flutter_foreground_task.refresh</string>
+    </array>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+</array>
 </dict>
 </plist>

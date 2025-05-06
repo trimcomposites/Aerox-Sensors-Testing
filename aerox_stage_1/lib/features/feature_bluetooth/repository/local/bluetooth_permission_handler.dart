@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BluetoothPermissionHandler {
@@ -16,6 +17,10 @@ class BluetoothPermissionHandler {
       await Permission.bluetoothScan.request();
       await Permission.bluetoothConnect.request();
       await Permission.location.request();
-    }
+
+      await FlutterForegroundTask.requestNotificationPermission();
+}
+
+    
   }
 }

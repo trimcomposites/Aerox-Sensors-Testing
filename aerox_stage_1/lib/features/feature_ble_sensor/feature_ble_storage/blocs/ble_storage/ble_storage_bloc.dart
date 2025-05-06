@@ -3,6 +3,7 @@ import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_foreground_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_from_sensor_list.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
@@ -19,6 +20,7 @@ class BleStorageBloc extends Bloc<BleStorageEvent, BleStorageState> {
   final DisconnectFromRacketSensorUsecase disconnectFromRacketSensorUsecase;
   final ReadStorageDataUsecase readStorageDataUsecase;
   final ReadStorageDataFromSensorListUsecase readStorageDataFromSensorListUsecase;
+  final ReadStorageDataForegroundUsecase readStorageDataForegroundUsecase;
   final ParseBlobUsecase parseBlobUsecase;
 
   BleStorageBloc({
@@ -26,7 +28,8 @@ class BleStorageBloc extends Bloc<BleStorageEvent, BleStorageState> {
     required this.disconnectFromRacketSensorUsecase,
     required this.readStorageDataUsecase,
     required this.parseBlobUsecase,
-    required this.readStorageDataFromSensorListUsecase
+    required this.readStorageDataFromSensorListUsecase,
+    required this.readStorageDataForegroundUsecase
   }) : super(BleStorageState(uiState: UIState.idle())) {
     // Obtener raqueta seleccionada
     on<OnGetSelectedRacketBleStoragePage>((event, emit) async {
@@ -151,6 +154,20 @@ on<OnUpdateGlobalRead>((event, emit) {
 
 on<OnUpdateGlobalTotal>((event, emit) {
   emit(state.copyWith(totalBlobs: event.total));
+});
+on<OnReadStorageDataForegroundBleStoragePage>((event, emit) async {
+  emit(state.copyWith(
+    uiState: UIState.loading(),
+    blobsRead: 0,
+    totalBlobs: 0,
+  ));
+
+  final result = await readStorageDataForegroundUsecase.call(event.sensors);
+
+  result.fold(
+    (l) => emit(state.copyWith(uiState: UIState.error(l.errMsg))),
+    (r) => emit(state.copyWith(uiState: UIState.idle())),
+  );
 });
 
 

@@ -22,7 +22,7 @@ class BleStoragePage extends StatelessWidget {
       body: BlocListener<BleStorageBloc, BleStorageState>(
         listener: (context, state) {
           if (state.selectedRacketEntity != null) {
-            bleStoragePageBloc.add(OnReadStorageDataFromSensorListBleStoragePage(
+            bleStoragePageBloc.add(OnReadStorageDataForegroundBleStoragePage(
                 sensors:
                     bleStoragePageBloc.state.selectedRacketEntity!.sensors));
             bleStoragePageBloc

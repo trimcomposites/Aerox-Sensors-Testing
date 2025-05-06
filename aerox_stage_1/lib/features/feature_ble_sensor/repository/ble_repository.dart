@@ -15,6 +15,7 @@ import 'package:aerox_stage_1/features/feature_bluetooth/repository/local/blueto
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/local/blobs_sqlite_db.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 class BleRepository {
   final BleService bleService;
@@ -22,6 +23,7 @@ class BleRepository {
   final BlobDataParser blobDataParser;
   final ToCsvBlob toCsvBlob;
   final BlobSQLiteDB blobSqliteDB;
+  final BluetoothCustomService bluetoothCustomService;
 
   BleRepository({
     required this.bleService,
@@ -29,6 +31,7 @@ class BleRepository {
     required this.blobDataParser,
     required this.toCsvBlob,
     required this.blobSqliteDB,
+    required this.bluetoothCustomService
   });
 
   Future<EitherErr<void>> sendStartOfflineRSTOS(StartRTSOSParams params, ) async {
@@ -89,7 +92,21 @@ class BleRepository {
     }
 
   }
+  Future<EitherErr<Map<RacketSensor, List<Blob>>>> readBlobsFromConnectedSensorsForeground() async {
+    final List<dynamic>? sensorIds = await FlutterForegroundTask.getData<List<dynamic>>(key: 'sensorIds');
+    if (sensorIds == null || sensorIds.isEmpty) {
+      return Left(BluetoothErr(errMsg: 'No se encontraron sensorIds para lectura en segundo plano', statusCode: 404));
+    }
 
+    final connectedResult = await bluetoothCustomService.getConnectedSensors();
+    return connectedResult.fold(
+      (err) => Left(err),
+      (sensors) async {
+        final filteredSensors = sensors.where((s) => sensorIds.contains(s.device.remoteId.str)).toList();
+        return await readBlobsFromSensorsList(sensors: filteredSensors);
+      },
+    );
+  }
 
 
 Future<EitherErr<List<Blob>>> readAllBlobs(

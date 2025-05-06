@@ -14,6 +14,7 @@ import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_scree
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'features/feature_login/ui/login_barrel.dart';
 
 void main() async{
@@ -57,7 +58,7 @@ void main() async{
           ),
 
       ],
-      child: const MyApp()),
+      child: WithForegroundTask(child: const MyApp())),
     )
   );
 }

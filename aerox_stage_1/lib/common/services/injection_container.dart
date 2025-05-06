@@ -3,6 +3,7 @@ import 'package:aerox_stage_1/domain/use_cases/ble_sensor/erase_storage_data_use
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_num_blobs_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_sensor_timestamp_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_foreground_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_from_sensor_list.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/set_sensor_timestamp.dart';
@@ -107,7 +108,8 @@ Future<void> dependencyInjectionInitialize() async {
        storageServiceController: sl(),
        blobDataParser: sl(),
        toCsvBlob: sl(), 
-       blobSqliteDB: sl()
+       blobSqliteDB: sl(),
+       bluetoothCustomService: sl()
       ))
     ..registerLazySingleton(() => UploadRepository(
         storageUploadService: sl()
@@ -142,6 +144,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => ReadStorageDataUsecase( bleRepository : sl(), blobSQLiteDB: sl()))
     ..registerLazySingleton(() => ReadStorageDataFromSensorListUsecase( bleRepository : sl(), blobSQLiteDB: sl()))
     ..registerLazySingleton(() => GetNumBlobsUsecase( bleRepository : sl()))
+    ..registerLazySingleton(() => ReadStorageDataForegroundUsecase( bleRepository : sl()))
 
     //ble
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
@@ -193,7 +196,8 @@ Future<void> dependencyInjectionInitialize() async {
       disconnectFromRacketSensorUsecase: sl(),
       readStorageDataUsecase: sl(),
       parseBlobUsecase: sl(),
-      readStorageDataFromSensorListUsecase: sl()
+      readStorageDataFromSensorListUsecase: sl(),
+      readStorageDataForegroundUsecase: sl()
     ))
     ..registerFactory(() => BlobDatabaseBloc(
       getAllBlobsFromDbUsecase: sl(),
