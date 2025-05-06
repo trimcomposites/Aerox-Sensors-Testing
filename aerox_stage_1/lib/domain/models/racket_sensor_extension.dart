@@ -17,7 +17,7 @@ extension RacketSensorExtension on BluetoothDevice {
   }
 
 SensorPosition getProvisionalSensorPosition(BluetoothDevice device) {
-  print(device.remoteId.str);
+  //print(device.remoteId.str);
   switch (device.remoteId.str) {
     case 'FB6BD1C5-1C3C-29C3-53DB-8C899D7F817B':
       return SensorPosition.left;

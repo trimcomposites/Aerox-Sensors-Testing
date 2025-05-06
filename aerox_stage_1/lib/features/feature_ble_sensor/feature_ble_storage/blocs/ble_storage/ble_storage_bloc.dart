@@ -159,13 +159,21 @@ on<OnUpdateGlobalTotal>((event, emit) {
   // Monitorización pasiva de conexión BLE
   void monitorSelectedRacketConnection() {
     state.selectedRacketEntity?.sensors.forEach((sensor) {
-      sensor.device.connectionState.listen((connectionState) {
-        if (connectionState == BluetoothConnectionState.disconnected) {
-          add(OnAutoDisconnectSelectedRacketBleStoragePage(
-            errorMsg: 'Se ha perdido la conexión con los sensores. Reintenta la conexión.',
-          ));
-        }
-      });
+      sensor.device.connectionState.listen(
+        (state) {
+          if (state == BluetoothConnectionState.disconnected) {
+            print('🔌 Sensor ${sensor.device.remoteId.str} se ha desconectado');
+            add(OnAutoDisconnectSelectedRacketBleStoragePage(
+              errorMsg: 'Se ha perdido la conexión con el sensor ${sensor.name}',
+            ));
+          }
+        },
+        onError: (error) {
+          print('⚠️ Error de conexión con ${sensor.name}: $error');
+        },
+        cancelOnError: false,
+      );
+
     });
   }
 }
