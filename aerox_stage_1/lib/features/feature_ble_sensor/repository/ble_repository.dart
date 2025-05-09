@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/common/utils/cancel_token.dart';
 import 'package:aerox_stage_1/common/utils/either_catch.dart';
 import 'package:aerox_stage_1/common/utils/error/err/bluetooth_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
@@ -90,11 +91,10 @@ class BleRepository {
 
   }
 
-
-
 Future<EitherErr<List<Blob>>> readAllBlobs(
   RacketSensor sensor, {
   void Function(int read, int total)? onProgress,
+  required CancelToken cancelToken,
 }) async {
   try {
     final device = sensor.device;
@@ -105,12 +105,22 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
       device,
       onProgress ?? (_, __) {},
       fetchData: true,
+      cancelToken: cancelToken
     )) {
+      if (cancelToken.isCancelled) {
+        print('⛔️ Cancelación detectada durante fetchBlobs para ${device.remoteId}');
+        break;
+      }
+
       for (final blob in partial) {
+        if (cancelToken.isCancelled) {
+          print('⛔️ Cancelación detectada durante iteración de blobs para ${device.remoteId}');
+          break;
+        }
+
         final createdAt = blob.createdAt;
         if (createdAt == null) continue;
 
-        // 🧠 Crear un hash identificador del blob
         final hash = _generateBlobHash(blob);
         if (insertedHashes.contains(hash)) continue;
 
@@ -126,97 +136,107 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
       }
     }
 
+    if (cancelToken.isCancelled) {
+      print('🛑 Lectura de blobs cancelada completamente para ${device.remoteId}');
+    }
+
     return Right(blobs);
   } catch (e) {
     return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
   }
 }
 
-Future<EitherErr<Map<RacketSensor, List<Blob>>>> readBlobsFromSensorsList({
-  required List<RacketSensor> sensors,
-  int maxParallel = 4,
-  void Function(RacketSensor sensor, int read, int total)? onProgress,
-  void Function(int readGlobal)? onReadGlobal,
-  void Function(int totalGlobal)? onTotalGlobal,
-}) async {
-  int globalRead = 0;
-  int globalTotal = 0;
+  Future<EitherErr<Map<RacketSensor, List<Blob>>>> readBlobsFromSensorsList({
+    required List<RacketSensor> sensors,
+    int maxParallel = 4,
+    required CancelToken cancelToken,
+    void Function(RacketSensor sensor, int read, int total)? onProgress,
+    void Function(int readGlobal)? onReadGlobal,
+    void Function(int totalGlobal)? onTotalGlobal,
+  }) async {
+    int globalRead = 0;
+    int globalTotal = 0;
 
-  final Map<RacketSensor, List<Blob>> resultMap = {};
-  final List<RacketSensor> queue = [...sensors];
-  final List<Future<void>> activeTasks = [];
-  final errors = <String>[];
+    final Map<RacketSensor, List<Blob>> resultMap = {};
+    final List<RacketSensor> queue = [...sensors];
+    final List<Future<void>> activeTasks = [];
+    final errors = <String>[];
 
-Future<void> handleSensor(RacketSensor sensor) async {
-  int lastRead = 0;
-  int lastTotal = 0;
+    Future<void> handleSensor(RacketSensor sensor) async {
+      int lastRead = 0;
+      int lastTotal = 0;
 
-  final result = await readAllBlobs(sensor, onProgress: (read, total) {
+      final result = await readAllBlobs(
+        sensor,
+        cancelToken: cancelToken,
+        onProgress: (read, total) {
+          final deltaRead = read - lastRead;
+          final deltaTotal = total - lastTotal;
+          lastRead = read;
+          lastTotal = total;
 
-    final deltaRead = read - lastRead;
-    final deltaTotal = total - lastTotal;
-    lastRead = read;
-    lastTotal = total;
+          globalRead += deltaRead;
+          globalTotal += deltaTotal;
 
-    globalRead += deltaRead;
-    globalTotal += deltaTotal;
+          onProgress?.call(sensor, read, total);
+          onReadGlobal?.call(globalRead);
+          onTotalGlobal?.call(globalTotal);
+        },
+      );
 
-
-    onProgress?.call(sensor, read, total);
-
-    onReadGlobal?.call(globalRead);
-    onTotalGlobal?.call(globalTotal);
-  });
-
-  result.fold(
-    (err) => errors.add("❌ ${sensor.device.remoteId.str}: ${err.errMsg}"),
-    (blobs) => resultMap[sensor] = blobs,
-  );
-}
-
-
-  while (queue.isNotEmpty || activeTasks.isNotEmpty) {
-    while (activeTasks.length < maxParallel && queue.isNotEmpty) {
-      final sensor = queue.removeAt(0);
-      final task = handleSensor(sensor);
-      activeTasks.add(task);
-      task.whenComplete(() => activeTasks.remove(task));
+      result.fold(
+        (err) => errors.add("❌ ${sensor.device.remoteId.str}: ${err.errMsg}"),
+        (blobs) => resultMap[sensor] = blobs,
+      );
     }
-    if (activeTasks.isNotEmpty) await Future.any(activeTasks);
+
+    while (queue.isNotEmpty || activeTasks.isNotEmpty) {
+      if (cancelToken.isCancelled) break;
+
+      while (activeTasks.length < maxParallel && queue.isNotEmpty) {
+        final sensor = queue.removeAt(0);
+        final task = handleSensor(sensor);
+        activeTasks.add(task);
+        task.whenComplete(() => activeTasks.remove(task));
+      }
+
+      if (activeTasks.isNotEmpty) await Future.any(activeTasks);
+    }
+
+    if (errors.isNotEmpty) {
+      return Left(BluetoothErr(errMsg: errors.join('\n'), statusCode: 99));
+    }
+
+    return Right(resultMap);
   }
-
-  if (errors.isNotEmpty) {
-    return Left(BluetoothErr(errMsg: errors.join('\n'), statusCode: 99));
-  }
-
-  return Right(resultMap);
-}
-
 
   Future<EitherErr<List<Map<String, dynamic>>>> parseBlob(Blob blob) async {
     try {
       final blobType = blob.blobInfo.blobType;
 
       if (blobType == StorageServiceConstants.HS_RTSOS_BLOB_REGISTER_TYPE) {
-        final parsed = blobDataParser.parseHsRtsosBlob(blob);
-        return Right(parsed);
+        return Right(blobDataParser.parseHsRtsosBlob(blob));
       }
 
       if (blobType == StorageServiceConstants.HS_1KHZ_RTSOS_BLOB_REGISTER_TYPE) {
-        final parsed = blobDataParser.parseHs1kzRtsosBlob(blob);
-        return Right(parsed);
+        return Right(blobDataParser.parseHs1kzRtsosBlob(blob));
       }
 
-      return Left(BluetoothErr(
-        errMsg: 'Unsupported blob type: $blobType',
-        statusCode: 98,
-      ));
+      return Left(BluetoothErr(errMsg: 'Unsupported blob type: $blobType', statusCode: 98));
     } catch (e) {
-      return Left(BluetoothErr(
-        errMsg: e.toString(),
-        statusCode: 99,
-      ));
+      return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
     }
+  }
+
+  String _generateBlobHash(Blob blob) {
+    final info = blob.blobInfo;
+    final packets = blob.packets;
+
+    final raw = StringBuffer()
+      ..write(info?.address)
+      ..write(packets?.length);
+
+    return raw.toString();
   }
 
   Future<EitherErr<void>> setTimestamp(RacketSensor sensor, {DateTime? dateTime}) async {
@@ -371,16 +391,7 @@ Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
     }
     return result;
   }
-  String _generateBlobHash(Blob blob) {
-  final info = blob.blobInfo;
-  final packets = blob.packets;
 
-  final raw = StringBuffer()
-    ..write(info?.address)
-    ..write(packets?.length);
-
-  return raw.toString();
-}
 
 }
  

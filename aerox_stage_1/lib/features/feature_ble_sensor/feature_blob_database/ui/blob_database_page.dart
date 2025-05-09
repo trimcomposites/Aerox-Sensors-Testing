@@ -25,18 +25,22 @@ class BlobDatabasePage extends StatelessWidget {
         actions: [
         TextButton(
           onPressed: () {
-            ErrorDialog.showCustomDialog(
-              context: context,
-              title: 'Subir archivos',
-              message: '¿Estás seguro de que deseas subir estos blobs a la nube? ${blobDatabaseBloc.state.filteredBlobs.length} blob(s)',
-              onOk: () {
-                context.read<BlobDatabaseBloc>().add(
-                  OnUploadBlobsToStorage(
-                    blobs: context.read<BlobDatabaseBloc>().state.filteredBlobs,
-                  ),
-                );
-              },
-        );
+            if(context.read<BlobDatabaseBloc>().state.selectedBlobs.length >= 0 ){
+              ErrorDialog.showCustomDialog(
+                context: context,
+                title: 'Subir archivos',
+                message: '¿Estás seguro de que deseas subir estos blobs a la nube? ${blobDatabaseBloc.state.filteredBlobs.length} blob(s)',
+                onOk: () {
+                  context.read<BlobDatabaseBloc>().add(
+                    OnUploadBlobsToStorage(
+                      blobs: context.read<BlobDatabaseBloc>().state.selectedBlobs,
+                    ),
+                  );
+                },
+              );
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text('Debes Seleccionar al menos UN Blob para Subir.')) );
+            }
       }, child: Text('Subir Archivos'))],
       ),
       body: Column(

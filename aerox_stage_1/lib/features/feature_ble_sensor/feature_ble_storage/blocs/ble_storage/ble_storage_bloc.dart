@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
+import 'package:aerox_stage_1/common/utils/cancel_token.dart';
 import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
@@ -20,13 +21,14 @@ class BleStorageBloc extends Bloc<BleStorageEvent, BleStorageState> {
   final ReadStorageDataUsecase readStorageDataUsecase;
   final ReadStorageDataFromSensorListUsecase readStorageDataFromSensorListUsecase;
   final ParseBlobUsecase parseBlobUsecase;
+  late CancelToken _cancelToken; 
 
   BleStorageBloc({
     required this.getSelectedBluetoothRacketUsecase,
     required this.disconnectFromRacketSensorUsecase,
     required this.readStorageDataUsecase,
     required this.parseBlobUsecase,
-    required this.readStorageDataFromSensorListUsecase
+    required this.readStorageDataFromSensorListUsecase,
   }) : super(BleStorageState(uiState: UIState.idle())) {
     // Obtener raqueta seleccionada
     on<OnGetSelectedRacketBleStoragePage>((event, emit) async {
@@ -122,7 +124,7 @@ on<OnReadStorageDataFromSensorListBleStoragePage>((event, emit) async {
     blobsRead: 0,
     totalBlobs: 0,
   ));
-
+  _cancelToken = CancelToken();
   final result = await readStorageDataFromSensorListUsecase.call(
     ReadBlobsFromSensorListParams(
       sensors: event.sensors,
@@ -136,7 +138,7 @@ on<OnReadStorageDataFromSensorListBleStoragePage>((event, emit) async {
       },
       onTotalGlobal: (total) {
         add(OnUpdateGlobalTotal(total));
-      },
+      }, cancelToken: _cancelToken,
     ),
   );
 
@@ -152,6 +154,11 @@ on<OnUpdateGlobalRead>((event, emit) {
 on<OnUpdateGlobalTotal>((event, emit) {
   emit(state.copyWith(totalBlobs: event.total));
 });
+on<OnCancelBleStorageReading>((event, emit) {
+  _cancelToken.cancel(); // ✅ Cancelar token
+  emit(state.copyWith(uiState: UIState.idle())); // Opcional: resetear estado
+});
+
 
 
   }

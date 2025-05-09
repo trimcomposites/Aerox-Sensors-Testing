@@ -1,4 +1,5 @@
 
+import 'package:aerox_stage_1/common/utils/cancel_token.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
 import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
@@ -17,7 +18,7 @@ class ReadStorageDataUsecase extends AsyncUseCaseWithParams<void,  RacketSensor>
     RacketSensor sensor, {
     void Function(int read, int total)? onProgress,
   }) {
-    return bleRepository.readAllBlobs(sensor, onProgress: onProgress);
+    return bleRepository.readAllBlobs(sensor, onProgress: onProgress, cancelToken: CancelToken());//TODO: CAMBIAR
   }
 }
 

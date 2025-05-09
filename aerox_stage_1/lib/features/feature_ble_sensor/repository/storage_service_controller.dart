@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:aerox_stage_1/common/utils/cancel_token.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:aerox_stage_1/domain/models/blob.dart';
@@ -22,6 +23,7 @@ class StorageServiceController {
 
     await for (final partial in fetchBlobs(
       device,
+      cancelToken: CancelToken(),
       (read, total) {
 
       },
@@ -34,33 +36,70 @@ class StorageServiceController {
 
     return finalBlobs;
   }
-
 Stream<List<Blob>> fetchBlobs(
   BluetoothDevice device,
   void Function(int current, int total) onProgress, {
-  bool fetchData = false,
+  required bool fetchData,
+  required CancelToken cancelToken,
 }) async* {
+  if (cancelToken.isCancelled) {
+    print('⛔️ Cancelación antes de iniciar fetchBlobs para ${device.remoteId}');
+    return;
+  }
+
   final numBlobs = await getNumBlobs(device);
-  if (numBlobs == null || numBlobs == 0) yield [];
+  if (cancelToken.isCancelled) {
+    print('⛔️ Cancelación tras getNumBlobs para ${device.remoteId}');
+    return;
+  }
+
+  if (numBlobs == null || numBlobs == 0) {
+    yield [];
+    return;
+  }
 
   final blobs = <Blob>[];
   BlobInfo? blobInfo = await fetchFirstBlob(device);
+  if (cancelToken.isCancelled) {
+    print('⛔️ Cancelación tras fetchFirstBlob para ${device.remoteId}');
+    return;
+  }
+
   int count = 0;
 
-  while (blobInfo != null && count < numBlobs!) {
-    final packets = await fetchBlobPacketsFast(device, fetchPacketData: fetchData);
+  while (blobInfo != null && count < numBlobs) {
+    if (cancelToken.isCancelled) {
+      print('⛔️ Cancelación antes de fetchBlobPacketsFast $count/${numBlobs} para ${device.remoteId}');
+      return;
+    }
+
+    final packets = await fetchBlobPacketsFast(
+      device,
+      fetchPacketData: fetchData,
+    );
+
+    if (cancelToken.isCancelled) {
+      print('⛔️ Cancelación tras fetchBlobPacketsFast $count/${numBlobs} para ${device.remoteId}');
+      return;
+    }
+
     final blob = Blob(blobInfo: blobInfo, packets: packets);
     if (packets.isNotEmpty) {
       blob.createdAt = packets.first.packetInfo?.createdAt;
       blob.closedAt = packets.last.packetInfo?.closedAt;
     }
+
     blobs.add(blob);
     count++;
-
     onProgress(count, numBlobs);
-
     yield blobs;
+
     blobInfo = await fetchNextBlob(device);
+
+    if (cancelToken.isCancelled) {
+      print('⛔️ Cancelación tras fetchNextBlob $count/${numBlobs} para ${device.remoteId}');
+      return;
+    }
   }
 
   _devicesBlobs[device.remoteId.str] = blobs;

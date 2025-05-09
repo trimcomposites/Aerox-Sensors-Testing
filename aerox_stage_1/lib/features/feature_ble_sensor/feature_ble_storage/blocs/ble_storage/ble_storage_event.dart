@@ -43,3 +43,7 @@ class OnUpdateGlobalTotal extends BleStorageEvent {
 
   OnUpdateGlobalTotal(this.total);
 }
+class OnCancelBleStorageReading extends BleStorageEvent {
+
+  OnCancelBleStorageReading();
+}
