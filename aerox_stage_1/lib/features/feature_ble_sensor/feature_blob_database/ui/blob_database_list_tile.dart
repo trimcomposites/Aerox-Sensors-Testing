@@ -32,7 +32,7 @@ class BlobDatabaseListTile extends StatelessWidget {
           Icons.insert_drive_file,
           color: hasPath ? Colors.green : Colors.grey,
         ),
-        title: const Text('BLOB'),
+        title: Text('BLOB ${blob.position} ${blob.createdAt}'),
         subtitle: Text('Fecha: $timestamp'),
         trailing: hasPath
             ? Checkbox(

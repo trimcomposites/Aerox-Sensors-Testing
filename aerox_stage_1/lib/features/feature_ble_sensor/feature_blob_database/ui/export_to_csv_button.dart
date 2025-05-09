@@ -16,10 +16,8 @@ class ExportToCSVButton extends StatelessWidget {
       final blobDatabaseBloc = BlocProvider.of<BlobDatabaseBloc>(context);
     return TextButton.icon(
       onPressed: () async {
-        for(var blob  in blobDatabaseBloc.state.blobs ){
-          blobDatabaseBloc.add(OnExportToCSVFilteredBlobs());
-
-        }
+        blobDatabaseBloc.add(OnExportToCSVFilteredBlobs());
+        
       }, 
       label: Text( 'Exportar a CSV' ),
       icon: Icon( Icons.import_export, color: Colors.green, ),

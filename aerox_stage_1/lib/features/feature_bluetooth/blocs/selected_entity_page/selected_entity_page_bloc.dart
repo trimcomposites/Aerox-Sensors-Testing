@@ -184,10 +184,20 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
         ));
       } else {
         emit(state.copyWith(uiState: UIState.idle()));
+
       }
     });
   }
-
+  void disconnectAllSensors(){
+      state.selectedRacketEntity?.sensors.forEach((sensor) {
+      sensor.device.connectionState.listen((connectionState) {
+          add(OnAutoDisconnectSelectedRacket(
+            errorMsg: 'Tras borrar el almacenamiento, es necesario volver a conectar los sensores.',
+          ));
+      });
+    });
+  }
+      
   void monitorSelectedRacketConnection() {
     state.selectedRacketEntity?.sensors.forEach((sensor) {
       sensor.device.connectionState.listen((connectionState) {

@@ -28,6 +28,7 @@ Future<EitherErr<List<ParsedBlob>>> getAllBlobsFromDB() {
     for (var row in rawBlobs) {
       final createdAt = DateTime.parse(row['createdAt'] as String);
       final path = row['path'] as String;
+      final position = row['position'] as String;
       final List<dynamic> contentList = jsonDecode(row['data'] as String);
       final content = List<Map<String, dynamic>>.from(contentList);
 
@@ -35,6 +36,7 @@ Future<EitherErr<List<ParsedBlob>>> getAllBlobsFromDB() {
         content: content,
         createdAt: createdAt,
         path: path,
+        position: position
       ));
     }
 
@@ -52,6 +54,7 @@ Future<EitherErr<List<File>>> exportToSCVBlobs(List<ParsedBlob> blobs) {
     final List<File> resultList = [];
 
     for (var i = 0; i < blobs.length; i++) {
+      print( 'exportar ${blobs.length} blobs ' );
       final result = await toCsvBlob
           .exportParsedBlobToCsv(blobs[i], fileName: 'parsed_blob_$i')
           .flatMap<File>((file) async {

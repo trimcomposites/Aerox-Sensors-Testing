@@ -128,7 +128,7 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
         parsed.fold(
           (_) => null,
           (parsedData) async {
-            await blobSqliteDB.insertParsedBlob(createdAt, parsedData);
+            await blobSqliteDB.insertParsedBlob(createdAt, parsedData, position: sensor.position.name);
             insertedHashes.add(hash);
             blobs.add(blob);
           },
