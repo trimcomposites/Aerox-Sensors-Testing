@@ -13,7 +13,7 @@ class BlobList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width*0.9,
-      height: MediaQuery.of(context).size.height/4,
+      height: MediaQuery.of(context).size.height/2,
       child: BlocBuilder<BleStorageBloc, BleStorageState>(
         builder: (context, state) {
       final blobs = state.blobsBySensor.values.expand((list) => list).toList();
