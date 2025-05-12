@@ -19,7 +19,7 @@ class BleRecordWithButton extends StatelessWidget {
         decoration: BoxDecoration( color: color ?? Colors.blue.shade300, borderRadius: BorderRadius.circular(20,),  ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Center(child: Text( text, style: TextStyle( fontSize: 25, color: Colors.white ), )),
+          child: Center(child: Text( text, style: TextStyle( fontSize: 20, color: Colors.white ), )),
         ),
        )
       );

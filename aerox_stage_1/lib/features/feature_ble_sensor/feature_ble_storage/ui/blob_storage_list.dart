@@ -34,14 +34,17 @@ class BlobStorageList extends StatelessWidget {
                       return 
                       state.uiState.status != UIStatus.loading
                       ? Center(
-                        child: Column( 
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(Icons.add_chart, color: Colors.green, size: 25,),
-                            Text( '¡Se han leído correctamente ${blobsNum} Blobs!', style: TextStyle( fontSize: 20 ), textAlign: TextAlign.center, ),
-                        ],
-                                            ),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Column( 
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_chart, color: Colors.green, size: 25,),
+                              Text( '¡Se han leído correctamente ${blobsNum} Blobs!', style: TextStyle( fontSize: 20 ), textAlign: TextAlign.center, ),
+                          ],
+                                              ),
+                        ),
                       )
                     : Center(child: Text( 'Leyendo Blobs de Storage...', style: TextStyle( fontSize: 20 ), ));
                   },

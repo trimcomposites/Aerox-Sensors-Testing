@@ -35,13 +35,11 @@ class BleStoragePage extends StatelessWidget {
                   sensors: state.selectedRacketEntity!.sensors,
                 ),
               );
-              bleStoragePageBloc.add(
-                OnFilterBlobsByDate(DateTime.utc(2000, 1, 1)),
-              );
             }
           },
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.9,
+            width:MediaQuery.of(context).size.height * 0.9,  
             child: BlocBuilder<BleStorageBloc, BleStorageState>(
               builder: (context, state) {
                 return state.uiState.status == UIState.loading()
