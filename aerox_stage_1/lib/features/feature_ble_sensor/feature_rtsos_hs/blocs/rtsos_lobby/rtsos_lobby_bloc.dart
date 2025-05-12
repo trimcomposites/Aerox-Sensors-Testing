@@ -1,8 +1,10 @@
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
+import 'package:aerox_stage_1/domain/models/error_log.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_num_blobs_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/blob_database/add_error_log_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
 import 'package:bloc/bloc.dart';
@@ -18,11 +20,13 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
   final GetSelectedBluetoothRacketUsecase getSelectedBluetoothRacketUsecase;
   final DisconnectFromRacketSensorUsecase disconnectFromRacketSensorUsecase;
   final GetNumBlobsUsecase getNumBlobsUsecase;
+  final AddErrorLogUsecase addErrorLogUsecase;
   RtsosLobbyBloc({
     required this.startOfflineRTSOSUseCase,
     required this.getSelectedBluetoothRacketUsecase,
     required this.disconnectFromRacketSensorUsecase,
-    required this.getNumBlobsUsecase
+    required this.getNumBlobsUsecase,
+    required this.addErrorLogUsecase
   }) : super(RtsosLobbyState( selectedHitType: null, uiState: UIState.idle() )) {
     on<OnHitTypeValueChanged>((event, emit) {
       emit(state.copyWith(
@@ -99,6 +103,12 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
         uiState: UIState.error(event.errorMsg),
       ));
     });
+
+      on<OnLogFailedRecord>((event, emit) async {
+        final errorLog = ErrorLog(id: '', date: DateTime.now(), content: event.sensor.position.toString());
+        await addErrorLogUsecase.call(errorLog);
+        
+    });
       on<OnAddBlobRecordedCounter>((event, emit) async {
 
       emit(state.copyWith(
@@ -116,45 +126,40 @@ on<OnGetSensorsNumBlobs>((event, emit) async {
   if (currentEntity == null) return;
 
   emit(state.copyWith(uiState: UIState.loading()));
-
   final previousSensors = currentEntity.sensors;
 
   try {
-    await Future.wait(
-      currentEntity.sensors.map((sensor) async {
-        final result = await getNumBlobsUsecase.call(sensor);
+    await Future.wait(currentEntity.sensors.map((sensor) async {
+      final result = await getNumBlobsUsecase.call(sensor);
 
-        await result.fold(
-          (failure) async {
-            emit(state.copyWith(uiState: UIState.error('')));
-          },
-          (numBlobs) async {
-            final updatedSensors = state.sensorEntity!.sensors.map((s) {
-              if (s.device.remoteId == sensor.device.remoteId) {
-                final oldStatus = s.numBlobs?.values.firstOrNull;
+      await result.fold(
+        (failure) async {
+          emit(state.copyWith(uiState: UIState.error('')));
+        },
+        (numBlobs) async {
+          final updatedSensors = state.sensorEntity!.sensors.map((s) {
+            if (s.device.remoteId == sensor.device.remoteId) {
+              final oldStatus = s.numBlobs?.values.firstOrNull;
+              final newStatus = (oldStatus == BlobCheckStatus.failed)
+                  ? BlobCheckStatus.failed
+                  : BlobCheckStatus.mismatch;
 
-                // Se actualiza el número de blobs pero se conserva el estado `failed` si ya lo era
-                final newStatus = (oldStatus == BlobCheckStatus.failed)
-                    ? BlobCheckStatus.failed
-                    : BlobCheckStatus.mismatch;
+              return s.copyWith(
+                numBlobs: {numBlobs: newStatus},
+                numRetries: (oldStatus == BlobCheckStatus.failed)
+                    ? s.numRetries
+                    : (s.numRetries >= 2 ? 1 : s.numRetries + 1),
+              );
+            }
+            return s;
+          }).toList();
 
-                return s.copyWith(
-                  numBlobs: {numBlobs: newStatus},
-                  numRetries: (oldStatus == BlobCheckStatus.failed)
-                      ? s.numRetries
-                      : (s.numRetries >= 2 ? 1 : s.numRetries + 1),
-                );
-              }
-              return s;
-            }).toList();
-
-            emit(state.copyWith(
-              sensorEntity: state.sensorEntity!.copyWith(sensors: updatedSensors),
-            ));
-          },
-        );
-      }),
-    );
+          emit(state.copyWith(
+            sensorEntity: state.sensorEntity!.copyWith(sensors: updatedSensors),
+          ));
+        },
+      );
+    }));
 
     final maxBlob = state.sensorEntity!.sensors
         .map((s) => s.numBlobs?.keys.first ?? 0)
@@ -165,31 +170,27 @@ on<OnGetSensorsNumBlobs>((event, emit) async {
       final retries = s.numRetries;
       final currentStatus = s.numBlobs?.values.firstOrNull;
 
-      final status = (currentStatus == BlobCheckStatus.failed)
+      final newStatus = (currentStatus == BlobCheckStatus.failed)
           ? BlobCheckStatus.failed
           : (retries >= 2 && blob != maxBlob)
               ? BlobCheckStatus.failed
               : (blob == maxBlob ? BlobCheckStatus.ok : BlobCheckStatus.mismatch);
 
-      return s.copyWith(numBlobs: {blob: status});
+      return s.copyWith(numBlobs: {blob: newStatus});
     }).toList();
-
-    final newSensorEntity = state.sensorEntity!.copyWith(sensors: updatedFinalSensors);
 
     emit(state.copyWith(
       uiState: UIState.idle(),
-      sensorEntity: newSensorEntity,
+      sensorEntity: state.sensorEntity!.copyWith(sensors: updatedFinalSensors),
     ));
 
-    final hasNewFailures = List.generate(updatedFinalSensors.length, (i) {
+    for (int i = 0; i < updatedFinalSensors.length; i++) {
       final newStatus = updatedFinalSensors[i].numBlobs?.values.firstOrNull;
       final oldStatus = previousSensors[i].numBlobs?.values.firstOrNull;
 
-      return oldStatus != BlobCheckStatus.failed && newStatus == BlobCheckStatus.failed;
-    }).any((v) => v);
-
-    if (hasNewFailures) {
-      add(OnLogFailedRecord());
+      if (oldStatus != BlobCheckStatus.failed && newStatus == BlobCheckStatus.failed) {
+        add(OnLogFailedRecord(sensor: updatedFinalSensors[i]));
+      }
     }
   } catch (e) {
     emit(state.copyWith(

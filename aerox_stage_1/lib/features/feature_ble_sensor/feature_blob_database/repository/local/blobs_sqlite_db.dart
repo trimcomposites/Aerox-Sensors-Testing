@@ -39,6 +39,14 @@ class BlobSQLiteDB {
         position TEXT DEFAULT ''
       )
     ''');
+    await db.execute('''
+      CREATE TABLE error_logs (
+        id TEXT PRIMARY KEY,
+        date TEXT NOT NULL,
+        content TEXT NOT NULL
+      )
+    ''');
+  
   }
 
   String generateRandomId() {
@@ -214,5 +222,59 @@ class BlobSQLiteDB {
     final db = await database;
     final result = await db.query('parsed_blobs', columns: ['createdAt']);
     return result.map((e) => DateTime.parse(e['createdAt'] as String)).toList();
+  }
+
+  Future<void> logError({
+    required String sensorPosition,
+    required String message,
+    required DateTime timestamp,
+  }) async {
+    final db = await database;
+    final todayStr = DateTime(timestamp.year, timestamp.month, timestamp.day).toIso8601String();
+
+    final existing = await db.query(
+      'error_logs',
+      where: 'date = ?',
+      whereArgs: [todayStr],
+    );
+
+    if (existing.isEmpty) {
+      final newLog = '[$sensorPosition - ${timestamp.toIso8601String()}] $message\n';
+      await db.insert(
+        'error_logs',
+        {
+          'id': generateRandomId(),
+          'date': todayStr,
+          'content': newLog,
+        },
+      );
+    } else {
+      final currentLog = existing.first['content'] as String;
+      final updatedLog = '$currentLog[${sensorPosition} - ${timestamp.toIso8601String()}] $message\n';
+      await db.update(
+        'error_logs',
+        {'content': updatedLog},
+        where: 'date = ?',
+        whereArgs: [todayStr],
+      );
+    }
+  }
+
+  Future<String?> getErrorLogForDate(DateTime date) async {
+    final db = await database;
+    final dateStr = DateTime(date.year, date.month, date.day).toIso8601String();
+    final result = await db.query(
+      'error_logs',
+      where: 'date = ?',
+      whereArgs: [dateStr],
+    );
+    if (result.isNotEmpty) {
+      return result.first['content'] as String;
+    }
+    return null;
+  }
+  Future<List<Map<String, dynamic>>> getAllErrorLogs() async {
+    final db = await database;
+    return await db.query('error_logs');
   }
 } 

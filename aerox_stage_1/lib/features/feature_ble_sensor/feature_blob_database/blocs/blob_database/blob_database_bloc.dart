@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
+import 'package:aerox_stage_1/domain/models/error_log.dart';
 import 'package:aerox_stage_1/domain/models/parsed_blob.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/export_to_csv_blob_list_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_blobs_from_db_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_error_logs_from_db_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/storage/upload_blobs_to_storage_usecase.dart';
 import 'package:aerox_stage_1/features/feature_storage/repository/upload_repository.dart';
 import 'package:bloc/bloc.dart';
@@ -20,11 +22,13 @@ class BlobDatabaseBloc extends Bloc<BlobDatabaseEvent, BlobDatabaseState> {
   final GetAllBlobsFromDbUsecase getAllBlobsFromDbUsecase;
   final ExportToCsvBlobListUsecase exportToCsvBlobListUsecase;
   final UploadBlobsToStorageUsecase uploadBlobsToStorageUsecase;
+  final GetAllErrorLogsFromDbUsecase getAllErrorLogsFromDbUsecase;
   
   BlobDatabaseBloc({
     required this.getAllBlobsFromDbUsecase,
     required this.exportToCsvBlobListUsecase,
-    required this.uploadBlobsToStorageUsecase
+    required this.uploadBlobsToStorageUsecase,
+    required this.getAllErrorLogsFromDbUsecase
   }) : super(BlobDatabaseState( uiState: UIState.idle() )) {
     on<OnReadBlobDatabase>((event, emit) async {
       // ignore: avoid_single_cascade_in_expression_statements
@@ -33,12 +37,64 @@ class BlobDatabaseBloc extends Bloc<BlobDatabaseEvent, BlobDatabaseState> {
         (r) => emit( state.copyWith( blobs: r, filteredBlobs: r ) )
       );
     });
+  on<OnUploadErrorLogs>((event, emit) async {
+    final logs = state.selectedLogs;
+    if (logs.isEmpty) {
+      emit(state.copyWith(uiState: UIState.error("No hay logs seleccionados.")));
+      return;
+    }
+
+    emit(state.copyWith(uiState: UIState.loading()));
+
+    try {
+      final List<FileWithPath> txtFiles = [];
+
+      for (final log in logs) {
+        final dir = await getApplicationDocumentsDirectory();
+        final fileName = '${log.date.toIso8601String()}_${log.id}.txt';
+        final filePath = '${dir.path}/$fileName';
+        final file = File(filePath);
+
+        await file.writeAsString(log.content);
+
+        final folder = DateFormat('yyyy-MM-dd').format(log.date);
+        txtFiles.add(FileWithPath(file: file, path: folder));
+      }
+
+      final result = await uploadBlobsToStorageUsecase.call(txtFiles);
+
+      result.fold(
+        (err) {
+          print('❌ Error al subir logs: ${err.toString()}');
+          emit(state.copyWith(uiState: UIState.error('Error al subir los logs de error.')));
+        },
+        (_) {
+          print('✅ Logs subidos correctamente.');
+          emit(state.copyWith(uiState: UIState.success()));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        uiState: UIState.error('Error inesperado al subir logs: $e'),
+      ));
+    }
+  });
+
     on<OnExportToCSVFilteredBlobs>((event, emit) async{
       // ignore: avoid_single_cascade_in_expression_statements
       await exportToCsvBlobListUsecase.call( state.blobs )..fold(
         (l) => emit( state.copyWith( uiState: UIState.error( 'Error al obtener los Blobs de la base de datos.' ) ) ) , 
         (r) {
           add(OnReadBlobDatabase());
+        }
+      );
+    });
+    on<OnGetErrorLogs>((event, emit) async{
+      // ignore: avoid_single_cascade_in_expression_statements
+      await getAllErrorLogsFromDbUsecase.call( )..fold(
+        (l) => emit( state.copyWith( uiState: UIState.error( 'Error al obtener los Blobs de la base de datos.' ) ) ) , 
+        (r) {
+          emit( state.copyWith( errorLogs: r ) );
         }
       );
     });
@@ -121,21 +177,32 @@ on<OnUploadBlobsToStorage>((event, emit) async {
     on<OnAddAllBlobsToSelectedList>((event, emit) {
       emit(state.copyWith(selectedBlobs: state.filteredBlobs));
     });
-    on<OnFilterDatabaseBlobsByExactDate>((event, emit) {
-    final List<ParsedBlob> filtered = [];
+    on<OnFilterDatabaseBlobsByExactDate>((event, emit) async {
+      final List<ParsedBlob> filtered = [];
 
-    for (final b in state.blobs) {
-      final created = b.createdAt;
-      if (created != null &&
-          created.year == event.exactDate.year &&
-          created.month == event.exactDate.month &&
-          created.day == event.exactDate.day) {
-        filtered.add(b);
+      for (final b in state.blobs) {
+        final created = b.createdAt;
+        if (created != null &&
+            created.year == event.exactDate.year &&
+            created.month == event.exactDate.month &&
+            created.day == event.exactDate.day) {
+          filtered.add(b);
+        }
       }
-}
 
       final combined = {...filtered, ...state.selectedBlobs}.toList();
-      emit(state.copyWith(filteredBlobs: combined));
+
+      final List<ErrorLog> matchedLogs = state.errorLogs.where((log) {
+        final logDate = log.date;
+        return logDate.year == event.exactDate.year &&
+            logDate.month == event.exactDate.month &&
+            logDate.day == event.exactDate.day;
+      }).toList();
+
+      emit(state.copyWith(
+        filteredBlobs: combined,
+        selectedLogs: matchedLogs,
+      ));
     });
 
     on<OnFilterDatabaseBlobsUntilDate>((event, emit) {

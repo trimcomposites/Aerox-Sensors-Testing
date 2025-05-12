@@ -5,6 +5,7 @@ import 'package:aerox_stage_1/common/utils/either_catch.dart';
 import 'package:aerox_stage_1/common/utils/error/err/blob_err.dart';
 import 'package:aerox_stage_1/common/utils/error/err/racket_err.dart';
 import 'package:aerox_stage_1/common/utils/typedef.dart';
+import 'package:aerox_stage_1/domain/models/error_log.dart';
 import 'package:aerox_stage_1/domain/models/parsed_blob.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/local/blobs_sqlite_db.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/to_csv_blob.dart';
@@ -36,7 +37,8 @@ Future<EitherErr<List<ParsedBlob>>> getAllBlobsFromDB() {
         content: content,
         createdAt: createdAt,
         path: path,
-        position: position
+        position: position,
+        fileName: 'BLOB $position $createdAt'
       ));
     }
 
@@ -48,6 +50,49 @@ Future<EitherErr<List<ParsedBlob>>> getAllBlobsFromDB() {
     );
   });
 }
+Future<EitherErr<void>> insertErrorLog({
+  required ErrorLog errorlog
+}) {
+  return EitherCatch.catchAsync<void, BlobErr>(() async {
+    await blobSQLiteDB.logError(
+      sensorPosition: errorlog.content,
+      message: 'message',
+      timestamp: errorlog.date,
+    );
+  }, (e) {
+    return BlobErr(
+      errMsg: 'Error al insertar log: ${e.toString()}',
+      statusCode: 1,
+    );
+  });
+}
+
+Future<EitherErr<List<ErrorLog>>> getErrorLogsFromDB() {
+  return EitherCatch.catchAsync<List<ErrorLog>, BlobErr>(() async {
+    final rawLogs = await blobSQLiteDB.getAllErrorLogs();
+    List<ErrorLog> errorLogs = [];
+
+    for (var row in rawLogs) {
+      final id = row['id'] as String;
+      final date = DateTime.parse(row['date'] as String);
+      final content = row['content'] as String;
+
+      errorLogs.add(ErrorLog(
+        id: id,
+        date: date,
+        content: content,
+      ));
+    }
+
+    return errorLogs;
+  }, (exception) {
+    return BlobErr(
+      errMsg: exception.toString(),
+      statusCode: 1,
+    );
+  });
+}
+
 
 Future<EitherErr<List<File>>> exportToSCVBlobs(List<ParsedBlob> blobs) {
   return EitherCatch.catchAsync<List<File>, BlobErr>(() async {
@@ -60,7 +105,7 @@ Future<EitherErr<List<File>>> exportToSCVBlobs(List<ParsedBlob> blobs) {
           .flatMap<File>((file) async {
             resultList.add(file);
             final dir = await getApplicationDocumentsDirectory();
-            final fileName = '${blobs[i].content.first['timestamp']}.csv';
+            final fileName = '${'BLOB ${blobs[i].position} ${blobs[i].createdAt}'}.csv';
             final path = '${dir.path}/${fileName}';
 
             await file.copy(path);

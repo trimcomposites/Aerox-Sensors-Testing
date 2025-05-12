@@ -3,7 +3,9 @@ part of 'blob_database_bloc.dart';
 class BlobDatabaseEvent {}
 
 class OnReadBlobDatabase extends BlobDatabaseEvent {}
+class OnGetErrorLogs extends BlobDatabaseEvent {}
 class OnExportToCSVFilteredBlobs extends BlobDatabaseEvent {}
+class OnUploadErrorLogs extends BlobDatabaseEvent {}
 
 class OnUploadBlobsToStorage extends BlobDatabaseEvent {
   final List<ParsedBlob> blobs;

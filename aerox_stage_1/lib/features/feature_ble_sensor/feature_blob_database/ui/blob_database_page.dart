@@ -18,6 +18,7 @@ class BlobDatabasePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final blobDatabaseBloc = BlocProvider.of<BlobDatabaseBloc>(context);
     blobDatabaseBloc.add(OnReadBlobDatabase());
+    blobDatabaseBloc.add(OnGetErrorLogs());
     blobDatabaseBloc.add(OnResetBlobSelectedList());
     return Scaffold(
       appBar: AppBar(
@@ -31,6 +32,9 @@ class BlobDatabasePage extends StatelessWidget {
                 title: 'Subir archivos',
                 message: '¿Estás seguro de que deseas subir estos blobs a la nube? ${blobDatabaseBloc.state.filteredBlobs.length} blob(s)',
                 onOk: () {
+                  context.read<BlobDatabaseBloc>().add(
+                    OnUploadErrorLogs()
+                  );
                   context.read<BlobDatabaseBloc>().add(
                     OnUploadBlobsToStorage(
                       blobs: context.read<BlobDatabaseBloc>().state.selectedBlobs,
@@ -54,6 +58,7 @@ class BlobDatabasePage extends StatelessWidget {
             },
           ),
           ExportToCSVButton(),
+
           BlobDataBaseList(),
         ],
       ),

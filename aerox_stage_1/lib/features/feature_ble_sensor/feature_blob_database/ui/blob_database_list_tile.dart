@@ -17,7 +17,7 @@ class BlobDatabaseListTile extends StatelessWidget {
   final bool hasPath;
   final dynamic timestamp;
   final ParsedBlob blob;
-
+  
   @override
   Widget build(BuildContext context) {
     final state = context.watch<BlobDatabaseBloc>().state;

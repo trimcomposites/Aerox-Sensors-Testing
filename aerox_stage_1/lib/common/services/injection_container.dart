@@ -9,8 +9,10 @@ import 'package:aerox_stage_1/domain/use_cases/ble_sensor/set_sensor_timestamp.d
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stop_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/stream_rtsos_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/blob_database/add_error_log_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/export_to_csv_blob_list_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_blobs_from_db_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_error_logs_from_db_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/connect_to_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/get_selected_bluetooth_racket_usecase.dart';
@@ -135,6 +137,8 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => ReScanRacketSensorsUseCase(bluetoothRepository: sl()))
     ..registerLazySingleton(() => EraseStorageDataUsecase(bleRepository: sl()))
     ..registerLazySingleton(() => GetAllBlobsFromDbUsecase(blobRepository: sl()))
+    ..registerLazySingleton(() => GetAllErrorLogsFromDbUsecase(blobRepository: sl()))
+    ..registerLazySingleton(() => AddErrorLogUsecase(blobRepository: sl()))
     ..registerLazySingleton(() => ExportToCsvBlobListUsecase(blobRepository: sl()))
 
     //storage 
@@ -186,7 +190,8 @@ Future<void> dependencyInjectionInitialize() async {
       getSelectedBluetoothRacketUsecase: sl(),
       startOfflineRTSOSUseCase: sl(),
       disconnectFromRacketSensorUsecase: sl(),
-      getNumBlobsUsecase: sl()
+      getNumBlobsUsecase: sl(),
+      addErrorLogUsecase: sl()
     ))
     ..registerFactory(() => BleStorageBloc(
       getSelectedBluetoothRacketUsecase: sl(),
@@ -199,5 +204,6 @@ Future<void> dependencyInjectionInitialize() async {
       getAllBlobsFromDbUsecase: sl(),
       exportToCsvBlobListUsecase: sl(),
       uploadBlobsToStorageUsecase: sl(),
+      getAllErrorLogsFromDbUsecase: sl()
     ));
 }

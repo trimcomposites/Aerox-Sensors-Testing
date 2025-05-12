@@ -47,6 +47,6 @@ class OnStartHSRecording extends RtsosLobbyEvent {
   OnStartHSRecording();
 }
 class OnLogFailedRecord extends RtsosLobbyEvent {
-
-  OnLogFailedRecord();
+  final RacketSensor sensor;
+  OnLogFailedRecord( { required this.sensor } );
 }
