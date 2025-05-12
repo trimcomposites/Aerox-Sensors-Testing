@@ -12,6 +12,8 @@ import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_selected_r
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/feature_login/ui/login_barrel.dart';
@@ -19,6 +21,13 @@ import 'features/feature_login/ui/login_barrel.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+    await FirebaseAppCheck.instance.activate(
+  androidProvider: AndroidProvider.debug,
+  appleProvider: AppleProvider.debug,
+);
+
+    await FirebaseAuth.instance.signInAnonymously();
+
   await dependencyInjectionInitialize();
   await sl.allReady();
 

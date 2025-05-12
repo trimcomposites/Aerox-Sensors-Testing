@@ -46,3 +46,7 @@ class OnStartHSRecording extends RtsosLobbyEvent {
 
   OnStartHSRecording();
 }
+class OnLogFailedRecord extends RtsosLobbyEvent {
+
+  OnLogFailedRecord();
+}

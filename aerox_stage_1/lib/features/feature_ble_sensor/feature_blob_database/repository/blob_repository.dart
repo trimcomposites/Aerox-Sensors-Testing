@@ -22,7 +22,7 @@ class BlobRepository {
 
 Future<EitherErr<List<ParsedBlob>>> getAllBlobsFromDB() {
   return EitherCatch.catchAsync<List<ParsedBlob>, BlobErr>(() async {
-    final rawBlobs = await blobSQLiteDB.getAllParsedBlobs();
+    final rawBlobs = await blobSQLiteDB.getParsedBlobsIndividually();
     List<ParsedBlob> parsedBlobs = [];
 
     for (var row in rawBlobs) {

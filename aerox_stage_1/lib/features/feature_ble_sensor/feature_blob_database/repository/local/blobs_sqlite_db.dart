@@ -162,6 +162,29 @@ class BlobSQLiteDB {
     return await db.query('parsed_blobs');
   }
 
+  Future<List<Map<String, dynamic>>> getParsedBlobsIndividually() async {
+    final db = await database;
+    final timestamps = await db.query('parsed_blobs', columns: ['createdAt']);
+    final parsedBlobs = <Map<String, dynamic>>[];
+
+    for (final row in timestamps) {
+      final createdAtStr = row['createdAt'] as String;
+      final full = await db.query(
+        'parsed_blobs',
+        where: 'createdAt = ?',
+        whereArgs: [createdAtStr],
+      );
+
+      if (full.isNotEmpty) {
+        parsedBlobs.add(full.first);
+      }
+
+      await Future.delayed(Duration.zero);
+    }
+
+    return parsedBlobs;
+  }
+
   Future<bool> existsBlob(DateTime createdAt) async {
     final db = await database;
     final result = await db.query(

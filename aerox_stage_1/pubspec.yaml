@@ -71,6 +71,7 @@ dependencies:
   csv: ^6.0.0
   open_filex: ^4.7.0
   firebase_storage: ^12.4.5
+  firebase_app_check: ^0.3.2+5
 
 dev_dependencies:
   flutter_test:

@@ -9,10 +9,23 @@
       "client_info": {
         "mobilesdk_app_id": "1:308022027062:android:06f95907efc63c0a304997",
         "android_client_info": {
-          "package_name": "com.labtend.aerox"
+          "package_name": "com.labtend.aeroxsensortesting"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "308022027062-87nra5vvke1eiurphjpvnq9hhfua9dtg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labtend.aeroxsensortesting",
+            "certificate_hash": "47b8a28b165233faf5fd77835779434b35d67b8b"
+          }
+        },
+        {
+          "client_id": "308022027062-f79n7l3s5b8rp3ffduptqr5dml7ke5cf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDz_utPayHd9wn24FW_3ORHU5DKv9mB3Zg"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "308022027062-f79n7l3s5b8rp3ffduptqr5dml7ke5cf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "308022027062-mphj6o2e7tk5868mqoem5pebre07o01u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.labtend.aeroxsensortesting"
+              }
+            }
+          ]
         }
       }
     }

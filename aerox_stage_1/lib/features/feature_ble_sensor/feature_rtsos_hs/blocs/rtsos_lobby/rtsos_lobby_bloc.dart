@@ -115,27 +115,34 @@ on<OnGetSensorsNumBlobs>((event, emit) async {
   final currentEntity = state.sensorEntity;
   if (currentEntity == null) return;
 
-  emit(state.copyWith( uiState: UIState.loading()));
+  emit(state.copyWith(uiState: UIState.loading()));
+
+  final previousSensors = currentEntity.sensors;
 
   try {
     await Future.wait(
       currentEntity.sensors.map((sensor) async {
-
         final result = await getNumBlobsUsecase.call(sensor);
 
         await result.fold(
           (failure) async {
-
-            emit(state.copyWith(
-              uiState: UIState.error(''),
-            ));
+            emit(state.copyWith(uiState: UIState.error('')));
           },
           (numBlobs) async {
             final updatedSensors = state.sensorEntity!.sensors.map((s) {
               if (s.device.remoteId == sensor.device.remoteId) {
+                final oldStatus = s.numBlobs?.values.firstOrNull;
+
+                // Se actualiza el número de blobs pero se conserva el estado `failed` si ya lo era
+                final newStatus = (oldStatus == BlobCheckStatus.failed)
+                    ? BlobCheckStatus.failed
+                    : BlobCheckStatus.mismatch;
+
                 return s.copyWith(
-                  numBlobs: {numBlobs: BlobCheckStatus.mismatch},
-                  numRetries: (s.numRetries >= 3) ? 1 : s.numRetries + 1
+                  numBlobs: {numBlobs: newStatus},
+                  numRetries: (oldStatus == BlobCheckStatus.failed)
+                      ? s.numRetries
+                      : (s.numRetries >= 2 ? 1 : s.numRetries + 1),
                 );
               }
               return s;
@@ -156,20 +163,34 @@ on<OnGetSensorsNumBlobs>((event, emit) async {
     final updatedFinalSensors = state.sensorEntity!.sensors.map((s) {
       final blob = s.numBlobs?.keys.first ?? 0;
       final retries = s.numRetries;
+      final currentStatus = s.numBlobs?.values.firstOrNull;
 
-      final status = (retries >= 3 && blob != maxBlob)
+      final status = (currentStatus == BlobCheckStatus.failed)
           ? BlobCheckStatus.failed
-          : (blob == maxBlob ? BlobCheckStatus.ok : BlobCheckStatus.mismatch);
+          : (retries >= 2 && blob != maxBlob)
+              ? BlobCheckStatus.failed
+              : (blob == maxBlob ? BlobCheckStatus.ok : BlobCheckStatus.mismatch);
 
-      return s.copyWith(
-        numBlobs: {blob: status},
-      );
+      return s.copyWith(numBlobs: {blob: status});
     }).toList();
+
+    final newSensorEntity = state.sensorEntity!.copyWith(sensors: updatedFinalSensors);
 
     emit(state.copyWith(
       uiState: UIState.idle(),
-      sensorEntity: state.sensorEntity!.copyWith(sensors: updatedFinalSensors),
+      sensorEntity: newSensorEntity,
     ));
+
+    final hasNewFailures = List.generate(updatedFinalSensors.length, (i) {
+      final newStatus = updatedFinalSensors[i].numBlobs?.values.firstOrNull;
+      final oldStatus = previousSensors[i].numBlobs?.values.firstOrNull;
+
+      return oldStatus != BlobCheckStatus.failed && newStatus == BlobCheckStatus.failed;
+    }).any((v) => v);
+
+    if (hasNewFailures) {
+      add(OnLogFailedRecord());
+    }
   } catch (e) {
     emit(state.copyWith(
       uiState: UIState.error('Error inesperado: $e'),
@@ -177,6 +198,7 @@ on<OnGetSensorsNumBlobs>((event, emit) async {
   }
 });
 
+ 
   }
     bool verifyBlobs(RacketSensor sensor, int numBlobs) {
     final expected = sensor.numBlobs?.keys.firstOrNull;
