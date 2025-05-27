@@ -1,4 +1,5 @@
 import 'package:aerox_stage_1/common/services/download_file.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/erase_blob_db_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/erase_storage_data_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_num_blobs_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_sensor_battery_level_usecase.dart';
@@ -106,11 +107,11 @@ Future<void> dependencyInjectionInitialize() async {
         bleService: sl()
       ))
     ..registerLazySingleton(() => BleRepository(
-       bleService: sl(),
-       storageServiceController: sl(),
-       blobDataParser: sl(),
-       toCsvBlob: sl(), 
-       blobSqliteDB: sl()
+      bleService: sl(),
+      storageServiceController: sl(),
+      blobDataParser: sl(),
+      toCsvBlob: sl(), 
+      blobSqliteDB: sl()
       ))
     ..registerLazySingleton(() => UploadRepository(
         storageUploadService: sl()
@@ -148,6 +149,7 @@ Future<void> dependencyInjectionInitialize() async {
     ..registerLazySingleton(() => ReadStorageDataFromSensorListUsecase( bleRepository : sl(), blobSQLiteDB: sl()))
     ..registerLazySingleton(() => GetNumBlobsUsecase( bleRepository : sl()))
     ..registerLazySingleton(() => GetSensorBatteryLevelUsecase( bleRepository : sl()))
+    ..registerLazySingleton(() => EraseBlobDbUsecase(bleRepository: sl()))
 
     //ble
     ..registerLazySingleton(() => StartOfflineRTSOSUseCase( bleRepository : sl()))
@@ -208,6 +210,7 @@ Future<void> dependencyInjectionInitialize() async {
       getAllBlobsFromDbUsecase: sl(),
       exportToCsvBlobListUsecase: sl(),
       uploadBlobsToStorageUsecase: sl(),
-      getAllErrorLogsFromDbUsecase: sl()
+      getAllErrorLogsFromDbUsecase: sl(),
+      eraseBlobDbUsecase: sl()
     ));
 }

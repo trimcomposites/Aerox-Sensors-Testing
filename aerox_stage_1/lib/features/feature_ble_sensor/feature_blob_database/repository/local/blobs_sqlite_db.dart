@@ -54,41 +54,54 @@ class BlobSQLiteDB {
   }
 
 
-  Future<void> insertParsedBlob(
-    DateTime createdAt,
-    List<Map<String, dynamic>> parsedData, {
-    String path = '',
-    required String position,
-  }) async {
-    try {
-      final db = await database;
+Future<void> insertParsedBlob(
+  DateTime createdAt,
+  List<Map<String, dynamic>> parsedData, {
+  String path = '',
+  required String position,
+}) async {
+  try {
+    final db = await database;
 
-      final cleanedData = parsedData.map((row) {
-        return row.map((key, value) {
-          if (value is DateTime) {
-            return MapEntry(key, value.toIso8601String());
-          }
-          return MapEntry(key, value);
-        });
-      }).toList();
+    // ⚠️ Verifica si ya existe
+    final existing = await db.query(
+      'parsed_blobs',
+      where: 'createdAt = ? AND position = ?',
+      whereArgs: [createdAt.toIso8601String(), position],
+    );
 
-      final dataJson = jsonEncode(cleanedData);
-
-      await db.insert(
-        'parsed_blobs',
-        {
-          'id': generateRandomId(),
-          'createdAt': createdAt.toIso8601String(),
-          'data': dataJson,
-          'path': path,
-          'position': position,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    } catch (e) {
-      print('❌ Error insertando parsedBlob: \$e');
+    if (existing.isNotEmpty) {
+      print('⛔️ Blob ya existe, no se insertará duplicado.');
+      return;
     }
+
+    final cleanedData = parsedData.map((row) {
+      return row.map((key, value) {
+        if (value is DateTime) {
+          return MapEntry(key, value.toIso8601String());
+        }
+        return MapEntry(key, value);
+      });
+    }).toList();
+
+    final dataJson = jsonEncode(cleanedData);
+
+    await db.insert(
+      'parsed_blobs',
+      {
+        'id': generateRandomId(),
+        'createdAt': createdAt.toIso8601String(),
+        'data': dataJson,
+        'path': path,
+        'position': position,
+      },
+      conflictAlgorithm: ConflictAlgorithm.ignore, // Extra seguridad
+    );
+  } catch (e) {
+    print('❌ Error insertando parsedBlob: $e');
   }
+}
+
 
   Future<void> updatePathForBlob(DateTime createdAt, String path) async {
     final db = await database;
@@ -167,7 +180,8 @@ class BlobSQLiteDB {
 
   Future<List<Map<String, dynamic>>> getAllParsedBlobs() async {
     final db = await database;
-    return await db.query('parsed_blobs');
+    final blobs=  await db.query('parsed_blobs');
+    return blobs;
   }
 
   Future<List<Map<String, dynamic>>> getParsedBlobsIndividually() async {
@@ -204,8 +218,15 @@ class BlobSQLiteDB {
   }
 
   Future<void> clearParsedBlobs() async {
+
     final db = await database;
-    await db.delete('parsed_blobs');
+
+    final tables = ['parsed_blobs', 'error_logs'];
+    for (final table in tables) {
+      await db.delete(table);
+    }
+
+    print('🧹 Todas las tablas limpiadas: ${tables.join(', ')}');
   }
 
   Future<void> deleteDatabaseFile() async {

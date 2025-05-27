@@ -27,6 +27,11 @@ class OnResetBlobSelectedList extends BlobDatabaseEvent {
 
   OnResetBlobSelectedList();
 }
+class OnEraseBlobDatabase extends BlobDatabaseEvent {
+
+
+  OnEraseBlobDatabase();
+}
 class OnAddAllBlobsToSelectedList extends BlobDatabaseEvent {
 
 

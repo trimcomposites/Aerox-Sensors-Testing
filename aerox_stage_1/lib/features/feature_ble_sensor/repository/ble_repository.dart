@@ -228,6 +228,14 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
       return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
     }
   }
+  Future<EitherErr<void>> eraseBlobDB() async {
+    try {
+      return Right( blobSqliteDB.deleteDatabaseFile() );
+
+    } catch (e) {
+      return Left(BluetoothErr(errMsg: e.toString(), statusCode: 99));
+    }
+  }
 
   String _generateBlobHash(Blob blob) {
     final info = blob.blobInfo;
@@ -427,6 +435,7 @@ Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
       return BluetoothErr(errMsg: 'Error leyendo batería: ${e.toString()}', statusCode: 500);
     });
   }
+
 
 
 }

@@ -24,28 +24,47 @@ class BlobDatabasePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Blob Database'),
         actions: [
-        TextButton(
-          onPressed: () {
-            if(context.read<BlobDatabaseBloc>().state.selectedBlobs.length >= 0 ){
-              ErrorDialog.showCustomDialog(
-                context: context,
-                title: 'Subir archivos',
-                message: '¿Estás seguro de que deseas subir estos blobs a la nube? ${blobDatabaseBloc.state.filteredBlobs.length} blob(s)',
-                onOk: () {
-                  context.read<BlobDatabaseBloc>().add(
-                    OnUploadErrorLogs()
-                  );
-                  context.read<BlobDatabaseBloc>().add(
-                    OnUploadBlobsToStorage(
-                      blobs: context.read<BlobDatabaseBloc>().state.selectedBlobs,
-                    ),
-                  );
-                },
-              );
-            }else{
-              ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text('Debes Seleccionar al menos UN Blob para Subir.')) );
-            }
-      }, child: Text('Subir Archivos'))],
+          TextButton(
+            onPressed: () {
+              if(context.read<BlobDatabaseBloc>().state.selectedBlobs.length >= 0 ){
+                ErrorDialog.showCustomDialog(
+                  context: context,
+                  title: 'Subir archivos',
+                  message: '¿Estás seguro de que deseas subir estos blobs a la nube? ${blobDatabaseBloc.state.filteredBlobs.length} blob(s)',
+                  onOk: () {
+                    context.read<BlobDatabaseBloc>().add(
+                      OnUploadErrorLogs()
+                    );
+                    context.read<BlobDatabaseBloc>().add(
+                      OnUploadBlobsToStorage(
+                        blobs: context.read<BlobDatabaseBloc>().state.selectedBlobs,
+                      ),
+                    );
+                  },
+                );
+              }else{
+                ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text('Debes Seleccionar al menos UN Blob para Subir.')) );
+              }
+          }, child: Text('Subir Archivos')),
+          TextButton.icon(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              if(context.read<BlobDatabaseBloc>().state.selectedBlobs.length >= 0 ){
+                ErrorDialog.showCustomDialog(
+                  context: context,
+                  title: 'Subir archivos',
+                  message: '¿Estás seguro de que deseas borrar la base de datos? No podrás recuperar los archivos una vez borrados. Los cambios serán visibles una vez reiniciada la Aplicación.',
+                  onOk: () {
+                    context.read<BlobDatabaseBloc>().add(
+                      OnEraseBlobDatabase(),
+                    );
+                  },
+                );
+              }else{
+                ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text('Debes Seleccionar al menos UN Blob para Subir.')) );
+              }
+          }, label: Text('Eliminar BD')),
+        ],
       ),
       body: Column(
         children: [

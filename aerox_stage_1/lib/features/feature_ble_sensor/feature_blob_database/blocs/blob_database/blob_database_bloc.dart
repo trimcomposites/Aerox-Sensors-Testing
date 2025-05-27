@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
 import 'package:aerox_stage_1/domain/models/error_log.dart';
 import 'package:aerox_stage_1/domain/models/parsed_blob.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/erase_blob_db_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/export_to_csv_blob_list_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_blobs_from_db_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/get_all_error_logs_from_db_usecase.dart';
@@ -23,12 +24,14 @@ class BlobDatabaseBloc extends Bloc<BlobDatabaseEvent, BlobDatabaseState> {
   final ExportToCsvBlobListUsecase exportToCsvBlobListUsecase;
   final UploadBlobsToStorageUsecase uploadBlobsToStorageUsecase;
   final GetAllErrorLogsFromDbUsecase getAllErrorLogsFromDbUsecase;
+  final EraseBlobDbUsecase eraseBlobDbUsecase;
   
   BlobDatabaseBloc({
     required this.getAllBlobsFromDbUsecase,
     required this.exportToCsvBlobListUsecase,
     required this.uploadBlobsToStorageUsecase,
-    required this.getAllErrorLogsFromDbUsecase
+    required this.getAllErrorLogsFromDbUsecase,
+    required this.eraseBlobDbUsecase
   }) : super(BlobDatabaseState( uiState: UIState.idle() )) {
     on<OnReadBlobDatabase>((event, emit) async {
       // ignore: avoid_single_cascade_in_expression_statements
@@ -97,6 +100,16 @@ class BlobDatabaseBloc extends Bloc<BlobDatabaseEvent, BlobDatabaseState> {
           emit( state.copyWith( errorLogs: r ) );
         }
       );
+    });
+    on<OnEraseBlobDatabase>((event, emit) async{
+      // ignore: avoid_single_cascade_in_expression_statements
+      await eraseBlobDbUsecase.call( )..fold(
+        (l) => emit( state.copyWith( uiState: UIState.error( 'Error al obtener los Blobs de la base de datos.' ) ) ) , 
+        (r) {
+          emit( state.copyWith( ) );
+        }
+      );
+      add(OnReadBlobDatabase());
     });
 
 on<OnUploadBlobsToStorage>((event, emit) async {
