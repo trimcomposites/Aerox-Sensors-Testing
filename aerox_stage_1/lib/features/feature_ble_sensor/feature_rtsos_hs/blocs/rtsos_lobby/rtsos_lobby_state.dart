@@ -8,13 +8,15 @@ class RtsosLobbyState extends Equatable {
   final RacketSensorEntity? sensorEntity;
   final int recordedBlobCounter; 
   final bool isRecording; 
+  final SampleRate sampleRate;
   RtsosLobbyState({
     required this.uiState,
     required this.selectedHitType,
     this.durationSeconds = 5,
     this.sensorEntity,
     this.recordedBlobCounter = 0,
-    this.isRecording = false
+    this.isRecording = false,
+    this.sampleRate = SampleRate.hz104
   }) : hitTypes = RTSOSCommonValues.hitTypeDescriptions.keys.toList();
 
   RtsosLobbyState copyWith({
@@ -24,7 +26,8 @@ class RtsosLobbyState extends Equatable {
     int? durationSeconds,
     RacketSensorEntity? sensorEntity,
     int? recordedBlobCounter,
-    bool? isRecording
+    bool? isRecording,
+    SampleRate? sampleRate
   }) {
     return RtsosLobbyState(
       uiState: uiState ?? this.uiState,
@@ -32,7 +35,8 @@ class RtsosLobbyState extends Equatable {
       durationSeconds: durationSeconds ?? this.durationSeconds,
       sensorEntity: sensorEntity ?? this.sensorEntity,
       recordedBlobCounter: recordedBlobCounter ?? this.recordedBlobCounter,
-      isRecording: isRecording ?? this.isRecording
+      isRecording: isRecording ?? this.isRecording,
+      sampleRate: sampleRate ?? this.sampleRate
     );
   }
 
@@ -44,7 +48,8 @@ class RtsosLobbyState extends Equatable {
         durationSeconds,
         sensorEntity,
         recordedBlobCounter,
-        isRecording
+        isRecording,
+        sampleRate
       ];
 }
 

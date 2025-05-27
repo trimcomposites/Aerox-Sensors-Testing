@@ -100,7 +100,6 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   RTSOSRecordingLobby(
-                                                    sampleRate: SampleRate.khz1,
                                                   )));
                                     },
                                   ),
@@ -112,8 +111,6 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   RTSOSRecordingLobby(
-                                                    sampleRate:
-                                                        SampleRate.hz104,
                                                   )));
                                     },
                                   ),

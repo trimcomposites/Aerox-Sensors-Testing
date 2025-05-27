@@ -50,3 +50,8 @@ class OnLogFailedRecord extends RtsosLobbyEvent {
   final RacketSensor sensor;
   OnLogFailedRecord( { required this.sensor } );
 }
+
+class OnChangeSampleRate extends RtsosLobbyEvent {
+  final SampleRate sampleRate;
+  OnChangeSampleRate( { required this.sampleRate } );
+}

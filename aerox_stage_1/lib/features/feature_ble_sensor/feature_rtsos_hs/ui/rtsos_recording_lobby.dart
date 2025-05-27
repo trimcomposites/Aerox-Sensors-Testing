@@ -7,15 +7,14 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/ge
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/hit_type_select_drop_down.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/on_rtsos_recording_place_holder_screen.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_record_params_widget.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/sample_rate_selector.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_record_with_button.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/selected_racket_name.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RTSOSRecordingLobby extends StatelessWidget {
-  const RTSOSRecordingLobby({super.key, required this.sampleRate});
-
-  final SampleRate sampleRate;
+  const RTSOSRecordingLobby({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +39,14 @@ class RTSOSRecordingLobby extends StatelessWidget {
             },
             child: BlocBuilder<RtsosLobbyBloc, RtsosLobbyState>(
               builder: (context, state) {
+                final sampleRate = rtsosLobbyBloc.state.sampleRate;
                 final bool canStartRecording = 
                     !state.isRecording &&
-                    state.uiState.status != UIStatus.loading &&
-                    (
-                      (sampleRate == SampleRate.khz1) ||
-                      (sampleRate == SampleRate.hz104 && state.selectedHitType != null)
-                    );
+                    state.uiState.status != UIStatus.loading;
+                    // (
+                    //   (sampleRate == SampleRate.khz1) ||
+                    //   (sampleRate == SampleRate.hz104 && state.selectedHitType != null)
+                    // );
         
         
                 return Column(
@@ -56,7 +56,7 @@ class RTSOSRecordingLobby extends StatelessWidget {
                       SelectedRacketName(
                         showStorage: true,
                       ),
-                      RTSOSRecordParamsWidget(sampleRate: sampleRate),
+                      RTSOSRecordParamsWidget(),
                       BlocBuilder<RtsosLobbyBloc, RtsosLobbyState>(
                         builder: (context, state) {
                           return Container(
@@ -65,9 +65,10 @@ class RTSOSRecordingLobby extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 16),
-                      sampleRate != SampleRate.khz1
-                          ? HitTypeSelectDropDown()
-                          : Container(),
+                      SampleRateSelector(),
+                      // sampleRate != SampleRate.khz1
+                      //     ? HitTypeSelectDropDown()
+                      //     : Container(),
                       DurationSelectorWithInput(),
                       BleRecordWithButton(
                         text: 'INICIAR GRABACIÓN',
@@ -79,6 +80,7 @@ class RTSOSRecordingLobby extends StatelessWidget {
                                   duration: state.durationSeconds,
                                   sampleRate: sampleRate,
                                 ));
+                                print('Comenzada grabacion a ${sampleRate}');
                                 await Future.delayed(Duration(seconds: state.durationSeconds + 3));
         
                                 rtsosLobbyBloc.add(OnStopHSRecording());
@@ -86,26 +88,26 @@ class RTSOSRecordingLobby extends StatelessWidget {
                               }
                             : null, 
                       ),
-                      sampleRate == SampleRate.hz104
-                          ? BleRecordWithButton(
-                              text: 'TIEMPO MAX.',
-                              color:
-                                  canStartRecording ? Colors.blue : Colors.grey,
-                              onPressed: canStartRecording
-                                ? ()async {
-                                rtsosLobbyBloc.add(OnStartHSRecording());
-                                rtsosLobbyBloc.add(OnStartHSBlobOnLobby(
-                                  duration: 254,
-                                  sampleRate: sampleRate,
-                                ));
-                                await Future.delayed(Duration(seconds: 254 + 3));
+                      // sampleRate == SampleRate.hz104
+                      //     ? BleRecordWithButton(
+                      //         text: 'TIEMPO MAX.',
+                      //         color:
+                      //             canStartRecording ? Colors.blue : Colors.grey,
+                      //         onPressed: canStartRecording
+                      //           ? ()async {
+                      //           rtsosLobbyBloc.add(OnStartHSRecording());
+                      //           rtsosLobbyBloc.add(OnStartHSBlobOnLobby(
+                      //             duration: 254,
+                      //             sampleRate: sampleRate,
+                      //           ));
+                      //           await Future.delayed(Duration(seconds: 254 + 3));
         
-                                rtsosLobbyBloc.add(OnStopHSRecording());
-                                rtsosLobbyBloc.add(OnAddBlobRecordedCounter());
-                              }
-                                  : null,
-                            )
-                          : Container(),
+                      //           rtsosLobbyBloc.add(OnStopHSRecording());
+                      //           rtsosLobbyBloc.add(OnAddBlobRecordedCounter());
+                      //         }
+                      //             : null,
+                      //       )
+                      //     : Container(),
                     ]);
               },
             ),

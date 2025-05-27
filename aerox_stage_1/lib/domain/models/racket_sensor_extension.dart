@@ -23,6 +23,8 @@ SensorPosition getProvisionalSensorPosition(BluetoothDevice device) {
       return SensorPosition.left;
     case '4DA3A35D-2605-51E2-DF3A-B6FEB3E48666':
       return SensorPosition.right;
+    case '6F577C7A-EE1F-76F2-1959-9E240A2DB54F':
+      return SensorPosition.right;
     case '2558C219-26E1-5D9C-A262-D0485D3F1F18':
       return SensorPosition.down;
     case '6B967F20-F374-20B4-9C0F-CFC09623572E':

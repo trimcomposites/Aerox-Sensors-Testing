@@ -241,7 +241,7 @@ Future<EitherErr<List<Blob>>> readAllBlobs(
 
   Future<EitherErr<void>> setTimestamp(RacketSensor sensor, {DateTime? dateTime}) async {
     return EitherCatch.catchAsync<void, BluetoothErr>(() async {
-      final now = (dateTime ?? DateTime.now().toUtc());
+      final now = (dateTime ?? DateTime.now());
 
       final int timestampSeconds = now.millisecondsSinceEpoch ~/ 1000;
       final int ms = now.microsecond ~/ 1000;

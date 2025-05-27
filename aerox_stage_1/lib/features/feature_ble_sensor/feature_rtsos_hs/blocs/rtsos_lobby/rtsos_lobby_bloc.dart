@@ -91,7 +91,12 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
         }
       }
     });
-
+    on<OnChangeSampleRate>((event, emit) {
+      emit(state.copyWith(
+          sampleRate: event.sampleRate,
+          
+        ));
+    });
       on<OnAutoDisconnectSelectedRacketLobby>((event, emit) async {
       final selectedRacket = state.sensorEntity;
       if (selectedRacket != null) {
