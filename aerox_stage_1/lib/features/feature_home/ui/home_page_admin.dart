@@ -35,7 +35,7 @@ class HomePageAdmin extends StatelessWidget {
               case HomeTab.home:
                 return HomePageAdminView(homeScreenBloc: homeScreenBloc, onback: onback);
               case HomeTab.database:
-                return BlobDatabasePage(); // tu vista de base de datos
+                return BlobDatabasePage();
             }
           },
         ),

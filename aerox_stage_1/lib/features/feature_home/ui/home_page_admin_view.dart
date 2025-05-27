@@ -6,35 +6,32 @@ import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_connect_bu
 import 'package:aerox_stage_1/common/ui/selected_racket_widget.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 class HomePageAdminView extends StatelessWidget {
   const HomePageAdminView({
     super.key,
     required this.homeScreenBloc,
-    required this.onback
+    required this.onback,
   });
 
   final HomeScreenBloc homeScreenBloc;
   final void Function()? onback;
+
   @override
   Widget build(BuildContext context) {
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 30),
-        child: BlocBuilder<HomeScreenBloc, HomeScreenState>(
-          builder: (context, state) {
+    return Scaffold(
+      backgroundColor: Colors.white, // fondo blanco forzado
+      body: BlocBuilder<HomeScreenBloc, HomeScreenState>(
+        builder: (context, state) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-    
-              BluetoothConnectButton(
-                position: 250,
+              Align(
+                alignment: Alignment.center,
+                child: BluetoothConnectButton(),
               ),
-            ]
+            ],
           );
-          },
-        ),
+        },
       ),
     );
   }

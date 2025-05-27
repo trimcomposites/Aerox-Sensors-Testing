@@ -10,24 +10,24 @@ class BleStorageLoadingIndicator extends StatelessWidget {
   final bool showBackGround;
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Container(
-        color:
-            showBackGround ? Colors.black.withAlpha(128) : Colors.transparent,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              BlocBuilder<BleStorageBloc, BleStorageState>(
-                builder: (context, state) {
-                  return Text( 'Blob leídos ${state.blobsRead}/${state.totalBlobs}' );
-                },
-              )
-            ],
-          ),
+    return Container(
+      width: 100,
+      height:100,
+      color: showBackGround ? Colors.black.withAlpha(128) : Colors.transparent,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            BlocBuilder<BleStorageBloc, BleStorageState>(
+              builder: (context, state) {
+                return Text('Blobs leídos ${state.blobsRead}/${state.totalBlobs}');
+              },
+            ),
+          ],
         ),
       ),
-    );
+);
+
   }
 }

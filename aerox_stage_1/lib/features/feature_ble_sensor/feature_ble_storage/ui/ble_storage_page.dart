@@ -37,19 +37,20 @@ class BleStoragePage extends StatelessWidget {
               );
             }
           },
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.9,
-            width:MediaQuery.of(context).size.height * 0.9,  
-            child: BlocBuilder<BleStorageBloc, BleStorageState>(
-              builder: (context, state) {
-                return state.uiState.status == UIState.loading()
-                    ? const BleStorageLoadingIndicator()
-                    : const BlobStorageList();
-              },
-            ),
+          child: BlocBuilder<BleStorageBloc, BleStorageState>(
+            builder: (context, state) {
+              return Stack(
+                children: [
+                  const BlobStorageList(),
+                  if (state.uiState.status == UIState.loading())
+                    const BleStorageLoadingIndicator(),
+                ],
+              );
+            },
+          )
+
           ),
         ),
-      ),
     );
   }
 }

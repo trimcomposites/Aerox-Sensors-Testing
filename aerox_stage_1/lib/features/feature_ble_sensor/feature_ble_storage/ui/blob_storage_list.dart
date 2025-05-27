@@ -10,7 +10,6 @@ import 'package:aerox_stage_1/features/feature_home/ui/home_page_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-
 class BlobStorageList extends StatelessWidget {
   const BlobStorageList({super.key});
 
@@ -18,44 +17,36 @@ class BlobStorageList extends StatelessWidget {
   Widget build(BuildContext context) {
     final bleStorageBloc = BlocProvider.of<BleStorageBloc>(context);
     final blobsNum = bleStorageBloc.state.blobsBySensor.values.expand((list) => list).toList().length;
-    
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 8),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
 
-                  BlocBuilder<BleStorageBloc, BleStorageState>(
-                    builder: (context, state) {
-                      return 
-                      state.uiState.status != UIStatus.loading
-                      ? Center(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          child: Column( 
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add_chart, color: Colors.green, size: 25,),
-                              Text( '¡Se han leído correctamente ${blobsNum} Blobs!', style: TextStyle( fontSize: 20 ), textAlign: TextAlign.center, ),
-                          ],
-                                              ),
-                        ),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            BlocBuilder<BleStorageBloc, BleStorageState>(
+              builder: (context, state) {
+                return state.uiState.status != UIStatus.loading
+                    ? Column(
+                        children: [
+                          const Icon(Icons.add_chart, color: Colors.green, size: 25),
+                          Text(
+                            '¡Se han leído correctamente $blobsNum Blobs!',
+                            style: const TextStyle(fontSize: 20),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       )
-                    : Center(child: Text( 'Leyendo Blobs de Storage...', style: TextStyle( fontSize: 20 ), ));
-                  },
-                ),
-
-                BlobList(),
-
-              ],
+                    : const Text(
+                        'Leyendo Blobs de Storage...',
+                        style: TextStyle(fontSize: 20),
+                      );
+              },
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            const BlobList(),
+          ],
+        ),
       ),
     );
   }
