@@ -6,6 +6,7 @@ import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/repository/battery_level_measurement.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/blob_data_parser.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/ble_service.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/repository/local/to_csv_blob.dart';
@@ -391,7 +392,41 @@ Future<EitherErr<void>> eraseAllBlobs(RacketSensor sensor) {
     }
     return result;
   }
+  
+  Future<EitherErr<BatteryLevelMeasurement>> getBatteryLevel(BluetoothDevice device) async {
+    return EitherCatch.catchAsync<BatteryLevelMeasurement, BluetoothErr>(() async {
+      if (device.isConnected == false) {
+        throw BluetoothErr(errMsg: 'Dispositivo no conectado', statusCode: 1);
+      }
+
+      final serviceUuid = Guid('180f');
+      final characteristicUuid = Guid('2a19');
+
+      final services = await device.discoverServices();
+      final batteryService = services.firstWhere(
+        (s) => s.uuid == serviceUuid,
+        orElse: () => throw BluetoothErr(
+          errMsg: 'Servicio de batería no encontrado',
+          statusCode: 404,
+        ),
+      );
+
+      final batteryChar = batteryService.characteristics.firstWhere(
+        (c) => c.uuid == characteristicUuid,
+        orElse: () => throw BluetoothErr(
+          errMsg: 'Característica de nivel de batería no encontrada',
+          statusCode: 404,
+        ),
+      );
+
+      final value = await batteryChar.read();
+      final measurement = BatteryLevelMeasurement.parse(value);
+      print('🔋 Nivel batería: ${measurement.value}, mV: ${measurement.mvolts}, % estimado: ${measurement.battPercent}');
+      return measurement;
+    }, (e) {
+      return BluetoothErr(errMsg: 'Error leyendo batería: ${e.toString()}', statusCode: 500);
+    });
+  }
 
 
 }
- 

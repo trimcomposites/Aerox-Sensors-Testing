@@ -55,3 +55,8 @@ class OnChangeSampleRate extends RtsosLobbyEvent {
   final SampleRate sampleRate;
   OnChangeSampleRate( { required this.sampleRate } );
 }
+
+class OnGetSensorBatteryLevelLobby extends RtsosLobbyEvent {
+  final  RacketSensor sensor;
+  OnGetSensorBatteryLevelLobby( { required this.sensor } );
+}

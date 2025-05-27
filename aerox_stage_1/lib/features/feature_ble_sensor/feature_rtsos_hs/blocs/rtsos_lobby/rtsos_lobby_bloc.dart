@@ -3,6 +3,7 @@ import 'package:aerox_stage_1/domain/models/error_log.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_num_blobs_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_sensor_battery_level_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/blob_database/add_error_log_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/bluetooth/disconnect_from_racket_sensor_usecase.dart';
@@ -19,6 +20,7 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
   final StartOfflineRTSOSUseCase startOfflineRTSOSUseCase;
   final GetSelectedBluetoothRacketUsecase getSelectedBluetoothRacketUsecase;
   final DisconnectFromRacketSensorUsecase disconnectFromRacketSensorUsecase;
+  final GetSensorBatteryLevelUsecase getSensorBatteryLevelUsecase;
   final GetNumBlobsUsecase getNumBlobsUsecase;
   final AddErrorLogUsecase addErrorLogUsecase;
   RtsosLobbyBloc({
@@ -26,7 +28,8 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
     required this.getSelectedBluetoothRacketUsecase,
     required this.disconnectFromRacketSensorUsecase,
     required this.getNumBlobsUsecase,
-    required this.addErrorLogUsecase
+    required this.addErrorLogUsecase,
+    required this.getSensorBatteryLevelUsecase
   }) : super(RtsosLobbyState( selectedHitType: null, uiState: UIState.idle() )) {
     on<OnHitTypeValueChanged>((event, emit) {
       emit(state.copyWith(
@@ -126,6 +129,31 @@ class RtsosLobbyBloc extends Bloc<RtsosLobbyEvent, RtsosLobbyState> {
         recordedBlobCounter: 0
       ));
     });
+        on<OnGetSensorBatteryLevelLobby>((event, emit) async {
+          emit(state.copyWith( uiState: UIState.loading() ));
+      final result = await getSensorBatteryLevelUsecase.call(event.sensor);
+    
+      result.fold(
+        (err) => emit(state.copyWith(uiState: UIState.error(err.errMsg))),
+        (batt) {
+          final updatedSensor = event.sensor.copyWith(batteryLevel: batt.battPercent.round());
+
+          final updatedEntity = state.sensorEntity?.copyWith(
+            sensors: state.sensorEntity!.sensors.map((s) {
+              return s.id == updatedSensor.id ? updatedSensor : s;
+            }).toList(),
+          );
+
+          emit(state.copyWith(
+            sensorEntity: updatedEntity,
+            uiState: UIState.idle(),
+          ));
+
+          print('🔋 Batería actualizada: ${batt.battPercent.toStringAsFixed(1)}% para ${event.sensor.name}');
+        },
+      );
+    });
+
 on<OnGetSensorsNumBlobs>((event, emit) async {
   final currentEntity = state.sensorEntity;
   if (currentEntity == null) return;

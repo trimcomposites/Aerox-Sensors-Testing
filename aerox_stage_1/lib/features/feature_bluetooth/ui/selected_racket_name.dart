@@ -65,6 +65,11 @@ class SelectedRacketName extends StatelessWidget {
                               style:
                                   TextStyle(fontSize: showStorage ? 10 : null),
                             ),
+                            SizedBox( width: 20, ),
+                            Icon( Icons.battery_0_bar,  size: 18,  color: Colors.black,),
+                            sensor.batteryLevel != null
+                            ? Text( '${sensor.batteryLevel.toString()}%'  )
+                            : Container(),
                             const Spacer(),
                             showStorage
                                 ? BlocBuilder<RtsosLobbyBloc, RtsosLobbyState>(

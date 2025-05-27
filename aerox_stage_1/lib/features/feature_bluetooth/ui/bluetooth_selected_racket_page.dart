@@ -1,6 +1,7 @@
 import 'package:aerox_stage_1/common/ui/error_dialog.dart';
 import 'package:aerox_stage_1/common/ui/loading_indicator.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
+import 'package:aerox_stage_1/common/utils/bloc_periodic_event_dispatcher.dart';
 import 'package:aerox_stage_1/domain/models/blob_data_extension.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
@@ -30,6 +31,9 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
         if (state.selectedRacketEntity != null) {
           for (var sensor in state.selectedRacketEntity!.sensors) {
             selectedEntityPageBloc.add(OnSetTimeStamp(sensor: sensor));
+          }
+          for (var sensor in state.selectedRacketEntity!.sensors) {
+            selectedEntityPageBloc.add(OnGetSensorBatteryLevel(sensor: sensor));
           }
         }
         if (state.uiState.status == UIStatus.error) {
@@ -85,6 +89,14 @@ class BluetoothSelectedRacketPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        BlocPeriodicEventDispatcher<SelectedEntityPageBloc, SelectedEntityPageEvent>(
+                          interval: const Duration(minutes: 2),
+                          bloc: BlocProvider.of<SelectedEntityPageBloc>(context),
+                          eventsBuilder: () => state.selectedRacketEntity!.sensors
+                              .map((sensor) => OnGetSensorBatteryLevel(sensor: sensor))
+                              .toList(),
+                        ),
+
                         BlocBuilder<SelectedEntityPageBloc,
                             SelectedEntityPageState>(
                           builder: (context, state) {

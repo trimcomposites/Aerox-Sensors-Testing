@@ -3,6 +3,7 @@ import 'package:aerox_stage_1/domain/models/blob.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor.dart';
 import 'package:aerox_stage_1/domain/models/racket_sensor_entity.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/erase_storage_data_usecase.dart';
+import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_sensor_battery_level_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/get_sensor_timestamp_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/parse_blob_usecase.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/read_storage_data_usecase.dart';
@@ -30,6 +31,7 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
   final EraseStorageDataUsecase eraseStorageDataUsecase;
   final SetSensorTimestampUseCase setTimestampUseCase;
   final GetSensorTimestampUseCase getTimestampUseCase;
+  final GetSensorBatteryLevelUsecase getSensorBatteryLevelUsecase;
 
   SelectedEntityPageBloc({
     required this.disconnectFromRacketSensorUsecase,
@@ -41,7 +43,8 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
     required this.parseBlobUsecase,
     required this.eraseStorageDataUsecase,
     required this.setTimestampUseCase,
-    required this.getTimestampUseCase
+    required this.getTimestampUseCase,
+    required this.getSensorBatteryLevelUsecase
   }) : super(SelectedEntityPageState(uiState: UIState.idle())) {
 
     on<OnDisconnectSelectedRacketSelectedEntityPage>((event, emit) async {
@@ -103,6 +106,31 @@ class SelectedEntityPageBloc extends Bloc<SelectedEntityPageEvent, SelectedEntit
         ),
       );
     });
+
+  on<OnGetSensorBatteryLevel>((event, emit) async {
+    final result = await getSensorBatteryLevelUsecase.call(event.sensor);
+
+    result.fold(
+      (err) => emit(state.copyWith(uiState: UIState.error(err.errMsg))),
+      (batt) {
+        final updatedSensor = event.sensor.copyWith(batteryLevel: batt.battPercent.round());
+
+        final updatedEntity = state.selectedRacketEntity?.copyWith(
+          sensors: state.selectedRacketEntity!.sensors.map((s) {
+            return s.id == updatedSensor.id ? updatedSensor : s;
+          }).toList(),
+        );
+
+        emit(state.copyWith(
+          selectedRacketEntity: updatedEntity,
+          uiState: UIState.idle(),
+        ));
+
+        print('🔋 Batería actualizada: ${batt.battPercent.toStringAsFixed(1)}% para ${event.sensor.name}');
+      },
+    );
+  });
+
 
     on<OnReadStorageData>((event, emit) async {
       emit(state.copyWith(uiState: UIState.loading()));

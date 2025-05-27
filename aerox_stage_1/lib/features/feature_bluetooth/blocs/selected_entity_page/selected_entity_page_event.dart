@@ -53,6 +53,11 @@ class OnReadCharacteristicsFromSensor extends SelectedEntityPageEvent {
 
   OnReadCharacteristicsFromSensor({required this.sensor});
 }
+class OnGetSensorBatteryLevel extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnGetSensorBatteryLevel({required this.sensor});
+}
 class OnGetBlobPackets extends SelectedEntityPageEvent {
   final RacketSensor sensor;
 

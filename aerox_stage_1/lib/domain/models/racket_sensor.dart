@@ -17,7 +17,7 @@ class RacketSensor extends Equatable {
   final Map<String, BluetoothCharacteristic> characteristics;
   final Map<int, BlobCheckStatus> numBlobs;
   final int numRetries;
-
+  final int? batteryLevel;
 
   const RacketSensor({
     required this.device,
@@ -27,8 +27,9 @@ class RacketSensor extends Equatable {
     required this.connectionState,
     this.services = const [],
     this.characteristics = const {},
-    this.numBlobs = const { 0 : BlobCheckStatus.ok },
-    this.numRetries=0
+    this.numBlobs = const {0: BlobCheckStatus.ok},
+    this.numRetries = 0,
+    this.batteryLevel, 
   });
 
   RacketSensor copyWith({
@@ -40,7 +41,8 @@ class RacketSensor extends Equatable {
     List<BluetoothService>? services,
     Map<String, BluetoothCharacteristic>? characteristics,
     Map<int, BlobCheckStatus>? numBlobs,
-    int? numRetries
+    int? numRetries,
+    int? batteryLevel, 
   }) {
     return RacketSensor(
       device: device ?? this.device,
@@ -51,20 +53,22 @@ class RacketSensor extends Equatable {
       services: services ?? this.services,
       characteristics: characteristics ?? this.characteristics,
       numBlobs: numBlobs ?? this.numBlobs,
-      numRetries: numRetries ?? this.numRetries
+      numRetries: numRetries ?? this.numRetries,
+      batteryLevel: batteryLevel ?? this.batteryLevel,
     );
   }
 
   @override
   List<Object?> get props => [
-    device,
-    name,
-    position,
-    id,
-    connectionState,
-    services,
-    characteristics,
-    numBlobs,
-    numRetries
-  ];
+        device,
+        name,
+        position,
+        id,
+        connectionState,
+        services,
+        characteristics,
+        numBlobs,
+        numRetries,
+        batteryLevel,
+      ];
 }

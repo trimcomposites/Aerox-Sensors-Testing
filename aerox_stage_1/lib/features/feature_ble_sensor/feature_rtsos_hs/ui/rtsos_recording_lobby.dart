@@ -1,5 +1,6 @@
 import 'package:aerox_stage_1/common/ui/error_dialog.dart';
 import 'package:aerox_stage_1/common/utils/bloc/UIState.dart';
+import 'package:aerox_stage_1/common/utils/bloc_periodic_event_dispatcher.dart';
 import 'package:aerox_stage_1/domain/use_cases/ble_sensor/start_offline_rtsos_usecase.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/duration_selector_with_input.dart';
@@ -9,6 +10,7 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/on
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_record_params_widget.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/sample_rate_selector.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_record_with_button.dart';
+import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/selected_racket_name.dart';
 import 'package:aerox_stage_1/features/feature_login/ui/login_barrel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,6 +54,13 @@ class RTSOSRecordingLobby extends StatelessWidget {
                 return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      BlocPeriodicEventDispatcher<SelectedEntityPageBloc, SelectedEntityPageEvent>(
+                          interval: const Duration(minutes: 2),
+                          bloc: BlocProvider.of<SelectedEntityPageBloc>(context),
+                          eventsBuilder: () => state.sensorEntity!.sensors
+                              .map((sensor) => OnGetSensorBatteryLevel(sensor: sensor))
+                              .toList(),
+                        ),
                       GetNumBobsEventTimer(),
                       SelectedRacketName(
                         showStorage: true,
