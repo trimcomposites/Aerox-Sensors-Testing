@@ -5,6 +5,11 @@ class SelectedEntityPageEvent {}
 class OnDisconnectSelectedRacketSelectedEntityPage extends SelectedEntityPageEvent {
   
 }
+class OnAutoDisconnectSelectedRacket extends SelectedEntityPageEvent {
+  final String  errorMsg;
+
+  OnAutoDisconnectSelectedRacket({required this.errorMsg});
+}
 class OnShowConnectionError extends SelectedEntityPageEvent {
   final String errorMsg;
 
@@ -28,6 +33,16 @@ class OnReadStorageData extends SelectedEntityPageEvent {
 
   OnReadStorageData({required this.sensor});
 }
+class OnSetTimeStamp extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnSetTimeStamp({required this.sensor});
+}
+class OnGetTimeStamp extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnGetTimeStamp({required this.sensor});
+}
 class OnStartStreamRTSOS extends SelectedEntityPageEvent {
   final RacketSensor sensor;
 
@@ -37,4 +52,24 @@ class OnReadCharacteristicsFromSensor extends SelectedEntityPageEvent {
   final RacketSensor sensor;
 
   OnReadCharacteristicsFromSensor({required this.sensor});
+}
+class OnGetSensorBatteryLevel extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnGetSensorBatteryLevel({required this.sensor});
+}
+class OnGetBlobPackets extends SelectedEntityPageEvent {
+  final RacketSensor sensor;
+
+  OnGetBlobPackets({required this.sensor});
+}
+class OnParseBlob extends SelectedEntityPageEvent {
+  final Blob blob;
+
+  OnParseBlob({required this.blob});
+}
+class OnEraseStorageData extends SelectedEntityPageEvent {
+
+  OnEraseStorageData();
+
 }

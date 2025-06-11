@@ -2,20 +2,32 @@ import 'package:aerox_stage_1/common/services/aerox_asset_bundle.dart';
 import 'package:aerox_stage_1/common/services/injection_container.dart';
 import 'package:aerox_stage_1/common/services/router.dart';
 import 'package:aerox_stage_1/features/feature_3d/blocs/bloc/3d_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/blocs/blob_database/blob_database_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_blob_database/repository/local/blobs_sqlite_db.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/blocs/rtsos_lobby/rtsos_lobby_bloc.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_ble_storage/blocs/ble_storage/ble_storage_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/selected_entity_page/selected_entity_page_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/blocs/sensors/sensors_bloc.dart';
 import 'package:aerox_stage_1/features/feature_bluetooth/ui/bluetooth_selected_racket_page.dart';
-import 'package:aerox_stage_1/features/feature_comments/blocs/bloc/comments_bloc.dart';
-import 'package:aerox_stage_1/features/feature_details/blocs/details_screen/details_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/blocs/racket/racket_bloc.dart';
 import 'package:aerox_stage_1/features/feature_home/blocs/home_screen/home_screen_bloc.dart';
-import 'package:aerox_stage_1/features/feature_select/blocs/select_screen/select_screen_bloc.dart';
 import 'package:aerox_stage_1/features/feature_racket/repository/local/rackets_sqlite_db.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/feature_login/ui/login_barrel.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    await FirebaseAppCheck.instance.activate(
+  androidProvider: AndroidProvider.debug,
+  appleProvider: AppleProvider.debug,
+);
+
+    await FirebaseAuth.instance.signInAnonymously();
+
   await dependencyInjectionInitialize();
   await sl.allReady();
 
@@ -29,21 +41,10 @@ void main() async{
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: ( context )=>sl<UserBloc>()..add( OnCheckUserIsSignedIn() ) 
-          ),
-          BlocProvider(
             create: ( context )=>sl<RacketBloc>()
           ),
           BlocProvider(
-            create: ( context )=>sl<DetailsScreenBloc>() 
-          ),
-          BlocProvider(
             create: ( context )=>sl<HomeScreenBloc>() 
-          ),
-          BlocProvider(
-            create: ( context )=>sl<SelectScreenBloc>() 
-          ),
-          BlocProvider( create: ( context )=>sl<CommentsBloc>() 
           ),
           BlocProvider(
             create: ( context )=>sl<Model3DBloc>() 
@@ -52,8 +53,18 @@ void main() async{
             create: ( context )=>sl<SensorsBloc>() 
           ),
           BlocProvider(
-            create: ( context )=>sl<SelectedEntityPageBloc>() 
+            create: ( context )=>sl<SelectedEntityPageBloc>()  
           ),
+          BlocProvider(
+            create: ( context )=>sl<RtsosLobbyBloc>() 
+          ),
+          BlocProvider(
+            create: ( context )=>sl<BleStorageBloc>() 
+          ),
+          BlocProvider(
+            create: ( context )=>sl<BlobDatabaseBloc>() 
+          ),
+
       ],
       child: const MyApp()),
     )
@@ -68,8 +79,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-      final RacketsSQLiteDB db = sl();
+          final RacketsSQLiteDB db = sl();
+      final BlobSQLiteDB blobDb = sl();
+      //blobDb.clearParsedBlobs();
+      //blobDb.deleteDatabaseFile();
       //db.checkAndDeleteDB();
       //db.clearDatabase();
       //db.checkAndDeleteDB();

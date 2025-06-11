@@ -15,7 +15,7 @@ class SensorsState extends Equatable {
     return SensorsState(
       sensors: sensors ?? this.sensors,
       uiState: uiState ?? this.uiState,
-      selectedRacketEntity: selectedRacketEntity
+      selectedRacketEntity: selectedRacketEntity ?? this.selectedRacketEntity
     );
   }
   @override

@@ -1,22 +1,28 @@
 part of 'home_screen_bloc.dart';
 
+enum HomeTab { home, database }
+
 class HomeScreenState extends Equatable {
   final Racket? myRacket;
   final UIState uiState;
+  final HomeTab selectedTab; 
+
   const HomeScreenState({
     this.myRacket,
-    required this.uiState, 
+    required this.uiState,
+    this.selectedTab = HomeTab.home, 
   });
   
-  copyWith({
+  HomeScreenState copyWith({
     Racket? racket,
-    UIState? uiState
+    UIState? uiState,
+    HomeTab? selectedTab, 
   }) => HomeScreenState(
-    myRacket: racket,
-    uiState: uiState ?? this.uiState
+    myRacket: racket ?? myRacket,
+    uiState: uiState ?? this.uiState,
+    selectedTab: selectedTab ?? this.selectedTab, 
   );
   
   @override
-  List<Object?> get props => [ myRacket, uiState ];
+  List<Object?> get props => [myRacket, uiState, selectedTab]; 
 }
-

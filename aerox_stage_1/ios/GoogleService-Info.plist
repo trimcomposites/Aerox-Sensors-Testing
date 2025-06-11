@@ -2,22 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
-	<string>300686522146-gcb4cnrdca9vlcc4mrlmrj6proi3m0bo.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.300686522146-gcb4cnrdca9vlcc4mrlmrj6proi3m0bo</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBkl13kogJtqN6k7vUnJtjB5yq7F7QbNd8</string>
+	<string>AIzaSyA2aCwt9ZMN8KT-oyAlwvlf7aDyr060cjg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>300686522146</string>
+	<string>308022027062</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.labtend.aerox</string>
+	<string>com.labtend.aeroxsensortesting</string>
 	<key>PROJECT_ID</key>
-	<string>aerox-stage1</string>
+	<string>aerox-sensor-testing</string>
 	<key>STORAGE_BUCKET</key>
-	<string>aerox-stage1.firebasestorage.app</string>
+	<string>aerox-sensor-testing.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:300686522146:ios:14d2152b3320a5ef48577b</string>
+	<string>1:308022027062:ios:d34f1747419b12d9304997</string>
 </dict>
 </plist>

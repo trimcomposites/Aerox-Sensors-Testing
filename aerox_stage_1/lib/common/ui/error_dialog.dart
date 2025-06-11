@@ -1,3 +1,4 @@
+import 'package:aerox_stage_1/features/feature_home/ui/home_page.dart';
 import 'package:flutter/material.dart';
 
 class ErrorDialog {
@@ -28,14 +29,16 @@ class ErrorDialog {
               ),
             ],
           ),
-          actions: [
+           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context, true);
-                _isDialogOpen = false; 
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  (route) => false,
+                );
+                _isDialogOpen = false;
               },
-              child: Text("OK", style: TextStyle(color: Colors.blue)),
+              child: const Text("OK", style: TextStyle(color: Colors.blue)),
             ),
           ],
         ),
@@ -43,6 +46,50 @@ class ErrorDialog {
 
         _isDialogOpen = false;
       });
+    });
+  }
+  static void showCustomDialog({
+    required BuildContext context,
+    required String message,
+    String title = 'Mensaje',
+    VoidCallback? onOk,
+  }) {
+    if (_isDialogOpen) return;
+    _isDialogOpen = true;
+
+    Future.microtask(() {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.info, color: Colors.blue, size: 40),
+              const SizedBox(height: 10),
+              Text(
+                message,
+                style: const TextStyle(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _isDialogOpen = false;
+                if (onOk != null) onOk();
+              },
+              child: const Text("OK", style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+        ),
+      ).then((_) => _isDialogOpen = false);
     });
   }
 }

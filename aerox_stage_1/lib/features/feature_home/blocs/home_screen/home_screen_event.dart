@@ -21,3 +21,8 @@ class OnStartErrorHome extends HomeScreenEvent {
 
 }
 class OnStopErrorHome extends HomeScreenEvent {}
+
+class OnChangeHomeTab extends HomeScreenEvent {
+  final HomeTab tab;
+  OnChangeHomeTab(this.tab);
+}

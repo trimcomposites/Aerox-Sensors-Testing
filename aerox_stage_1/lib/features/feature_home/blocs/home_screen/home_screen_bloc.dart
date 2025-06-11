@@ -19,9 +19,13 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       // ignore: avoid_single_cascade_in_expression_statements
       await getSelectedRacketUsecase()..fold(
         (l) => ( emit(state.copyWith( racket: null, uiState: UIState.error( l.errMsg ) )) ),
-        (r) => ( emit( state.copyWith( racket: r, uiState: UIState.success() ) ) )
+        (r) => ( emit( state.copyWith( racket: r, uiState: UIState.success() )))
       );
     });
+    on<OnChangeHomeTab>((event, emit) {
+      emit(state.copyWith(selectedTab: event.tab));
+    });
+
   }
   
 
