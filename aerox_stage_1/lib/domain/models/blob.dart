@@ -118,44 +118,78 @@ class BlobInfo {
     required this.closedAt,
   });
 
-  static PacketInfo? fromRaw(List<int> value) {
-    if (value.length < 15) return null;
+static PacketInfo? fromRaw(List<int> value) {
+  if (value.length < 15) {
+    print('[PacketInfo.fromRaw] value too short: len=${value.length}, value=$value');
+    return null;
+  }
 
-    final address = _toIntLE(value.sublist(0, 3));
-    final dataAddress = _toIntLE(value.sublist(3, 6));
-    final packetType = value[6];
-    final blobType = value[7];
-    final packetSize = _toIntLE(value.sublist(8, 11));
-    final timestamp = _toIntLE(value.sublist(11, 15));
+  final address = _toIntLE(value.sublist(0, 3));
+  final dataAddress = _toIntLE(value.sublist(3, 6));
+  final packetType = value[6];
+  final blobType = value[7];
+  final packetSize = _toIntLE(value.sublist(8, 11));
+  final timestamp = _toIntLE(value.sublist(11, 15));
 
-    int ms = (value.length >= 17) ? _toIntLE(value.sublist(15, 17)) : 0;
-    ms = ms > 999 ? 0 : ms;
+  int ms = (value.length >= 17) ? _toIntLE(value.sublist(15, 17)) : 0;
+  ms = ms > 999 ? 0 : ms;
 
-    final createdAt = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000 + ms, isUtc: true);
+  final createdAt = DateTime.fromMillisecondsSinceEpoch(
+    timestamp * 1000 + ms,
+    isUtc: true,
+  );
 
-    int timestampClosed = 0, msClosed = 0;
-    DateTime closedAt = createdAt;
+  int timestampClosed = 0, msClosed = 0;
+  DateTime closedAt = createdAt;
 
-    if (value.length >= 21) {
-      timestampClosed = _toIntLE(value.sublist(17, 21));
-      msClosed = (value.length >= 23) ? _toIntLE(value.sublist(21, 23)) : 0;
-      closedAt = DateTime.fromMillisecondsSinceEpoch(timestampClosed * 1000 + msClosed, isUtc: true);
-    }
+  if (value.length >= 21) {
+    timestampClosed = _toIntLE(value.sublist(17, 21));
+    msClosed = (value.length >= 23) ? _toIntLE(value.sublist(21, 23)) : 0;
 
-    return PacketInfo(
-      address: address,
-      dataAddress: dataAddress,
-      packetType: packetType,
-      blobType: blobType,
-      packetSize: packetSize,
-      timestamp: timestamp,
-      ms: ms,
-      createdAt: createdAt,
-      timestampClosed: timestampClosed,
-      msClosed: msClosed,
-      closedAt: closedAt,
+    closedAt = DateTime.fromMillisecondsSinceEpoch(
+      timestampClosed * 1000 + msClosed,
+      isUtc: true,
     );
   }
+
+  // =========================
+  // DEBUG PRINT
+  // =========================
+  print('''
+[PacketInfo.fromRaw]
+raw (dec): $value
+raw (hex): ${value.map((e) => e.toRadixString(16).padLeft(2, '0')).join(' ')}
+
+address        : $address
+dataAddress    : $dataAddress
+packetType     : $packetType
+blobType       : $blobType
+packetSize     : $packetSize
+timestamp      : $timestamp
+ms             : $ms
+createdAt (UTC): $createdAt
+
+timestampClosed: $timestampClosed
+msClosed       : $msClosed
+closedAt (UTC) : $closedAt
+-----------------------------
+''');
+
+  return PacketInfo(
+    address: address,
+    dataAddress: dataAddress,
+    packetType: packetType,
+    blobType: blobType,
+    packetSize: packetSize,
+    timestamp: timestamp,
+    ms: ms,
+    createdAt: createdAt,
+    timestampClosed: timestampClosed,
+    msClosed: msClosed,
+    closedAt: closedAt,
+  );
+}
+
 static List<PacketInfo> fromMultipleRaw(List<int> data) {
   final result = <PacketInfo>[];
   int offset = 0;

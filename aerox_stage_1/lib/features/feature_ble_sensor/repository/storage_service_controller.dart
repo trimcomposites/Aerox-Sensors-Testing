@@ -84,6 +84,7 @@ Stream<List<Blob>> fetchBlobs(
     }
 
     final blob = Blob(blobInfo: blobInfo, packets: packets);
+       print( "BLOB $blob BLOBINFO $blobInfo");
     if (packets.isNotEmpty) {
       blob.createdAt = packets.first.packetInfo?.createdAt;
       blob.closedAt = packets.last.packetInfo?.closedAt;
@@ -271,6 +272,7 @@ Future<Uint8List> readRangeDataAsPython({
       characteristicUuid: Guid(StorageServiceConstants.STORAGE_CONTROL_POINT_CHARACTERISTIC_UUID),
       cmd: [StorageServiceConstants.STORAGE_CP_OP_FETCH_FIRST_BLOB],
     );
+    print("RESPONSE $response");
     return response.toBlobInfo();
   }
 
@@ -343,6 +345,7 @@ Future<List<PacketInfo>> fetchAllPacketInfos(BluetoothDevice device) async {
       );
 
       if (responses.isEmpty) break;
+      print("RESPONSE PACKET $responses");
 
       final rawBytes = responses.expand((e) => e.skip(2)).toList();
       final packetInfos = PacketInfo.fromMultipleRaw(rawBytes);

@@ -70,6 +70,7 @@ class BlobDataParser {
       }
     }
 
+    _logParsedBlob('parseHsRtsosBlob', blob, result);
     return result;
   }
 
@@ -137,7 +138,7 @@ class BlobDataParser {
         globalSampleIndex++;
       }
     }
-
+    _logParsedBlob('parseHs1kzRtsosBlob', blob, result);
     return result;
   }
 
@@ -153,4 +154,32 @@ String formatPostgresTimestamp(DateTime dt) {
     return byteData.getInt16(0, Endian.little);
   }
   
+  /// Imprime el blob crudo y las primeras filas ya parseadas.
+  void _logParsedBlob(String source, Blob blob, List<Map<String, dynamic>> rows) {
+    print('=== $source -> parsed ${rows.length} rows ===');
+    final info = blob.blobInfo;
+    print(
+        'blobType=${info.blobType} size=${info.blobSize} numPackets=${info.blobNumPackets} extraData=${info.extraData}');
+    for (var i = 0; i < blob.packets.length; i++) {
+      final p = blob.packets[i];
+      print(
+          'packet[$i] info=${p.packetInfo} dataLen=${p.packetData?.length}');
+    }
+    if (rows.isEmpty) {
+      print('parsed rows empty');
+      return;
+    }
+    print('headers: ${rows.first.keys.toList()}');
+    final maxRows = rows.length > 10 ? 10 : rows.length;
+    for (var i = 0; i < maxRows; i++) {
+      print('row[$i]: ${rows[i]}');
+    }
+    if (rows.length > maxRows) {
+      print('... (${rows.length - maxRows} filas más)');
+    }
+    print('log end');
+  }
+  
 }
+
+

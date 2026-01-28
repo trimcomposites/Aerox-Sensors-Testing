@@ -16,7 +16,7 @@ class RacketBluetoothService {
   RacketBluetoothService({required this.bluetoothService});
 
 Future<EitherErr<Stream<List<RacketSensorEntity>>>> scanAllRacketDevices() {
-    return bluetoothService.startScan(filterName: 'SmartInsole').then(
+    return bluetoothService.startScan(filterNames: [ 'Padel', 'Example', 'Smart' ]).then(
       (result) => result.map((stream) => groupSensorsByNameStream(stream)),
     );
   }

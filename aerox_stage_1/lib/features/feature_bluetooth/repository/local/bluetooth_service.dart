@@ -31,7 +31,10 @@ class BluetoothCustomService {
       return false;
     }
   }
-  Future<EitherErr<Stream<List<RacketSensor>>>> startScan({String? filterName}) {
+Future<EitherErr<Stream<List<RacketSensor>>>> startScan({
+  String? filterName,
+  List<String>? filterNames,
+}) {
   return EitherCatch.catchAsync<Stream<List<RacketSensor>>, BluetoothErr>(() async {
     bool hasPermission = await checkPermissions();
     if (!hasPermission) {
@@ -41,6 +44,15 @@ class BluetoothCustomService {
       );
     }
 
+    // Construimos el set de keywords (minúsculas, sin vacíos)
+    final Set<String> keywords = {
+      if (filterName != null && filterName.trim().isNotEmpty) filterName.trim().toLowerCase(),
+      ...((filterNames ?? const <String>[])
+          .map((s) => s.trim().toLowerCase())
+          .where((s) => s.isNotEmpty)),
+    };
+
+    // Si ya hay escaneo en curso, devolvemos el stream existente
     if (_isScanning && _devicesStreamController != null) {
       return _devicesStreamController!.stream;
     }
@@ -57,12 +69,13 @@ class BluetoothCustomService {
       );
     }
 
+    // Inicia el escaneo (sin filtro de lib; filtramos nosotros)
     FlutterBluePlus.startScan();
 
     scanSubscription = FlutterBluePlus.onScanResults.listen((results) async {
       final detectedDevices = results.map((r) => r.device).toList();
 
-      // ✅ Copia segura para iterar
+      // Copia segura + purga de dispositivos no vistos y no conectados
       final currentDevices = List<BluetoothDevice>.from(devices);
       final updatedDevices = <BluetoothDevice>[];
 
@@ -75,24 +88,27 @@ class BluetoothCustomService {
         }
       }
 
-      // Reemplazamos la lista completa por la actualizada
       devices
         ..clear()
         ..addAll(updatedDevices);
 
-      // Añadir nuevos dispositivos detectados que cumplan con el filtro
+      // Añadir nuevos dispositivos que cumplan con el filtro (si existe)
       for (final result in results) {
-        final name = (result.device.platformName ?? '').toLowerCase();
-        final local = (result.device.localName ?? '').toLowerCase();
-        final filter = filterName?.toLowerCase();
+        final String name  = (result.device.platformName ?? '').toLowerCase();
+        final String local = (result.device.localName ?? '').toLowerCase();
 
-        if (filter == null || name.contains(filter) || local.contains(filter)) {
+        final bool passesFilter = keywords.isEmpty
+            ? true
+            : keywords.any((kw) => name.contains(kw) || local.contains(kw));
+
+        if (passesFilter) {
           if (!devices.any((d) => d.remoteId == result.device.remoteId)) {
             devices.add(result.device);
           }
         }
       }
 
+      // Mapear a tu entidad
       final racketSensors = await Future.wait(
         devices.map((device) async {
           final state = await device.connectionState.first;
@@ -103,7 +119,7 @@ class BluetoothCustomService {
       _devicesStreamController?.add(racketSensors);
     });
 
-    print("🔍 Escaneo iniciado: $filterName");
+    print("🔍 Escaneo iniciado | keywords: ${keywords.isEmpty ? '(abierto)' : keywords.join(', ')}");
     return _devicesStreamController!.stream;
   }, (exception) {
     throw BluetoothErr(
@@ -112,6 +128,7 @@ class BluetoothCustomService {
     );
   });
 }
+
 
 
 Future<EitherErr<void>> reScan() {

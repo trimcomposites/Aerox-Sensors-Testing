@@ -25,6 +25,7 @@ class HomePageAdminView extends StatelessWidget {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text('Prueba', style: TextStyle( fontFamily: 'gothic', fontWeight: FontWeight.w900 ),),
               Align(
                 alignment: Alignment.center,
                 child: BluetoothConnectButton(),

@@ -17,6 +17,29 @@ class BlobDatabaseListTile extends StatelessWidget {
   final bool hasPath;
   final dynamic timestamp;
   final ParsedBlob blob;
+
+  Future<void> _openCsv(BuildContext context) async {
+    if (!hasPath) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Este blob todavía no ha sido exportado a CSV.')),
+      );
+      return;
+    }
+
+    final dir = await getApplicationDocumentsDirectory();
+    final fullPath = '${dir.path}/${blob.path}';
+    final file = File(fullPath);
+
+    final exists = await file.exists();
+    if (!exists) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Archivo no encontrado en $fullPath')),
+      );
+      return;
+    }
+
+    await OpenFilex.open(fullPath);
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -34,6 +57,7 @@ class BlobDatabaseListTile extends StatelessWidget {
         ),
         title: Text('BLOB ${blob.position} ${blob.createdAt}'),
         subtitle: Text('Fecha: $timestamp'),
+        onTap: () => _openCsv(context),
         trailing: hasPath
             ? Checkbox(
                 value: isSelected,

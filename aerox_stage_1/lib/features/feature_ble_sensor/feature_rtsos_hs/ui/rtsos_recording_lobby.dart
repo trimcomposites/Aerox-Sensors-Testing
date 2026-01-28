@@ -7,6 +7,7 @@ import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/du
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/get_num_bobs_event_timer.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/hit_type_select_drop_down.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/on_rtsos_recording_place_holder_screen.dart';
+import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/recorded_lobby_count.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/rtsos_record_params_widget.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/feature_rtsos_hs/ui/sample_rate_selector.dart';
 import 'package:aerox_stage_1/features/feature_ble_sensor/ui/ble_record_with_button.dart';
@@ -61,18 +62,12 @@ class RTSOSRecordingLobby extends StatelessWidget {
                               .map((sensor) => OnGetSensorBatteryLevel(sensor: sensor))
                               .toList(),
                         ),
-                      GetNumBobsEventTimer(),
+                      //GetNumBobsEventTimer(),
                       SelectedRacketName(
                         showStorage: true,
                       ),
                       RTSOSRecordParamsWidget(),
-                      BlocBuilder<RtsosLobbyBloc, RtsosLobbyState>(
-                        builder: (context, state) {
-                          return Container(
-                            child: Text('${state.recordedBlobCounter} Blobs Registrados en esta sesión.'),
-                          );
-                        },
-                      ),
+                      RecordedLobbyCount(),
                       const SizedBox(height: 16),
                       SampleRateSelector(),
                       // sampleRate != SampleRate.khz1
@@ -94,6 +89,7 @@ class RTSOSRecordingLobby extends StatelessWidget {
         
                                 rtsosLobbyBloc.add(OnStopHSRecording());
                                 rtsosLobbyBloc.add(OnAddBlobRecordedCounter());
+                                rtsosLobbyBloc.add(OnGetSensorsNumBlobs());
                               }
                             : null, 
                       ),
